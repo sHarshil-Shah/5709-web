@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Flex, Text, Button, Link, Tooltip, Avatar} from '@chakra-ui/react';
-import { FiUser } from 'react-icons/fi';
+import { Box, Flex, Text, Link, Tooltip, Avatar} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 const LandingComponent = () => {
@@ -12,10 +11,6 @@ const LandingComponent = () => {
 
   const handleFAQClick = () => {
     navigate('/faq');
-  };
-
-  const handleLoginClick = () => {
-    navigate('/login');
   };
 
   return (
@@ -56,6 +51,7 @@ const LandingComponent = () => {
               fontWeight={"bold"}
               _focus={{ outline: '_focus' }}
               _hover={{ cursor: 'pointer' }}
+              _onClick={{handleFAQClick}}
             >
               FAQ
             </Link>
