@@ -32,11 +32,8 @@ const TitleBar = () => {
           fontWeight="bold"
           margin={5}
           flex={{ base: '100%', md: 'auto' }}
-<<<<<<< HEAD
           mb={{ base: 2, md: 0 }} 
-=======
           _hover={{ textDecoration: 'pointer' }}
->>>>>>> b8f6285353b2476c977020b6a8318dee1efb9b1c
         >
           Class Mate
         </Text>
