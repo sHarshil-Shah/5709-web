@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Flex, Heading, Text, Image, Highlight, Center } from "@chakra-ui/react";
+import { Box, Divider } from "@chakra-ui/react";
 import LandingPageHeader from "./Landing/LandingPageHeader";
 import LandingCardViews from "./Landing/LandingCardViews";
 
