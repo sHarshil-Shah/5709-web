@@ -1,33 +1,34 @@
-import { Heading, Text, Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Stack, Image } from '@chakra-ui/react';
+import React from 'react';
+import { Heading, Button, Card, CardBody, Divider, Stack, Image, Center } from '@chakra-ui/react';
 
 interface ContactCardProps {
-  imageUrl: string;
-  title: string;
-  description: string;
-  price: string;
+  imgLocation: string;
+  name: string;
+  profileUrl: string;
 }
 
-const ContactCard: React.FC<ContactCardProps> = ({ imageUrl, title, description, price }) => {
+const ContactCard: React.FC<ContactCardProps> = ({ imgLocation, name, profileUrl }) => {
+  const handleButtonClick = () => {
+    window.open(profileUrl, '_blank');
+  };
+
   return (
     <Card maxW='sm'>
       <CardBody>
-        <Image src={imageUrl} alt='Green double couch with wooden legs' borderRadius='lg' />
-        <Stack mt='6' spacing='3'>
-          <Heading size='md'>{title}</Heading>
-          <Text>{description}</Text>
-          <Text color='blue.600' fontSize='2xl'>
-            {price}
-          </Text>
-        </Stack>
+        <Center>
+          <Image src={imgLocation} alt='Profile Image' borderRadius='lg' />
+        </Center>
+        <Center>
+          <Stack mt='6' spacing='3'>
+            <Heading size='md'>{name}</Heading>
+          </Stack>
+        </Center>
       </CardBody>
-      {/* <Divider /> */}
-      {/* <CardFooter>
-        <ButtonGroup spacing='2'>
-          <Button variant='solid' colorScheme='blue'>
-            Contact
-          </Button>
-        </ButtonGroup>
-      </CardFooter> */}
+      <Divider />
+      <Button margin='1em'
+        onClick={handleButtonClick} variant='solid' colorScheme='blue'>
+        Visit Profile
+      </Button>
     </Card>
   );
 };
