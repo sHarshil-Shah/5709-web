@@ -30,9 +30,13 @@ const TitleBar = () => {
           onClick={handleClassMateClick}
           fontSize={{ base: 24, md: 30 }} 
           fontWeight="bold"
-          margin={10}
+          margin={5}
           flex={{ base: '100%', md: 'auto' }}
+<<<<<<< HEAD
           mb={{ base: 2, md: 0 }} 
+=======
+          _hover={{ textDecoration: 'pointer' }}
+>>>>>>> b8f6285353b2476c977020b6a8318dee1efb9b1c
         >
           Class Mate
         </Text>
@@ -58,17 +62,6 @@ const TitleBar = () => {
             _hover={{ textDecoration: 'underline' }}
           >
             FAQ
-          </ChakraLink>
-          <ChakraLink
-            as={Link}
-            to="/assignment"
-            onClick={handleFAQClick}
-            mr={4}
-            fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
-            fontWeight="bold"
-            _hover={{ textDecoration: 'underline' }}
-          >
-            Assignment
           </ChakraLink>
           <Tooltip
             label="Login"
