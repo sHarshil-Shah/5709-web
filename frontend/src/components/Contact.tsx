@@ -1,6 +1,6 @@
 const Contact = () => {
     return (
-        <></>
+        <>In contact</>
     );
 };
 
