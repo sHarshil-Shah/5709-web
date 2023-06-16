@@ -20,17 +20,14 @@ const ContactCard: React.FC<ContactCardProps> = ({ imageUrl, title, description,
           </Text>
         </Stack>
       </CardBody>
-      <Divider />
-      <CardFooter>
+      {/* <Divider /> */}
+      {/* <CardFooter>
         <ButtonGroup spacing='2'>
           <Button variant='solid' colorScheme='blue'>
-            Buy now
-          </Button>
-          <Button variant='ghost' colorScheme='blue'>
-            Add to cart
+            Contact
           </Button>
         </ButtonGroup>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };
