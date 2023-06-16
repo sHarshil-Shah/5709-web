@@ -14,20 +14,9 @@ interface Assignment {
 
 const AssignmentBase: React.FC = () => {
     const [assignments, setAssignments] = useState<Assignment[]>([]);
-    const [nextAssignmentId, setNextAssignmentId] = useState(1);
   
     const handleAssignmentSubmit = (assignment: Assignment) => {
-      const newAssignment: Assignment = {
-        ...assignment,
-        id: nextAssignmentId,
-      };
-  
-      setAssignments([...assignments, newAssignment]);
-      setNextAssignmentId(nextAssignmentId + 1);
-    };
-  
-    const handleAssignmentDelete = (id: number) => {
-      setAssignments(assignments.filter(assignment => assignment.id !== id));
+      setAssignments([...assignments, assignment]);
     };
     
     return (
@@ -38,7 +27,8 @@ const AssignmentBase: React.FC = () => {
             <AssignmentModal onSubmit={handleAssignmentSubmit} />
           </Flex>
         </Box>
-        <AssignmentList assignments={assignments} onDelete={handleAssignmentDelete} />
+        {/* <AssignmentList assignments={assignments} onDelete={handleAssignmentDelete} /> */}
+        <AssignmentList/>
       </ChakraProvider>
     );
   };
