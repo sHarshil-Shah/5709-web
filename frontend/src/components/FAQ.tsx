@@ -10,8 +10,10 @@ const FAQ = () => {
             question: 'Can I reset my password?',
             answer: 'Yes, you can reset your password by clicking on the "Forgot Password" link on the login page. Follow the instructions to reset your password.'
         },
-        // Add more FAQ items as needed
-    ];
+        {
+            question: 'Is login page for students and instructors different?',
+            answer: 'No it\'s the same. One page redirects to appropriate dashboard.'
+        },    ];
 
     return (
         <Box p={4}>

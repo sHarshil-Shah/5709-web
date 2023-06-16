@@ -1,19 +1,26 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import TitleBar from './TitleBar';
-import Contact from './components/Contact';
-import FAQ from './components/FAQ';
-import AssignmentBase from './components/AssignmentBase';
+import React, { Suspense } from 'react';
+import Loader from './loading';
+
+const Contact = React.lazy(() => import('./components/contact/Contact'));
+const FAQ = React.lazy(() => import('./components/FAQ'));
+const AssignmentBase = React.lazy(() => import('./components/AssignmentBase'));
+const LandingPage = React.lazy(() => import('./components/LandingPage'));
 
 const App = () => {
   return (
     <Router>
       <TitleBar />
-      <Routes>
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/assignment" element={<AssignmentBase />} />
-      </Routes>
+      <Suspense fallback={<Loader/>}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/assignment" element={<AssignmentBase />} />
+        </Routes>
+      </Suspense>
+
     </Router>
   );
 };
