@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip, Avatar } from '@chakra-ui/react';
+import { Box, Flex, Text, Tooltip, Avatar, Link as ChakraLink } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const TitleBar = () => {
@@ -22,7 +22,7 @@ const TitleBar = () => {
         }}
       >
         <Text
-          fontSize={20}
+          fontSize={30}
           fontWeight="bold"
           margin={10}
           flex={{ base: '100%', md: 'auto' }}
@@ -31,15 +31,31 @@ const TitleBar = () => {
           Class Mate
         </Text>
         <Flex alignItems="center">
-          <Link to="/contact" onClick={handleContactClick}>
+          <ChakraLink
+            as={Link}
+            to="/contact"
+            onClick={handleContactClick}
+            mr={4}
+            fontSize={20}
+            fontWeight="bold"
+            _hover={{ textDecoration: 'underline' }}
+          >
             Contact us
-          </Link>
-          <Link to="/faq" onClick={handleFAQClick}>
+          </ChakraLink>
+          <ChakraLink
+            as={Link}
+            to="/faq"
+            onClick={handleFAQClick}
+            mr={4}
+            fontSize={20}
+            fontWeight="bold"
+            _hover={{ textDecoration: 'underline' }}
+          >
             FAQ
-          </Link>
+          </ChakraLink>
           <Tooltip
             label="Login"
-            background={'grey'}
+            background="grey"
             color="white"
             borderRadius={2}
             p={5}
