@@ -21,7 +21,8 @@ const TitleBar = () => {
       <Flex
         justifyContent="space-between"
         alignItems="center"
-        bgGradient="linear(to-r, #DBE6F6, #C5796D)"
+        bg={"#E27087"}
+        shadow={'lg'}
         boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
         px={4} // Added padding on the x-axis
         py={2} // Added padding on the y-axis
@@ -32,7 +33,7 @@ const TitleBar = () => {
           fontWeight="bold"
           margin={5}
           flex={{ base: '100%', md: 'auto' }}
-          _hover={{ textDecoration: 'pointer' }}
+          _hover={{ cursor: 'pointer' }}
         >
           Class Mate
         </Text>
