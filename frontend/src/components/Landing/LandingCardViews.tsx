@@ -28,7 +28,7 @@ const LandingCardViews = () => {
           />
         </Box>
         <Heading as="h4" size="md" mb={4}>
-          Student Features
+          For Students
         </Heading>
         <Accordion allowToggle>
           <AccordionItem>
@@ -107,7 +107,7 @@ const LandingCardViews = () => {
           />
         </Box>
         <Heading as="h4" size="md" mb={4}>
-          Professor Features
+          For Professors
         </Heading>
         <Accordion allowToggle>
           <AccordionItem>

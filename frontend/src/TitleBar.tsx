@@ -24,12 +24,12 @@ const TitleBar = () => {
         bg={"#E27087"}
         shadow={'lg'}
         boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-        px={4} // Added padding on the x-axis
-        py={2} // Added padding on the y-axis
+        px={4} 
+        py={2} 
       >
         <Text
           onClick={handleClassMateClick}
-          fontSize={{ base: 24, md: 30 }} // Adjusted font size for different breakpoints
+          fontSize={{ base: 24, md: 30 }} 
           fontWeight="bold"
           margin={5}
           flex={{ base: '100%', md: 'auto' }}
@@ -47,7 +47,7 @@ const TitleBar = () => {
             fontWeight="bold"
             _hover={{ textDecoration: 'underline' }}
           >
-            Contact us
+            Contact
           </ChakraLink>
           <ChakraLink
             as={Link}
