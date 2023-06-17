@@ -4,12 +4,12 @@ const LandingPageHeader = () => {
     return (
         <Box width={['100%']} mx="auto" textAlign="left" p={4}>
             <Heading as="h4" size="lg" mb={4}>
-                Welcome To ClassMate - What we do here !!!
+                Welcome To ClassMate - What we do here
             </Heading>
             <Text mb={4} fontWeight="semibold" fontSize="md">
                 <Highlight query="students, professors, and campus administrators" styles={{ px: '1', py: '1', rounded: 'full', bg: '#ff9999' }}>
                     The Classmate Application is developed as a digital platform specifically designed for students, professors, and campus administrators. 
-                    Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment 
+                    Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment. 
                 </Highlight>
             </Text>
             
