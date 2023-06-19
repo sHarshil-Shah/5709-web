@@ -1,4 +1,5 @@
-import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Heading } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Heading, Input } from '@chakra-ui/react';
 
 const FAQ = () => {
     const faqData = [
@@ -30,32 +31,47 @@ const FAQ = () => {
             question: 'Can I communicate with my professors?',
             answer: 'Yes, you can communicate with your professors through the "Messages" feature. Go to the "Messages" page and select the professor you want to communicate with.'
         },
+        
     ];
 
-    return (
-        <Box p={8}>
-            <Heading as="h2" size="xl" mb={8} textAlign="center">
-                Frequently Asked Questions
-            </Heading>
-            <Accordion allowMultiple>
-                {faqData.map((item, index) => (
-                    <AccordionItem key={index}>
-                        <h2>
-                            <AccordionButton _expanded={{ bg: 'gray.200' }}>
-                                <Box flex="1" textAlign="left" fontWeight="bold">
-                                    {`${index + 1}. ${item.question}`}
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-                        </h2>
-                        <AccordionPanel pb={4}>
-                            {item.answer}
-                        </AccordionPanel>
-                    </AccordionItem>
-                ))}
-            </Accordion>
-        </Box>
-    );
+    const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredData = faqData.filter((item) =>
+    item.question.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <Box p={8}>
+      <Heading as="h2" size="xl" mb={8} textAlign="center">
+        Frequently Asked Questions
+      </Heading>
+      <Input
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={handleSearch}
+        mb={4}
+      />
+      <Accordion allowMultiple>
+        {filteredData.map((item, index) => (
+          <AccordionItem key={index}>
+            <h2>
+              <AccordionButton _expanded={{ bg: 'gray.200' }}>
+                <Box flex="1" textAlign="left" fontWeight="bold">
+                  {`${index + 1}. ${item.question}`}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>{item.answer}</AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </Box>
+  );
 };
 
 export default FAQ;
