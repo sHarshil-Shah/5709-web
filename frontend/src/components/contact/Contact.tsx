@@ -6,6 +6,8 @@ import { useState } from 'react';
 import harsilImg from '../../assests/images/harshil.png';
 import viralImg from '../../assests/images/viral.png';
 import rajImg from '../../assests/images/raj.png';
+import aanandiImg from '../../assests/images/aanandi.png';
+import yatrikImg from '../../assests/images/yatrik.png';
 
 const Contact = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,14 +47,14 @@ const Contact = () => {
               profileUrl='https://www.linkedin.com/in/viral-siddhapura-a5042714a'
             />
             <ContactCard
-              imgLocation={viralImg}
-              name='Viral Siddhapura'
-              profileUrl='https://www.linkedin.com/in/viral-siddhapura-a5042714a'
+              imgLocation={aanandiImg}
+              name='Aanandi Pankhania'
+              profileUrl='https://www.linkedin.com/in/aanandi2802/'
             />
             <ContactCard
-              imgLocation={viralImg}
-              name='Viral Siddhapura'
-              profileUrl='https://www.linkedin.com/in/viral-siddhapura-a5042714a'
+              imgLocation={yatrikImg}
+              name='Yatrik Amrutiya'
+              profileUrl='https://www.linkedin.com/in/yatrik-amrutiya-1a3816193/'
             />
           </Grid>
         </Flex>
