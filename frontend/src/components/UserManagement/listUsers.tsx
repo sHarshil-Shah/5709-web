@@ -13,6 +13,16 @@ const data = [
     { id: 1, email: 'johndoe@example.com', fname: 'f name 1', lname: 'l name 1', utype: 'student' },
     { id: 2, email: 'johndoe2@example.com', fname: 'f name 2', lname: 'l name 2', utype: 'professor' },
     { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+    { id: 3, email: 'johndoe3@example.com', fname: 'f name 3', lname: 'l name 3', utype: 'student' },
+
 ];
 
 const TableWithFilters = () => {
@@ -43,8 +53,8 @@ const TableWithFilters = () => {
 
     return (
         <>
-            <Table variant="striped" marginTop="5rem">
-                <Thead>
+            <Table variant="striped">
+                <Thead >
                     <Tr>
                         <Th>No</Th>
                         <Th>Email</Th>

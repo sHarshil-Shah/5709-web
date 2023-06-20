@@ -19,7 +19,14 @@ const TitleBar = () => {
   }
 
   return (
-    <Box>
+    <Box
+    as="header"
+    pos="sticky"
+    top={0}
+    zIndex={100}
+    shadow="md"
+    mb={2}
+    >
       <Flex
         justifyContent="space-between"
         alignItems="center"
