@@ -61,7 +61,60 @@ Give an example
 
 ## Sources Used
 
-If in completing your lab / assignment / project you used any interpretation of someone else's code, then provide a list of where the code was implement, how it was implemented, why it was implemented, and how it was modified. See the sections below for more details.
+<!-- If in completing your lab / assignment / project you used any interpretation of someone else's code, then provide a list of where the code was implement, how it was implemented, why it was implemented, and how it was modified. See the sections below for more details. -->
+
+### FAQ.tsx
+
+*Lines 189 - 203*
+
+```
+  <Accordion allowMultiple>
+      {filteredData.map((item, index) => (
+          <AccordionItem key={index}>
+              <h2>
+                  <AccordionButton _expanded={{ bg: 'gray.200' }}>
+                      <Box flex="1" textAlign="left" fontWeight="bold">
+                          {`${index + 1}. ${item.question}`}
+                      </Box>
+                      <AccordionIcon />
+                  </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>{item.answer}</AccordionPanel>
+          </AccordionItem>
+      ))}
+  </Accordion>
+
+```
+
+The code above was created by adapting the code in [FAQ Page](https://chakra-ui.com/docs/components/accordion/usage) as shown below: 
+
+```
+<Accordion>
+  <AccordionItem>
+    <h2>
+      <AccordionButton _expanded={{ bg: 'tomato', color: 'white' }}>
+        <Box as="span" flex='1' textAlign='left'>
+          Click me to see a different style
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
+    </h2>
+    <AccordionPanel>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.
+    </AccordionPanel>
+  </AccordionItem>
+</Accordion>
+
+```
+
+- <!---How---> The code in [FAQ Page](https://chakra-ui.com/docs/components/accordion/usage) was implemented by authors in Chakra UI official documents.
+- <!---Why---> [FAQ Page](https://chakra-ui.com/docs/components/accordion/usage)'s Code was used because we want to show FAQ Data such that it must be expanded once a question has been clicked.
+- <!---How---> [FAQ Page](https://chakra-ui.com/docs/components/accordion/usage)'s Code was modified by changing data filtering and providing background color to grey and maitaining index of JSON data.
+
+<!-- *Repeat as needed* -->
 
 ### File Name
 
@@ -83,27 +136,33 @@ Copy and paste the snippet of code you are referencing
 - <!---Why---> [NAME](link)'s Code was used because...
 - <!---How---> [NAME](link)'s Code was modified by...
 
-*Repeat as needed*
+### Contact.tsx
 
-### File Name
-
-*Lines ## - ##*
+*Lines 54 - 60*
 
 ```
-Copy and paste your code on lines mentioned 
-
-```
-
-The code above was created by adapting the code in [NAME](link) as shown below: 
-
-```
-Copy and paste the snippet of code you are referencing
+    if (email.trim() === '') {
+      setEmailError('Please enter your email address');
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setEmailError('Please enter a valid email address');
+      isValid = false;
+    } 
 
 ```
 
-- <!---How---> The code in [NAME](link) was implemented by...
-- <!---Why---> [NAME](link)'s Code was used because...
-- <!---How---> [NAME](link)'s Code was modified by...
+The code above was created by adapting the code in [Contact us Type Script](https://stackoverflow.com/questions/65631340/regex-to-not-match-leading-and-trailing-white-spaces-for-email-address-in-javasc) as shown below: 
+
+```
+    if (!event.target.value.trim().match(/^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)) {
+        setEmailStatus('Enter valid email address');
+    }
+
+```
+
+- <!---How---> The code in [Contact us Type Script](https://stackoverflow.com/questions/65631340/regex-to-not-match-leading-and-trailing-white-spaces-for-email-address-in-javasc) was implemented by Proposed by someone on Stackoverflow.
+- <!---Why---> [Contact us Type Script](link)'s Code was used because a user's email address must be validated before it sends us an email for contact purpose.
+- <!---How---> [Contact us Type Script](link)'s Code was modified by changing the if and else condition and using Regular expressions and using .test() function.
 
 *Repeat as needed*
 
