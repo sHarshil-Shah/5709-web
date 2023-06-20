@@ -64,7 +64,7 @@ const TitleBar = () => {
           >
             FAQ
           </ChakraLink>
-          <Tooltip
+          {/* <Tooltip
             label="Login"
             bg="gray"
             color="white"
@@ -78,7 +78,7 @@ const TitleBar = () => {
               src="https://img.icons8.com/cotton/32/gender-neutral-user--v1.png"
               _hover={{ cursor: 'pointer' }}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Flex>
       </Flex>
     </Box>
