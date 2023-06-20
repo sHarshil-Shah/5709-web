@@ -9,7 +9,7 @@ The background of the Classmate Application stems from the challenges and comple
 To address these issues, the Classmate Application was developed as a digital platform specifically designed for students, professors, and campus administrators. Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment. By leveraging technology, the application aims to streamline various aspects of educational management and create a more efficient and effective system
 
 * *Date Created*: 22 May 2023
-* *Last Modification Date*: 15 Jun 2023
+* *Last Modification Date*: 20 Jun 2023
 * *Netlify URL*: * [ClassMate](https://classmate-g7.netlify.app/)
 * *Git URL*: [ClassMate Git](https://git.cs.dal.ca/harshils/classmate.git) 
 
@@ -22,7 +22,7 @@ To address these issues, the Classmate Application was developed as a digital pl
 * [Aanandi Pankhania](an936894@dal.ca) - *(Full Stack Developer)*
 
 
-## Testing
+<!-- ## Testing
 
 Briefly explain the process you went through to test your work. 
 
@@ -40,7 +40,7 @@ Explain what these tests test and why
 
 ```
 Give an example
-```
+``` -->
 
 
 ## Deployment
@@ -53,11 +53,11 @@ Give an example
 
 ## Built With
 
-<1!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
+<!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
 
 * [React](https://react.dev/) - For frontend
-* [Express JS](https://expressjs.com/) - For backend - API creation
-* [MongoDB](https://rometools.github.io/rome/) - Database As a Service
+* [Type Script](https://www.typescriptlang.org/) - For frontend - strictly typed language
+* [Chakra UI](https://chakra-ui.com/getting-started) - Chakra UI - Front End framework (Responsive)
 
 ## Sources Used
 
@@ -116,25 +116,129 @@ The code above was created by adapting the code in [FAQ Page](https://chakra-ui.
 
 <!-- *Repeat as needed* -->
 
-### File Name
+### sucessMailSentModal.tsx
 
-*Lines ## - ##*
-
-```
-Copy and paste your code on lines mentioned 
+*Lines 11 - 23
 
 ```
-
-The code above was created by adapting the code in [NAME](link) as shown below: 
+  <Modal isOpen={isOpen} onClose={onClose} size="sm">
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Your Message has been Mailed to us Successfully!</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        <p>Thank you for contacting us. We will get back to you as soon as we can.</p>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={onClose}>Close</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
 
 ```
-Copy and paste the snippet of code you are referencing
+
+The code above was created by adapting the code in [Chakra UI Modal](https://chakra-ui.com/docs/components/modal/usage) as shown below: 
+
+```
+  <Modal isOpen={isOpen} onClose={onClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Modal Title</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+        <Lorem count={2} />
+      </ModalBody>
+
+      <ModalFooter>
+        <Button colorScheme='blue' mr={3} onClick={onClose}>
+          Close
+        </Button>
+        <Button variant='ghost'>Secondary Action</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
 
 ```
 
-- <!---How---> The code in [NAME](link) was implemented by...
-- <!---Why---> [NAME](link)'s Code was used because...
-- <!---How---> [NAME](link)'s Code was modified by...
+- <!---How---> The code in [Chakra UI Modal](https://chakra-ui.com/docs/components/modal/usage) was present in official documentation of Chakra UI.
+- <!---Why---> [Chakra UI Modal](https://chakra-ui.com/docs/components/modal/usage)'s Code was used because once user has clicked on button - a small dialog box will be shown to the user stating success message of contancting us.
+- <!---How---> [Chakra UI Modal](https://chakra-ui.com/docs/components/modal/usage)'s Code was modified by maitaining isOpen and inClose conditions and setting up different message to the user.
+
+### router.tsx
+
+*Lines 16 - 21*
+
+```
+  <Routes>
+    <Route path="/" element={<LandingPage />} />
+    <Route path="/contact" element={<Contact />} />
+    <Route path="/faq" element={<FAQ />} />
+    <Route path="/assignment" element={<AssignmentBase />} />
+  </Routes>
+
+```
+
+The code above was created by adapting the code in [Router](https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b) as shown below: 
+
+```
+<Router>
+    <Header />
+    <div className="page">
+        <Switch>
+            <Route exact path="/" component={App} />
+            <Route exact path="/SubMenu1" component={SubMenu1Page} />
+            <Route exact path="/SubMenu2" component={SubMenu2Page} />
+            <Route path="/404" component={NotFoundPage} />
+            <Redirect to="/404" />
+        </Switch>
+    </div>
+</Router>
+
+```
+
+- <!---How---> The code in [Router](https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b) was implemented by a medium blog writer in the given link.
+- <!---Why---> [Router](https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b)'s Code was used because once user clicks something - should be redirected to the corresponding pages.
+- <!---How---> [Router](https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b)'s Code was modified by writing proper component name and paths as per parameters and by default path too (Which is our /LandingPage)
+
+### indContactCard.tsx
+
+*Lines 16 - 32
+
+```
+  <Card maxW='sm'>
+    <CardBody>
+      <Center>
+        <Image src={imgLocation} alt='Profile Image' borderRadius='lg' />
+      </Center>
+      <Center>
+        <Stack mt='6' spacing='3'>
+          <Heading size='md'>{name}</Heading>
+        </Stack>
+      </Center>
+    </CardBody>
+    <Divider />
+    <Button margin='1em'
+      onClick={handleButtonClick} variant='solid' colorScheme='blue'>
+      Visit Profile
+    </Button>
+  </Card>
+
+```
+
+The code above was created by adapting the code in [Chakra UI - Card](https://chakra-ui.com/docs/components/card/usage) as shown below: 
+
+```
+  <Card>
+    <CardBody>
+      <Text>View a summary of all your customers over the last month.</Text>
+    </CardBody>
+  </Card>
+
+```
+
+- <!---How---> The code in [Chakra UI - Card](https://chakra-ui.com/docs/components/card/usage) was present in the official documentation of chakra ui.
+- <!---Why---> [Chakra UI - Card](https://chakra-ui.com/docs/components/card/usage)'s Code was used because we want to show the user profiles with a button and a simple image of a user.
+- <!---How---> [Chakra UI - Card](https://chakra-ui.com/docs/components/card/usage)'s Code was modified by putting an image and a button with margin and profile url as well.
 
 ### Contact.tsx
 
@@ -168,6 +272,14 @@ The code above was created by adapting the code in [Contact us Type Script](http
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* [1] “Regex to not match leading and trailing white spaces for email address in javascript,” Stack Overflow. [Online]. Available: https://stackoverflow.com/questions/65631340/regex-to-not-match-leading-and-trailing-white-spaces-for-email-address-in-javasc. [Accessed: 20-Jun-2023].
+
+* [2] “Accordion,” Chakra UI: Simple, Modular and Accessible UI Components for your React Applications. [Online]. Available: https://chakra-ui.com/docs/components/accordion/usage. [Accessed: 20-Jun-2023].
+
+* [3] Harshil Shah - “Assignment - 1” GitLab. [Online]. Available: https://git.cs.dal.ca/harshils/5709-assignments-b00919966-harshil/-/tree/main/Assignment%201. [Accessed: 20-Jun-2023].
+
+* [4] “Card,” Chakra UI: Simple, Modular and Accessible UI Components for your React Applications. [Online]. Available: https://chakra-ui.com/docs/components/card/usage. [Accessed: 20-Jun-2023].
+
+* [5] “Modal,” Chakra UI: Simple, Modular and Accessible UI Components for your React Applications. [Online]. Available: https://chakra-ui.com/docs/components/modal/usage. [Accessed: 20-Jun-2023].
+
+* [6] E. E. Elrom, “Integrate Routing in Typescript project with React-Router v5.2.0. Including Redux toolkit integration. 2020 ReactJS example tutorial,” Master React, 11-Aug-2020. [Online]. Available: https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b. [Accessed: 20-Jun-2023].
