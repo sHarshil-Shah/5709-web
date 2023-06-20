@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid, Flex, Box, Heading, Text, FormControl, FormLabel, Input, Textarea, Button, useBreakpointValue } from '@chakra-ui/react';
+import { useState, ChangeEvent, ChangeEventHandler } from 'react';
+
 import ContactCard from './indContactCard';
 import ModalComponent from './sucessMailSentModal';
-import { useState } from 'react';
 import harsilImg from '../../assests/images/harshil.png';
 import viralImg from '../../assests/images/viral.png';
 import rajImg from '../../assests/images/raj.png';
@@ -11,6 +12,12 @@ import yatrikImg from '../../assests/images/yatrik.png';
 
 const Contact = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [messageError, setMessageError] = useState('');
   const breakpointValue = useBreakpointValue({ base: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(5, 1fr)" });
 
   const handleClose = () => {
@@ -19,6 +26,56 @@ const Contact = () => {
 
   const handleOpen = () => {
     setIsOpen(true);
+  };
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+    setNameError('');
+  };
+
+  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setEmailError('');
+  };
+
+  const handleMessageChange: ChangeEventHandler<HTMLTextAreaElement> = (event) => {
+    setMessage(event.target.value);
+    setMessageError('');
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+
+    if (name.trim() === '') {
+      setNameError('Please enter your name');
+      isValid = false;
+    }
+
+    if (email.trim() === '') {
+      setEmailError('Please enter your email address');
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setEmailError('Please enter a valid email address');
+      isValid = false;
+    }
+
+    if (message.trim() === '') {
+      setMessageError('Please enter your message');
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSendMessage = () => {
+    if (validateForm()) {
+      handleOpen(); // Show success modal or perform API request
+
+      // Reset form fields after successful submission
+      setName('');
+      setEmail('');
+      setMessage('');
+    }
   };
 
   return (
@@ -69,17 +126,20 @@ const Contact = () => {
         </Text>
         <FormControl id="name" mb={4}>
           <FormLabel>Your Name</FormLabel>
-          <Input type="text" placeholder="Enter your name" />
+          <Input type="text" placeholder="Enter your name" value={name} onChange={handleNameChange} />
+          {nameError && <Text color="red">{nameError}</Text>}
         </FormControl>
         <FormControl id="email" mb={4}>
           <FormLabel>Email Address</FormLabel>
-          <Input type="email" placeholder="Enter your email address" />
+          <Input type="email" placeholder="Enter your email address" value={email} onChange={handleEmailChange} />
+          {emailError && <Text color="red">{emailError}</Text>}
         </FormControl>
         <FormControl id="message" mb={4}>
           <FormLabel>Message</FormLabel>
-          <Textarea placeholder="Enter your message" />
+          <Textarea placeholder="Enter your message" value={message} onChange={handleMessageChange} />
+          {messageError && <Text color="red">{messageError}</Text>}
         </FormControl>
-        <Button colorScheme="blue" size="lg" onClick={handleOpen}>
+        <Button colorScheme="blue" size="lg" onClick={handleSendMessage} >
           Send Message
         </Button>
       </Box>
