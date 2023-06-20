@@ -21,22 +21,26 @@ const TitleBar = () => {
       <Flex
         justifyContent="space-between"
         alignItems="center"
-        bg={"#E27087"}
-        shadow={'lg'}
+        bg="#E27087"
+        shadow="lg"
         boxShadow="0px 2px 4px rgba(0, 0, 0, 0.1)"
-        px={4} 
-        py={2} 
+        px={4}
+        py={2}
+        flexWrap="wrap"
       >
-        <Text
+        <Box
           onClick={handleClassMateClick}
-          fontSize={{ base: 24, md: 30 }} 
-          fontWeight="bold"
-          margin={5}
-          flex={{ base: '100%', md: 'auto' }}
-          _hover={{ cursor: 'pointer' }}
+          cursor="pointer"
         >
-          Class Mate
-        </Text>
+          <Text
+            fontSize={{ base: 24, md: 30 }} 
+            fontWeight="bold"
+            margin={5}
+            flex={{ base: '100%', md: 'auto' }}
+          >
+            Class Mate
+          </Text>
+        </Box>
         <Flex alignItems="center">
           <ChakraLink
             as={Link}
