@@ -1,4 +1,6 @@
-import { Box, Flex, Text, Tooltip, Avatar, Link as ChakraLink } from '@chakra-ui/react';
+import { Box, Flex, Text, Link as ChakraLink } from '@chakra-ui/react';
+// import {  Tooltip, Avatar } from '@chakra-ui/react';
+
 import { Link, useNavigate } from 'react-router-dom';
 
 const TitleBar = () => {

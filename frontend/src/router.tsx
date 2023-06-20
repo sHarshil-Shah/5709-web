@@ -8,6 +8,9 @@ const FAQ = React.lazy(() => import('./components/FAQ'));
 const AssignmentBase = React.lazy(() => import('./components/AssignmentBase'));
 const LandingPage = React.lazy(() => import('./components/Landing/LandingPage'));
 
+const Login = React.lazy(() => import('./components/UserManagement/login'));
+
+
 const App = () => {
   return (
     <Router>
@@ -18,6 +21,8 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/assignment" element={<AssignmentBase />} />
+          <Route path="/login" element={<Login />} />
+
         </Routes>
       </Suspense>
 
