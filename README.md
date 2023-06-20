@@ -56,8 +56,8 @@ Give an example
 <!--- Provide a list of the frameworks used to build this application, your list should include the name of the framework used, the url where the framework is available for download and what the framework was used for, see the example below --->
 
 * [React](https://react.dev/) - For frontend
-* [Express JS](https://expressjs.com/) - For backend - API creation
-* [MongoDB](https://rometools.github.io/rome/) - Database As a Service
+* [Type Script](https://www.typescriptlang.org/) - For frontend - strictly typed language
+* [Chakra UI](https://chakra-ui.com/getting-started) - Chakra UI - Front End framework (Responsive)
 
 ## Sources Used
 
