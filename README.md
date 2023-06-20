@@ -9,7 +9,7 @@ The background of the Classmate Application stems from the challenges and comple
 To address these issues, the Classmate Application was developed as a digital platform specifically designed for students, professors, and campus administrators. Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment. By leveraging technology, the application aims to streamline various aspects of educational management and create a more efficient and effective system
 
 * *Date Created*: 22 May 2023
-* *Last Modification Date*: 15 Jun 2023
+* *Last Modification Date*: 20 Jun 2023
 * *Netlify URL*: * [ClassMate](https://classmate-g7.netlify.app/)
 * *Git URL*: [ClassMate Git](https://git.cs.dal.ca/harshils/classmate.git) 
 
