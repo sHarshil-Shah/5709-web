@@ -1,4 +1,3 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/91cc1082-8148-4fb3-ab88-af8d128b7cc5/deploy-status)](https://app.netlify.com/sites/classmate-g7/deploys)
 <!--- The following README.md sample file was adapted from https://gist.github.com/PurpleBooth/109311bb0361f32d87a2#file-readme-template-md by Gabriella Mosquera for academic use ---> 
 <!--- You may delete any comments in this sample README.md file. If needing to use as a .txt file then simply delete all comments, edit as needed, and save as a README.txt file --->
 
@@ -67,7 +66,7 @@ Give an example
 
 *Lines 189 - 203*
 
-```
+```tsx
   <Accordion allowMultiple>
       {filteredData.map((item, index) => (
           <AccordionItem key={index}>
@@ -88,7 +87,7 @@ Give an example
 
 The code above was created by adapting the code in [FAQ Page](https://chakra-ui.com/docs/components/accordion/usage) as shown below: 
 
-```
+```tsx
 <Accordion>
   <AccordionItem>
     <h2>
@@ -120,7 +119,7 @@ The code above was created by adapting the code in [FAQ Page](https://chakra-ui.
 
 *Lines 11 - 23
 
-```
+```tsx
   <Modal isOpen={isOpen} onClose={onClose} size="sm">
     <ModalOverlay />
     <ModalContent>
@@ -139,7 +138,7 @@ The code above was created by adapting the code in [FAQ Page](https://chakra-ui.
 
 The code above was created by adapting the code in [Chakra UI Modal](https://chakra-ui.com/docs/components/modal/usage) as shown below: 
 
-```
+```tsx
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
@@ -168,7 +167,7 @@ The code above was created by adapting the code in [Chakra UI Modal](https://cha
 
 *Lines 16 - 21*
 
-```
+```tsx
   <Routes>
     <Route path="/" element={<LandingPage />} />
     <Route path="/contact" element={<Contact />} />
@@ -180,7 +179,7 @@ The code above was created by adapting the code in [Chakra UI Modal](https://cha
 
 The code above was created by adapting the code in [Router](https://medium.com/react-courses/how-to-integrate-routing-in-typescript-project-with-react-router-v5-2-0-a6b0ab160a1b) as shown below: 
 
-```
+```tsx
 <Router>
     <Header />
     <div className="page">
@@ -204,7 +203,7 @@ The code above was created by adapting the code in [Router](https://medium.com/r
 
 *Lines 16 - 32
 
-```
+```tsx
   <Card maxW='sm'>
     <CardBody>
       <Center>
@@ -227,7 +226,7 @@ The code above was created by adapting the code in [Router](https://medium.com/r
 
 The code above was created by adapting the code in [Chakra UI - Card](https://chakra-ui.com/docs/components/card/usage) as shown below: 
 
-```
+```tsx
   <Card>
     <CardBody>
       <Text>View a summary of all your customers over the last month.</Text>
@@ -244,7 +243,7 @@ The code above was created by adapting the code in [Chakra UI - Card](https://ch
 
 *Lines 54 - 60*
 
-```
+```tsx
     if (email.trim() === '') {
       setEmailError('Please enter your email address');
       isValid = false;
@@ -257,7 +256,7 @@ The code above was created by adapting the code in [Chakra UI - Card](https://ch
 
 The code above was created by adapting the code in [Contact us Type Script](https://stackoverflow.com/questions/65631340/regex-to-not-match-leading-and-trailing-white-spaces-for-email-address-in-javasc) as shown below: 
 
-```
+```tsx
     if (!event.target.value.trim().match(/^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)) {
         setEmailStatus('Enter valid email address');
     }
@@ -268,7 +267,6 @@ The code above was created by adapting the code in [Contact us Type Script](http
 - <!---Why---> [Contact us Type Script](link)'s Code was used because a user's email address must be validated before it sends us an email for contact purpose.
 - <!---How---> [Contact us Type Script](link)'s Code was modified by changing the if and else condition and using Regular expressions and using .test() function.
 
-*Repeat as needed*
 
 ## Acknowledgments
 
