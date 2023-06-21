@@ -9,8 +9,8 @@ To address these issues, the Classmate Application was developed as a digital pl
 
 * *Date Created*: 22 May 2023
 * *Last Modification Date*: 20 Jun 2023
-* *Netlify URL*: * [ClassMate](https://classmate-g7.netlify.app/)
-* *Git URL*: [ClassMate Git](https://git.cs.dal.ca/harshils/classmate.git) 
+* *Netlify URL*: [ClassMate](https://classmate-g7.netlify.app/) https://classmate-g7.netlify.app/
+* *Git URL*: [ClassMate Git](https://git.cs.dal.ca/harshils/classmate.git) https://git.cs.dal.ca/harshils/classmate.git
 
 ## Authors
 
