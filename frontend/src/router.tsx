@@ -6,7 +6,7 @@ import Loader from './loading';
 
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
-const AssignmentBase = React.lazy(() => import('./components/AssignmentBase'));
+const AssignmentBase = React.lazy(() => import('./components/Assignment/AssignmentBase'));
 const LandingPage = React.lazy(() => import('./components/Landing/LandingPage'));
 
 const Login = React.lazy(() => import('./components/UserManagement/login'));
