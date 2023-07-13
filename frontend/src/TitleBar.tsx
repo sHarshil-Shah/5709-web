@@ -1,10 +1,11 @@
 import { Box, Flex, Text, Link as ChakraLink } from '@chakra-ui/react';
 // import {  Tooltip, Avatar } from '@chakra-ui/react';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const TitleBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleContactClick = () => {
     navigate('/contact');
@@ -15,8 +16,14 @@ const TitleBar = () => {
   };
 
   const handleClassMateClick = () => {
-    navigate('/');
+    if (location.pathname === '/admin') {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
   }
+
+  const isAdminDashboard = location.pathname === '/admin'; // Check if the current path is '/admin'
 
   return (
     <Box
@@ -47,7 +54,7 @@ const TitleBar = () => {
             margin={5}
             flex={{ base: '100%', md: 'auto' }}
           >
-            Class Mate
+            {isAdminDashboard ? 'Admin Dashboard' : 'Class Mate'}
           </Text>
         </Box>
         <Flex alignItems="center">
