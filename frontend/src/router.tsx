@@ -31,7 +31,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/createUser" element={<CreateUser />} />
             <Route path="/listUsers" element={<ListUsers />} />
-            <Route path="/admin" element={<AdminDashboard />} /> 
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/mapping" element={<ProfessorMapping />} /> 
             <Route path="/admin/course-management" element={<CourseManagement />} /> 
             <Route path="/admin/pending-requests" element={<PendingApproval />} /> 

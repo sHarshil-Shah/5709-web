@@ -8,22 +8,32 @@ const TitleBar = () => {
   const location = useLocation();
 
   const handleContactClick = () => {
-    navigate('/contact');
+    if (location.pathname.startsWith('/admin')){
+      navigate('/admin/contact');
+    } else {
+      navigate('/contact');
+    }
   };
 
   const handleFAQClick = () => {
-    navigate('/faq');
+    if (location.pathname.startsWith('/admin')){
+      navigate('/admin/faq');
+    } else {
+      navigate('/faq');
+    }
   };
 
   const handleClassMateClick = () => {
-    if (location.pathname === '/admin') {
+    if (location.pathname.startsWith('/admin')){
       navigate('/admin');
     } else {
       navigate('/');
     }
   }
 
-  const isAdminDashboard = location.pathname === '/admin'; // Check if the current path is '/admin'
+  const isAdminDashboard = location.pathname.startsWith('/admin'); // Check if the current path is '/admin'
+  const contactLink = isAdminDashboard ? '/admin/contact' : '/contact';
+  const faqLink = isAdminDashboard ? '/admin/faq' : '/faq';
 
   return (
     <Box
@@ -60,7 +70,7 @@ const TitleBar = () => {
         <Flex alignItems="center">
           <ChakraLink
             as={Link}
-            to="/contact"
+            to={contactLink}
             onClick={handleContactClick}
             mr={4}
             fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
@@ -71,7 +81,7 @@ const TitleBar = () => {
           </ChakraLink>
           <ChakraLink
             as={Link}
-            to="/faq"
+            to={faqLink}
             onClick={handleFAQClick}
             mr={4}
             fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
