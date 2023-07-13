@@ -45,12 +45,15 @@ const Contact = () => {
 
   const validateForm = () => {
     let isValid = true;
-
+  
     if (name.trim() === '') {
       setNameError('Please enter your name');
       isValid = false;
+    } else if (!/^[A-Za-z]+$/.test(name)) {
+      setNameError('Name can only contain letters');
+      isValid = false;
     }
-
+  
     if (email.trim() === '') {
       setEmailError('Please enter your email address');
       isValid = false;
@@ -58,14 +61,14 @@ const Contact = () => {
       setEmailError('Please enter a valid email address');
       isValid = false;
     }
-
+  
     if (message.trim() === '') {
       setMessageError('Please enter your message');
       isValid = false;
     }
-
+  
     return isValid;
-  };
+  };  
 
   const handleSendMessage = () => {
     if (validateForm()) {

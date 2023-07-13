@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Flex, ChakraProvider } from '@chakra-ui/react';
-import AssignmentModal from '../AssignmentModal';
-import AssignmentList from '../AssignmentList';
-import AssignmentText from '../AssignmentText';
+import AssignmentModal from '../Assignment/AssignmentModal';
+import AssignmentList from '../Assignment/AssignmentList';
+import AssignmentText from '../Assignment/AssignmentText';
 
 
 interface Assignment {
