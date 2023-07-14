@@ -1,4 +1,6 @@
-import { Box, Flex, Text, Tooltip, Avatar, Link as ChakraLink } from '@chakra-ui/react';
+import { Box, Flex, Text, Link as ChakraLink } from '@chakra-ui/react';
+// import {  Tooltip, Avatar } from '@chakra-ui/react';
+
 import { Link, useNavigate } from 'react-router-dom';
 
 const TitleBar = () => {
@@ -17,7 +19,14 @@ const TitleBar = () => {
   }
 
   return (
-    <Box>
+    <Box
+    as="header"
+    pos="sticky"
+    top={0}
+    zIndex={100}
+    shadow="md"
+    mb={2}
+    >
       <Flex
         justifyContent="space-between"
         alignItems="center"
@@ -64,7 +73,7 @@ const TitleBar = () => {
           >
             FAQ
           </ChakraLink>
-          <Tooltip
+          {/* <Tooltip
             label="Login"
             bg="gray"
             color="white"
@@ -78,7 +87,7 @@ const TitleBar = () => {
               src="https://img.icons8.com/cotton/32/gender-neutral-user--v1.png"
               _hover={{ cursor: 'pointer' }}
             />
-          </Tooltip>
+          </Tooltip> */}
         </Flex>
       </Flex>
     </Box>

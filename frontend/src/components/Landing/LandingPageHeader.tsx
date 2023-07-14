@@ -1,4 +1,4 @@
-import { Box, Heading, Text, Highlight } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 
 const LandingPageHeader = () => {
     return (
@@ -7,17 +7,14 @@ const LandingPageHeader = () => {
                 Welcome To ClassMate - What we do here
             </Heading>
             <Text mb={4} fontWeight="semibold" fontSize="md">
-                <Highlight query="students, professors, and campus administrators" styles={{ px: '1', py: '1', rounded: 'full', bg: '#ff9999' }}>
-                    The Classmate Application is developed as a digital platform specifically designed for students, professors, and campus administrators. 
-                    Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment. 
-                </Highlight>
+                The Classmate Application is developed as a digital platform specifically designed for
+                students, professors, and campus administrators.
+                Its primary goal is to simplify administrative processes, improve communication channels, and foster a collaborative learning environment.
             </Text>
-            
+
             <Text fontSize="md" mb={4} fontWeight="semibold">
-                <Highlight query="centralized platform for collaboration" styles={{ px: '1', py: '1', rounded: 'full', bg: '#33adff' }}>
-                    By leveraging technology, the application aims to streamline various aspects of educational management and create a more efficient and effective system.
-                    Additionally, the lack of a centralized platform for collaboration and knowledge sharing can hinder the development of a vibrant learning community.
-                </Highlight>
+                By leveraging technology, the application aims to streamline various aspects of educational management and create a more efficient and effective system.
+                Additionally, the lack of a centralized platform for collaboration and knowledge sharing can hinder the development of a vibrant learning community.
             </Text>
         </Box>
     );

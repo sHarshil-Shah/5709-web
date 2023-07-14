@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Flex,
-  Heading,
   Input,
   Button,
   InputGroup,
@@ -10,7 +9,6 @@ import {
   chakra,
   Box,
   Link,
-  Avatar,
   FormControl,
   FormHelperText,
   InputRightElement,
