@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import { loginRouter } from './controller/login';
-import { registerRouter } from './controller/register';
+import { loginRouter } from './controller/users/login';
+import { registerRouter } from './controller/users/register';
 import cors from 'cors';
-import { listUsersRouter } from './controller/listUsers';
-import { deleteUserRouter } from './controller/deleteUser';
+import { listUsersRouter } from './controller/users/listUsers';
+import { deleteUserRouter } from './controller/users/deleteUser';
 
 
 // Create an Express app

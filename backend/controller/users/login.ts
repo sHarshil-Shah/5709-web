@@ -1,23 +1,25 @@
 import express, { Request, Response } from 'express';
-import UserService from '../service/user.service';
+import user from '../../model/user.model';
+import UserService from '../../service/user.service';
 
-export const listUsersRouter = express.Router();
+export const loginRouter = express.Router();
 
 const userService = new UserService();
 // Login endpoint
-listUsersRouter.post('/', async (req: Request, res: Response) => {
+loginRouter.post('/', async (req: Request, res: Response) => {
     // Extract username and password from the request body
     console.log(req.body);
+    const current_user: user = req.body;
 
     try {
-        const users = await userService.listUsersWithusertypeFilter();
+        const user = await userService.getUser(current_user);
 
-        if (users) {
+        if (user) {
             // User found, return success response
-            res.json({ message: 'Users fetched successful', users: users });
+            res.json({ message: 'Login successful', user_type: user['user_type']});
         } else {
             // User not found or invalid credentials, return error response
-            res.status(401).json({ message: 'Error occured' });
+            res.status(401).json({ message: 'Invalid credentials' });
         }
     } catch (error) {
         console.log(error);

@@ -1,21 +1,20 @@
 import express, { Request, Response } from 'express';
-import UserService from '../service/user.service';
+import UserService from '../../service/user.service';
 
-export const deleteUserRouter = express.Router();
+export const listUsersRouter = express.Router();
 
 const userService = new UserService();
 // Login endpoint
-deleteUserRouter.delete('/', async (req: Request, res: Response) => {
+listUsersRouter.post('/', async (req: Request, res: Response) => {
     // Extract username and password from the request body
     console.log(req.body);
-    const data = req.body;
+
     try {
-        console.log(data.id);
-        const response = await userService.deleteUser(data.id);
-        console.log(response);
-        if (response) {
+        const users = await userService.listUsersWithusertypeFilter();
+
+        if (users) {
             // User found, return success response
-            res.json({ message: 'User deleted successful', response: response });
+            res.json({ message: 'Users fetched successful', users: users });
         } else {
             // User not found or invalid credentials, return error response
             res.status(401).json({ message: 'Error occured' });
