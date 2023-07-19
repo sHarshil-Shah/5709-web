@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Divider } from "@chakra-ui/react";
 import LandingPageHeader from "./Landing/LandingPageHeader";
 import LandingCardViews from "./Landing/LandingCardViews";
-import LandingFooter from "./Landing/LandingFooter";
 
 const LandingPage = () => {
   return (
@@ -20,9 +19,9 @@ const LandingPage = () => {
 
         <Divider mt={8} borderColor="black" borderWidth={2} />
 
-        <Box textAlign="center">
+        {/* <Box textAlign="center">
             <LandingFooter></LandingFooter>
-        </Box>
+        </Box> */}
     </Box>
   );
 };
