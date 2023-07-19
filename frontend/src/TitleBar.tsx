@@ -1,35 +1,47 @@
 import { Box, Flex, Text, Link as ChakraLink } from '@chakra-ui/react';
-// import {  Tooltip, Avatar } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const TitleBar = () => {
   const navigate = useNavigate();
 
-  const handleContactClick = () => {
-    navigate('/contact');
-  };
-
-  const handleFAQClick = () => {
-    navigate('/faq');
-  };
+  const [menuOptions, setMenuOptions] = useState([
+    { title: 'Login', route: '/login' }
+  ]);
 
   const handleClassMateClick = () => {
     navigate('/');
   }
+  const location = useLocation();
 
-  const handleAssignmentClick = () => {
-    navigate('/assignment')
-  }
+  useEffect(() => {
+    // Perform any logic to update menu options based on the current state
+    // Example: Update menu options based on the user's role or authentication status
+    console.log(location);
+    if (location.pathname === '/login') {
+      setMenuOptions([
+        { title: 'Login', route: '/login' }
+
+        // Add more menu options as needed
+      ]);
+    } else {
+      setMenuOptions([
+        { title: 'Courses', route: '/' },
+        { title: 'Logout', route: '/Logout' },
+        // Add more menu options as needed
+      ]);
+    }
+  }, [location]);
 
   return (
     <Box
-    as="header"
-    pos="sticky"
-    top={0}
-    zIndex={100}
-    shadow="md"
-    mb={2}
+      as="header"
+      pos="sticky"
+      top={0}
+      zIndex={100}
+      shadow="md"
+      mb={2}
     >
       <Flex
         justifyContent="space-between"
@@ -46,7 +58,7 @@ const TitleBar = () => {
           cursor="pointer"
         >
           <Text
-            fontSize={{ base: 24, md: 30 }} 
+            fontSize={{ base: 24, md: 30 }}
             fontWeight="bold"
             margin={5}
             flex={{ base: '100%', md: 'auto' }}
@@ -55,54 +67,19 @@ const TitleBar = () => {
           </Text>
         </Box>
         <Flex alignItems="center">
-          <ChakraLink
+          {menuOptions.map((option) => (
+
+            <ChakraLink
               as={Link}
-              to="/assignment"
-              onClick={handleAssignmentClick}
+              to={option.route}
               mr={4}
-              fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
+              fontSize={{ base: 16, md: 20 }} 
               fontWeight="bold"
               _hover={{ textDecoration: 'underline' }}
             >
-              Assignment
-          </ChakraLink>
-          <ChakraLink
-            as={Link}
-            to="/contact"
-            onClick={handleContactClick}
-            mr={4}
-            fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
-            fontWeight="bold"
-            _hover={{ textDecoration: 'underline' }}
-          >
-            Contact
-          </ChakraLink>
-          <ChakraLink
-            as={Link}
-            to="/faq"
-            onClick={handleFAQClick}
-            mr={4}
-            fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
-            fontWeight="bold"
-            _hover={{ textDecoration: 'underline' }}
-          >
-            FAQ
-          </ChakraLink>
-          {/* <Tooltip
-            label="Login"
-            bg="gray"
-            color="white"
-            borderRadius={2}
-            p={2} // Adjusted padding
-            placement="top"
-          >
-            <Avatar
-              size="sm" // Adjusted avatar size for responsiveness
-              mr={2} // Adjusted margin right
-              src="https://img.icons8.com/cotton/32/gender-neutral-user--v1.png"
-              _hover={{ cursor: 'pointer' }}
-            />
-          </Tooltip> */}
+              {option.title}
+            </ChakraLink>
+          ))}
         </Flex>
       </Flex>
     </Box>
