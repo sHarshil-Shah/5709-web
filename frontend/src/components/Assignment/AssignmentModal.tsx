@@ -27,10 +27,11 @@ interface Assignment {
 }
 
 interface AssignmentModalProps {
+  assignment: Assignment;
   onSubmit: (assignment: Assignment) => void;
 }
 
-const AssignmentModal: React.FC<AssignmentModalProps> = ({onSubmit}) => {
+const AssignmentModal: React.FC<AssignmentModalProps> = ({assignment, onSubmit}) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [title, setTitle] = useState('');
@@ -50,7 +51,7 @@ const AssignmentModal: React.FC<AssignmentModalProps> = ({onSubmit}) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let isValid = true;
 
     // Title validation
@@ -86,41 +87,59 @@ const AssignmentModal: React.FC<AssignmentModalProps> = ({onSubmit}) => {
     }
 
     if (isValid) {
-      // All fields are valid, submit the form
-      console.log('Assignment submitted:', {
-        title,
-        description,
-        visibleDate,
-        uploadedFile,
-      });
 
-      const assignment = {
-        id: Math.random(),
-        title,
-        description,
-        visibleDate
+      const formData = new FormData();
+      if (uploadedFile) {
+        formData.append('file', uploadedFile);
+      }
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('visibleDate', visibleDate);
+
+      try {
+        // Upload file and create assignment
+        const response = await fetch('/api/assignments', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const newAssignment = await response.json();
+          onSubmit(newAssignment);
+
+          toast({
+            title: 'Submission Successful',
+            description: 'Assignment has been submitted successfully.',
+            status: 'success',
+            duration: 2000,
+            isClosable: true,
+          });
+
+          onClose();
+        } else {
+          throw new Error('Error creating assignment');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+
+        toast({
+          title: 'Error',
+          description: 'An error occurred while submitting the assignment.',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        });
       }
 
-      onSubmit(assignment);
-
-      toast({
-        title: 'Submission Successful',
-        description: 'Assignment has been submitted successfully.',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-      });
-
-      onClose();
     }
   };
 
   const handleOpenModal = () => {
-    setTitle('');
+    setTitle(assignment.title);
     setTitleError('');
-    setDescription('');
+    setDescription(assignment.description);
     setDescriptionError('');
-    setVisibleDate('');
+    setVisibleDate(assignment.visibleDate);
     setVisibleDateError('');
     setUploadedFile(null);
     setFileError('');
