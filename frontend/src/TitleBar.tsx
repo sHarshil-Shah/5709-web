@@ -18,6 +18,10 @@ const TitleBar = () => {
     navigate('/');
   }
 
+  const handleAssignmentClick = () => {
+    navigate('/assignment')
+  }
+
   return (
     <Box
     as="header"
@@ -51,6 +55,17 @@ const TitleBar = () => {
           </Text>
         </Box>
         <Flex alignItems="center">
+          <ChakraLink
+              as={Link}
+              to="/assignment"
+              onClick={handleAssignmentClick}
+              mr={4}
+              fontSize={{ base: 16, md: 20 }} // Adjusted font size for different breakpoints
+              fontWeight="bold"
+              _hover={{ textDecoration: 'underline' }}
+            >
+              Assignment
+          </ChakraLink>
           <ChakraLink
             as={Link}
             to="/contact"
