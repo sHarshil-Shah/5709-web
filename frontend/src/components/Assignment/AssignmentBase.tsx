@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Flex, ChakraProvider } from '@chakra-ui/react';
-import AssignmentModal from '../AssignmentModal';
-import AssignmentList from '../AssignmentList';
-import AssignmentText from '../AssignmentText';
+import AssignmentModal from './AssignmentModal';
+import AssignmentList from './AssignmentList';
+import AssignmentText from './AssignmentText';
 
 
 interface Assignment {
@@ -22,7 +22,17 @@ const AssignmentBase: React.FC = () => {
     return (
       <ChakraProvider>
         <Box>
-          <Flex as="nav" justify="space-between" wrap="wrap" padding={4} bg="gray.800" color="white">
+          <Flex 
+              as="nav" 
+              justify="space-between" 
+              wrap="wrap" 
+              margin={4} 
+              padding={4} 
+              bg="transparent" 
+              color="black"
+              borderRadius="5px 5px 5px 5px" // Make the Flex component circular
+              border="2px solid black" // Add a black border
+            >
             <AssignmentText></AssignmentText>
             <AssignmentModal onSubmit={handleAssignmentSubmit} />
           </Flex>
