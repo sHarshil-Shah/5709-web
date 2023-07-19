@@ -34,7 +34,7 @@ const AssignmentBase: React.FC = () => {
               border="2px solid black" // Add a black border
             >
             <AssignmentText></AssignmentText>
-            <AssignmentModal onSubmit={handleAssignmentSubmit} />
+            {/* <AssignmentModal onSubmit={handleAssignmentSubmit} /> */}
           </Flex>
         </Box>
         {/* <AssignmentList assignments={assignments} onDelete={handleAssignmentDelete} /> */}
