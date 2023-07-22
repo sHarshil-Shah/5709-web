@@ -1,11 +1,11 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import React, {Suspense} from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { Suspense } from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
-import {isLoggedIn} from "./service/LoginState";
+import { isLoggedIn } from "./service/LoginState";
 
-const AdminDashboard = React.lazy(() => import( './components/Admin/adminDashboard'));
-const CourseManagement = React.lazy(() => import( './components/Admin/courseManagement'));
+const AdminDashboard = React.lazy(() => import('./components/Admin/adminDashboard'));
+const CourseManagement = React.lazy(() => import('./components/Admin/courseManagement'));
 const PendingApproval = React.lazy(() => import('./components/Admin/pendingApproval'));
 const UserInformationPage = React.lazy(() => import('./components/Admin/userInformationPage'));
 const ProfessorMapping = React.lazy(() => import('./components/Admin/professorMapping'));
@@ -36,35 +36,35 @@ const Calender = React.lazy(() => import('./components/Calender/calender'));
 const App = () => {
 
 
-    return (<>
-            <Router>
-                <TitleBar/>
-                <Suspense fallback={<Loader/>}>
-                    <Routes>
-                        <Route path="/" element={<LandingPage/>}/>
-                        <Route path="/contact" element={<Contact/>}/>
-                        <Route path="/faq" element={<FAQ/>}/>
-                        <Route path="/login" element={isLoggedIn() ? <AlreadyLoggedInPage/> : <Login/>}/>
-                        <Route path="/createUser" element={<CreateUser/>}/>
-                        <Route path="/listUsers" element={<ListUsers/>}/>
-                        <Route path="/prof" element={<Prof/>}/>
-                        <Route path="/stud" element={<Stud/>}/>
-                        <Route path="/dashboard" element={<DashBoardRoute/>}/>
-                        <Route path="/forgetPassword" element={<ForgetPassword/>}/>
-                        <Route path="/announcement" element={<Announcement/>}/>
-                        <Route path="/content" element={<Content/>}/>
-                        <Route path="/signup" element={<ProfSignUp/>}/>
-                        <Route path="/calender" element={<Calender/>}/>
-                        <Route path="/admin" element={<AdminDashboard/>}/>
-                        <Route path="/admin/course-management" element={<CourseManagement/>}/>
-                        <Route path="/admin/pending-requests" element={<PendingApproval/>}/>
-                        <Route path="/admin/users" element={<UserInformationPage/>}/>
-                        <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
-                    </Routes>
-                </Suspense>
-            </Router>
-        </>
-    );
+  return (<>
+    <Router>
+      <TitleBar />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/login" element={isLoggedIn() ? <AlreadyLoggedInPage /> : <Login />} />
+          <Route path="/createUser" element={<CreateUser />} />
+          <Route path="/listUsers" element={<ListUsers />} />
+          <Route path="/prof" element={<Prof />} />
+          <Route path="/stud" element={<Stud />} />
+          <Route path="/dashboard" element={<DashBoardRoute />} />
+          <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/announcement" element={<Announcement />} />
+          <Route path="/content" element={<Content />} />
+          <Route path="/signup" element={<ProfSignUp />} />
+          <Route path="/calender" element={<Calender />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/course-management" element={<CourseManagement />} />
+          <Route path="/admin/pending-requests" element={<PendingApproval />} />
+          <Route path="/admin/users" element={<UserInformationPage />} />
+          <Route path="/admin/mapping" element={<ProfessorMapping />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  </>
+  );
 };
 
 export default App;
