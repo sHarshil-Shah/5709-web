@@ -1,4 +1,4 @@
-import {Box, Button, Flex, Link as ChakraLink, Text} from '@chakra-ui/react'; // Import the Chakra UI Button component
+import {Box, Button, Flex, Link as ChakraLink, Text} from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 
@@ -37,14 +37,15 @@ const TitleBar = () => {
         if (location.pathname === '/login') {
             setMenuOptions([
                 {title: 'Contact', route: '/contact'},
-                {title: 'FAQ', route: '/faq'}            ]);
+                {title: 'FAQ', route: '/faq'}]);
         } else if (location.pathname === '/') {
-            setMenuOptions([]);
+            setMenuOptions(dataString ?
+                [
+                    {title: 'Dashboard', route: '/dashboard'}
+                ]
+                : []);
         } else {
-            setMenuOptions([
-                {title: 'Contact', route: '/contact'},
-                {title: 'FAQ', route: '/faq'}
-            ]);
+            setMenuOptions([]);
         }
     }, [location]);
 

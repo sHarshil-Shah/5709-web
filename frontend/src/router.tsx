@@ -19,6 +19,8 @@ const Stud = React.lazy(() => import('./components/otherpages/stud'));
 
 const AlreadyLoggedInPage = React.lazy(() => import('./components/UserManagement/alreadyLoggedIn'));
 
+const DashBoardRoute = React.lazy(() => import('./DynamicRoute/DashboardRoute'));
+
 const App = () => {
 
     const dataString = localStorage.getItem('userData');
@@ -39,7 +41,7 @@ const App = () => {
                         <Route path="/admin" element={<Admin/>}/>
                         <Route path="/prof" element={<Prof/>}/>
                         <Route path="/stud" element={<Stud/>}/>
-
+                        <Route path="/dashboard" element={<DashBoardRoute/>}/>
                     </Routes>
                 </Suspense>
             </Router>
