@@ -73,7 +73,7 @@ const TableWithFilters: React.FC = () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.deletedCount === 1) {
+                if (data.response.deletedCount === 1) {
                     fetchUsers()
                         .then((response) => {
                             setData(response.users);
