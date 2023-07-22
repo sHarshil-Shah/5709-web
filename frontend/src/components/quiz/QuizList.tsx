@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {
-  ChakraProvider,
   Box,
   Flex,
   Heading,
@@ -62,7 +61,7 @@ const QuizList: React.FC = () => {
   };
 
   return (
-    <ChakraProvider>
+    <>
       <Box bg="teal" p={4} color="white">
         <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" align="center">
           <Heading as="h1" size="lg" textAlign="center" mb={2}>
@@ -79,18 +78,16 @@ const QuizList: React.FC = () => {
             >
               Create Quiz
             </Button>
-            <CreateQuiz
-              isOpenQuizModel={isOpenQuizModel}
-              onCloseQuizModel={onCloseQuizModel}
-            />
             <Button
+              as={Link}
+              to="/question-bank"
               colorScheme="green"
               variant="solid"
               mr={2}
               mb={{ base: 2, md: 0 }}
               width={{ base: '100%', md: 'auto' }}
             >
-              <Link to={`/question-bank`}>Question Bank</Link>
+              <Link to={`/questionBank`}>Question Bank</Link>
             </Button>
           </Flex>
         </Flex>
@@ -131,28 +128,26 @@ const QuizList: React.FC = () => {
         ) : (
           <Text>No quizzes found.</Text>
         )}
-
-        <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-          <AlertDialogOverlay />
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Quiz
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={confirmDelete} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </Box>
-    </ChakraProvider>
+      <CreateQuiz isOpenQuizModel={isOpenQuizModel} onCloseQuizModel={onCloseQuizModel} />
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            Delete Quiz
+          </AlertDialogHeader>
+          <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme="red" onClick={confirmDelete} ml={3}>
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
