@@ -1,63 +1,71 @@
-import React, { useState, useRef } from 'react';
-import {
-  Box,
-  Flex,
-  Heading,
-  Button,
-  Text,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
-  useDisclosure,
-} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
 import CreateQuiz from './CreateQuiz';
-import { Link } from 'react-router-dom';
-
-interface Quiz {
-  id: number;
-  title: string;
-}
+import QuestionBankPage from './QuestionBank';
+import QuizDetailsModal from './QuizDetailsModal';
+import QuizTableRow from './QuizTableRow';
+import { Quiz } from '../model/quiz.model'
 
 const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([
-    { id: 1, title: 'Quiz 1' },
-    { id: 2, title: 'Quiz 2' },
-    { id: 3, title: 'Quiz 3' },
-    { id: 4, title: 'Quiz 4' },
+    {
+      id: "1",
+      title: 'Quiz 1',
+      description: 'This is the description of Quiz 1',
+      startDate: '2023-07-20',
+      dueDate: '2023-07-25',
+    },
+    {
+      id: "2",
+      title: 'Quiz 2',
+      description: 'This is the description of Quiz 1',
+      startDate: '2023-07-20',
+      dueDate: '2023-07-25',
+    },
+    {
+      id: "3",
+      title: 'Quiz 3',
+      description: 'This is the description of Quiz 1',
+      startDate: '2023-07-20',
+      dueDate: '2023-07-25',
+    },
+    {
+      id: "4",
+      title: 'Quiz 4',
+      description: 'This is the description of Quiz 1',
+      startDate: '2023-07-20',
+      dueDate: '2023-07-25',
+    },
   ]);
 
-  const handleEdit = (quizId: number) => {
+  const handleEdit = (quizId: string) => {
     console.log(`Edit quiz with ID: ${quizId}`);
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement | null>(null);
-  const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
-
-  const handleDelete = (quizId: number) => {
+  const handleDelete = (quizId: string) => {
     setSelectedQuizId(quizId);
-    onOpen();
+    onDeleteOpen();
+    console.log(`Delete quiz with ID: ${quizId}`);
   };
+
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+
+  const { isOpen: isCreateQuizOpen, onOpen: onCreateQuizOpen, onClose: onCreateQuizClose } =
+    useDisclosure();
+
+  const { isOpen: isQuestionBankOpen, onOpen: onQuestionBankOpen, onClose: onQuestionBankClose } =
+    useDisclosure();
+
+  const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+  const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
+  const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
 
   const confirmDelete = () => {
     const updatedQuizzes = quizzes.filter((quiz) => quiz.id !== selectedQuizId);
     console.log(`Delete quiz with ID: ${selectedQuizId}`);
     console.log('Updated quizzes:', updatedQuizzes);
     setQuizzes(updatedQuizzes);
-    onClose();
-  };
-
-  const [isOpenQuizModel, setIsOpenQuizModel] = useState<boolean>(false);
-
-  const handleOpenModel = () => {
-    setIsOpenQuizModel(true);
-  };
-
-  const onCloseQuizModel = () => {
-    setIsOpenQuizModel(false);
+    onDeleteClose();
   };
 
   return (
@@ -69,7 +77,7 @@ const QuizList: React.FC = () => {
           </Heading>
           <Flex>
             <Button
-              onClick={handleOpenModel}
+              onClick={onCreateQuizOpen}
               colorScheme="green"
               variant="solid"
               mr={2}
@@ -79,58 +87,32 @@ const QuizList: React.FC = () => {
               Create Quiz
             </Button>
             <Button
-              as={Link}
-              to="/question-bank"
+              onClick={onQuestionBankOpen}
               colorScheme="green"
               variant="solid"
               mr={2}
               mb={{ base: 2, md: 0 }}
               width={{ base: '100%', md: 'auto' }}
             >
-              <Link to={`/questionBank`}>Question Bank</Link>
+              Question Bank
             </Button>
           </Flex>
         </Flex>
       </Box>
+
       <Box p={4}>
         {quizzes.length > 0 ? (
           quizzes.map((quiz) => (
-            <Flex
-              key={quiz.id}
-              direction={{ base: 'column', md: 'row' }}
-              justify="space-between"
-              align="center"
-              mb={4}
-            >
-              <Text mb={{ base: 2, md: 0 }}>{quiz.title}</Text>
-              <Flex>
-                <Button
-                  colorScheme="teal"
-                  variant="outline"
-                  mr={2}
-                  onClick={() => handleEdit(quiz.id)}
-                  width={{ base: '100%', md: 'auto' }}
-                  mb={{ base: 2, md: 0 }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  colorScheme="red"
-                  variant="outline"
-                  onClick={() => handleDelete(quiz.id)}
-                  width={{ base: '100%', md: 'auto' }}
-                >
-                  Delete
-                </Button>
-              </Flex>
-            </Flex>
+            <QuizTableRow key={quiz.id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
           ))
         ) : (
           <Text>No quizzes found.</Text>
         )}
       </Box>
-      <CreateQuiz isOpenQuizModel={isOpenQuizModel} onCloseQuizModel={onCloseQuizModel} />
-      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onCreateQuizClose} />
+      <QuestionBankPage isQuestionBankModel={isQuestionBankOpen} onCloseQuestionBankModel={onQuestionBankClose} />
+
+      <AlertDialog isOpen={isDeleteOpen} leastDestructiveRef={cancelRef} onClose={onDeleteClose}>
         <AlertDialogOverlay />
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -138,7 +120,7 @@ const QuizList: React.FC = () => {
           </AlertDialogHeader>
           <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
+            <Button ref={cancelRef} onClick={onDeleteClose}>
               Cancel
             </Button>
             <Button colorScheme="red" onClick={confirmDelete} ml={3}>
@@ -147,6 +129,7 @@ const QuizList: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <QuizDetailsModal isOpen={!!selectedQuiz} onClose={() => setSelectedQuiz(null)} quiz={selectedQuiz} />
     </>
   );
 };
