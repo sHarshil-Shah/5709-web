@@ -3,7 +3,6 @@ import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
 
-
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
 const LandingPage = React.lazy(() => import('./components/Landing/LandingPage'));
@@ -20,6 +19,7 @@ const Stud = React.lazy(() => import('./components/otherpages/stud'));
 const AlreadyLoggedInPage = React.lazy(() => import('./components/UserManagement/alreadyLoggedIn'));
 
 const DashBoardRoute = React.lazy(() => import('./DynamicRoute/DashboardRoute'));
+const ForgetPassword = React.lazy(() => import('./components/UserManagement/forgetPassword'));
 
 const App = () => {
 
@@ -42,6 +42,7 @@ const App = () => {
                         <Route path="/prof" element={<Prof/>}/>
                         <Route path="/stud" element={<Stud/>}/>
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
+                        <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                     </Routes>
                 </Suspense>
             </Router>

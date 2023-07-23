@@ -44,6 +44,7 @@ class UserService {
 
             // Check user credentials in the MongoDB collection
             console.log(user);
+
             const new_user = await db.collection(usersCollectionName).insertOne(user);
 
             console.log(user);
@@ -54,6 +55,30 @@ class UserService {
         }
     }
 
+
+    async forgetPassword(user: user) {
+        console.log(user);
+        try {
+            // Connect to MongoDB
+            const client = await MongoClient.connect(mongoURI ? mongoURI : '', {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+            const db: Db = client.db(dbName);
+
+            // Check user credentials in the MongoDB collection
+            const users = await db.collection(usersCollectionName).updateOne(
+                {_id: new ObjectId(user.user_id as string)}, // Specify the document using _id
+                {$set: {password: user.password}}
+            );
+            await client.close();
+
+            console.log(users);
+            return users;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     async listUsersWithusertypeFilter() {
         try {
@@ -87,7 +112,7 @@ class UserService {
             const db: Db = client.db(dbName);
 
             // Check user credentials in the MongoDB collection
-            const deleteResponse = await db.collection(usersCollectionName ).deleteOne({_id: objectId});
+            const deleteResponse = await db.collection(usersCollectionName).deleteOne({_id: objectId});
             await client.close();
 
             console.log(deleteResponse);

@@ -23,22 +23,18 @@ const TitleBar = () => {
 
     const location = useLocation();
 
-    const dataString = localStorage.getItem('userData');
-    console.log(dataString);
 
     const handleLogin = () => {
         navigate('/login');
     }
 
     useEffect(() => {
+        const dataString = localStorage.getItem('userData');
+        console.log(dataString);
         // Perform any logic to update menu options based on the current state
         // Example: Update menu options based on the user's role or authentication status
         console.log(location);
-        if (location.pathname === '/login') {
-            setMenuOptions([
-                {title: 'Contact', route: '/contact'},
-                {title: 'FAQ', route: '/faq'}]);
-        } else if (location.pathname === '/') {
+        if (location.pathname === '/') {
             setMenuOptions(dataString ?
                 [
                     {title: 'Dashboard', route: '/dashboard'}
