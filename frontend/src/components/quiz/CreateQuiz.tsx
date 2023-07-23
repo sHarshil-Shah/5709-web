@@ -1,32 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  Button,
-  Switch,
-  HStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  Text,
-  Stack,
-  useBreakpointValue,
-  Select,
-} from '@chakra-ui/react';
-
-interface QuizQuestion {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-}
+import { Box, FormControl, FormLabel, Input, Textarea, Button, Switch, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, Text, Stack, useBreakpointValue, Select, } from '@chakra-ui/react';
+import { QuizQuestion } from '../model/quiz.model';
 
 interface CreateQuizProps {
   isOpenQuizModel: boolean;
@@ -46,50 +20,81 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     questions: [] as QuizQuestion[],
   });
 
+  const [filledQuestions, setFilledQuestions] = useState({
+    id: Date.now().toString(),
+    question: '',
+    options: ['', '', '', ''],
+    correctAnswer: 0,
+  } as QuizQuestion);
+
+  interface ValidationErrors {
+    quizTitle: boolean;
+    startDate: boolean;
+    dueDate: boolean;
+    visibleDate: boolean;
+    timeLimit: boolean;
+    numOfQuestions: boolean;
+  }
+
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
+    quizTitle: false,
+    startDate: false,
+    dueDate: false,
+    visibleDate: false,
+    timeLimit: false,
+    numOfQuestions: false,
+  });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
+    console.log(name, value);
+    if (name === 'randomQuestions') {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: !formData.randomQuestions,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: false,
     }));
   };
 
   const handleAddQuestion = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      questions: [...prevData.questions, filledQuestions],
+    }));
     const newQuestion: QuizQuestion = {
-      id: Date.now(),
+      id: Date.now().toString(),
       question: '',
       options: ['', '', '', ''],
       correctAnswer: 0,
     };
-    setFormData((prevData) => ({
-      ...prevData,
-      questions: [...prevData.questions, newQuestion],
-    }));
+    setFilledQuestions(newQuestion);
   };
 
   const handleAddOption = () => {
-    setFormData((prevData) => ({
+    setFilledQuestions((prevData) => ({
       ...prevData,
-      questions: prevData.questions.map((question, index) =>
-        index === prevData.questions.length - 1
-          ? { ...question, options: [...question.options, ''] }
-          : question
-      ),
+      options: [...filledQuestions.options, '']
     }));
   };
-
-  const handleRemoveOption = (questionIndex: number, optionIndex: number) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      questions: prevData.questions.map((question, index) =>
-        index === questionIndex
-          ? { ...question, options: question.options.filter((_, i) => i !== optionIndex) }
-          : question
-      ),
-    }));
+  const handleRemoveOption = (optionIndex: number) => {
+    filledQuestions.options.splice(optionIndex, 1);
+    setFilledQuestions((prevData) => {
+      return { ...prevData, options: filledQuestions.options };
+    });
   };
 
-  const handleDeleteQuestion = (questionId: number) => {
+
+  const handleDeleteQuestion = (questionId: string) => {
     setFormData((prevData) => ({
       ...prevData,
       questions: prevData.questions.filter((question) => question.id !== questionId),
@@ -101,13 +106,41 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   };
 
   const handleSave = () => {
+    const missingFields: (keyof ValidationErrors)[] = [];
+    if (!formData.quizTitle) {
+      missingFields.push('quizTitle');
+    }
+    if (!formData.startDate) {
+      missingFields.push('startDate');
+    }
+    if (!formData.dueDate) {
+      missingFields.push('dueDate');
+    }
+    if (!formData.visibleDate) {
+      missingFields.push('visibleDate');
+    }
+    if (!formData.timeLimit) {
+      missingFields.push('timeLimit');
+    }
+    if (!formData.numOfQuestions) {
+      missingFields.push('numOfQuestions');
+    }
+
+    if (missingFields.length > 0) {
+      const updatedValidationErrors: ValidationErrors = { ...validationErrors };
+      missingFields.forEach((field) => {
+        updatedValidationErrors[field] = true;
+      });
+      setValidationErrors(updatedValidationErrors as ValidationErrors); // Add type assertion here
+      return;
+    }
     onCloseQuizModel();
   };
 
   const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
-    <Modal isOpen={isOpenQuizModel} onClose={onCloseQuizModel} size="full">
+    <Modal isOpen={isOpenQuizModel} onClose={onCloseQuizModel} size="xl" scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create Quiz</ModalHeader>
@@ -121,7 +154,11 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                   name="quizTitle"
                   value={formData.quizTitle}
                   onChange={handleInputChange}
+                  isInvalid={!formData.quizTitle && validationErrors.quizTitle}
                 />
+                {validationErrors.quizTitle && !formData.quizTitle && (
+                  <Text color="red" fontSize="sm">Quiz Title is required.</Text>
+                )}
               </FormControl>
 
               <FormControl mt={4}>
@@ -133,7 +170,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                 />
               </FormControl>
 
-              <HStack spacing={4} mt={4}>
+              <Stack spacing={isMobile ? 4 : 0} mt={4}>
                 <FormControl isRequired>
                   <FormLabel>Start Date</FormLabel>
                   <Input
@@ -141,7 +178,11 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleInputChange}
+                    isInvalid={!formData.startDate && validationErrors.startDate}
                   />
+                  {validationErrors.startDate && !formData.startDate && (
+                    <Text color="red" fontSize="sm">Start Date is required.</Text>
+                  )}
                 </FormControl>
 
                 <FormControl isRequired>
@@ -151,7 +192,11 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     name="dueDate"
                     value={formData.dueDate}
                     onChange={handleInputChange}
+                    isInvalid={!formData.dueDate && validationErrors.dueDate}
                   />
+                  {validationErrors.dueDate && !formData.dueDate && (
+                    <Text color="red" fontSize="sm">Due Date is required.</Text>
+                  )}
                 </FormControl>
 
                 <FormControl isRequired>
@@ -161,11 +206,15 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     name="visibleDate"
                     value={formData.visibleDate}
                     onChange={handleInputChange}
+                    isInvalid={!formData.visibleDate && validationErrors.visibleDate}
                   />
+                  {validationErrors.visibleDate && !formData.visibleDate && (
+                    <Text color="red" fontSize="sm">Visible Date is required.</Text>
+                  )}
                 </FormControl>
-              </HStack>
+              </Stack>
 
-              <HStack spacing={4} mt={4}>
+              <Stack spacing={isMobile ? 4 : 0} mt={4}>
                 <FormControl isRequired>
                   <FormLabel>Time Limit (minutes)</FormLabel>
                   <Input
@@ -173,7 +222,11 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     name="timeLimit"
                     value={formData.timeLimit}
                     onChange={handleInputChange}
+                    isInvalid={!formData.timeLimit && validationErrors.timeLimit}
                   />
+                  {validationErrors.timeLimit && !formData.timeLimit && (
+                    <Text color="red" fontSize="sm">Time Limit is required.</Text>
+                  )}
                 </FormControl>
 
                 <FormControl isRequired>
@@ -183,9 +236,13 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     name="numOfQuestions"
                     value={formData.numOfQuestions}
                     onChange={handleInputChange}
+                    isInvalid={!formData.numOfQuestions && validationErrors.numOfQuestions}
                   />
+                  {validationErrors.numOfQuestions && !formData.numOfQuestions && (
+                    <Text color="red" fontSize="sm">Number of Questions is required.</Text>
+                  )}
                 </FormControl>
-              </HStack>
+              </Stack>
 
               <FormControl display="flex" alignItems="center" mt={4}>
                 <FormLabel htmlFor="randomQuestions" mb={0}>
@@ -204,16 +261,17 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                 <FormLabel>Question</FormLabel>
                 <Input
                   placeholder="Enter a question"
-                  value={formData.questions[formData.questions.length - 1]?.question || ''}
+                  value={filledQuestions.question}
                   onChange={(e) => {
-                    const updatedQuestions = [...formData.questions];
-                    updatedQuestions[formData.questions.length - 1].question = e.target.value;
-                    setFormData((prevData) => ({ ...prevData, questions: updatedQuestions }));
+                    setFilledQuestions((prevData) => {
+                      return { ...prevData, question: e.target.value };
+                    });
                   }}
+                  mb={4}
                 />
               </FormControl>
 
-              {formData.questions[formData.questions.length - 1]?.options.map((option, index) => (
+              {filledQuestions.options.map((option, index) => (
                 <Box key={index}>
                   <FormControl>
                     <FormLabel>Option {index + 1}</FormLabel>
@@ -222,22 +280,18 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                         placeholder="Enter an option"
                         value={option}
                         onChange={(e) => {
-                          const updatedOptions = [...formData.questions[formData.questions.length - 1]?.options];
+                          const updatedOptions = filledQuestions.options;
                           updatedOptions[index] = e.target.value;
-                          setFormData((prevData) => {
-                            const updatedQuestions = [...prevData.questions];
-                            updatedQuestions[formData.questions.length - 1].options = updatedOptions;
-                            return { ...prevData, questions: updatedQuestions };
+                          setFilledQuestions((prevData) => {
+                            return { ...prevData, options: updatedOptions };
                           });
                         }}
                       />
                       <Button
                         size="sm"
                         colorScheme="red"
-                        onClick={() => handleRemoveOption(formData.questions.length - 1, index)}
-                      >
-                        Remove Option
-                      </Button>
+                        onClick={() => handleRemoveOption(index)}
+                      >Remove</Button>
                     </Stack>
                   </FormControl>
                 </Box>
@@ -252,17 +306,15 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                 <Select
                   placeholder="Select a correct answer"
                   name="newCorrectAnswer"
-                  value={formData.questions[formData.questions.length - 1]?.correctAnswer || ''}
+                  value={filledQuestions.correctAnswer || ''}
                   onChange={(e) => {
                     const correctAnswer = Number(e.target.value);
-                    setFormData((prevData) => {
-                      const updatedQuestions = [...prevData.questions];
-                      updatedQuestions[formData.questions.length - 1].correctAnswer = correctAnswer;
-                      return { ...prevData, questions: updatedQuestions };
+                    setFilledQuestions((prevData) => {
+                      return { ...prevData, correctAnswer: correctAnswer };
                     });
                   }}
                 >
-                  {formData.questions[formData.questions.length - 1]?.options.map((option, index) => (
+                  {filledQuestions.options.map((option, index) => (
                     <option key={index} value={index}>
                       Option {index + 1}
                     </option>
@@ -270,31 +322,32 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                 </Select>
               </FormControl>
 
-              <Button colorScheme="teal" onClick={handleAddQuestion}>
+              <Button colorScheme="teal" onClick={handleAddQuestion} mt={4} mb={4}>
                 Add Question
               </Button>
 
-              {formData.questions.map((question, index) => (
-                <Box key={question.id} borderWidth="1px" p={4} borderRadius="md">
-                  <Text>{question.question}</Text>
-                  {question.options.map((option, optionIndex) => (
-                    <Text key={optionIndex} ml={4}>
-                      {optionIndex + 1}. {option}
+              {formData.questions.length > 0 &&
+                formData.questions.map((question, index) => (
+                  <Box key={question.id} borderWidth="1px" p={4} borderRadius="md">
+                    <Text>{question.question}</Text>
+                    {question.options.map((option, optionIndex) => (
+                      <Text key={optionIndex} ml={4}>
+                        {optionIndex + 1}. {option}
+                      </Text>
+                    ))}
+                    <Text ml={4} fontWeight="bold">
+                      Correct Answer: {question.options[question.correctAnswer]}
                     </Text>
-                  ))}
-                  <Text ml={4} fontWeight="bold">
-                    Correct Answer: {question.options[question.correctAnswer]}
-                  </Text>
-                  <Button
-                    mt={2}
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => handleDeleteQuestion(question.id)}
-                  >
-                    Delete Question
-                  </Button>
-                </Box>
-              ))}
+                    <Button
+                      mt={2}
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleDeleteQuestion(question.id)}
+                    >
+                      Delete Question
+                    </Button>
+                  </Box>
+                ))}
             </form>
           </Box>
         </ModalBody>
