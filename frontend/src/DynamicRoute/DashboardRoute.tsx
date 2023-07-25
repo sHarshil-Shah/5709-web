@@ -2,7 +2,8 @@ import React from 'react';
 
 
 import Stud from '../components/otherpages/stud';
-import  Prof from '../components/otherpages/prof';
+import Prof from '../components/otherpages/prof';
+import AssignmentBase from '../components/ProfAssignments/AssignmentBase';
 import Admin from '../components/otherpages/admin';
 const DashboardRoute = () => {
     const userDataString = localStorage.getItem('userData');
@@ -14,7 +15,8 @@ const DashboardRoute = () => {
         case 'stud':
             return <Stud/>;
         case 'prof':
-            return <Prof/>;
+            // return <Prof/>;
+            return <AssignmentBase/>;
     }
 
     return null;
