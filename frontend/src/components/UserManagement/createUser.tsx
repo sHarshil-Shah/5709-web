@@ -255,25 +255,24 @@ const SignUp: React.FC = () => {
 export default SignUp;
 
 
-function createUser(user: User): Promise<{ user: User }> {
+async function createUser(user: User) {
     const backendURL = envVariables.backendURL;
 
-    return fetch(backendURL + '/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            // Handle the response data
-            console.log(data);
-            return data;
-        })
-        .catch((error) => {
-            // Handle any errors
-            console.error(error);
-            return {};
+    try {
+        const response = await fetch(backendURL + '/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
         });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        return data;
+    } catch (error) {
+        // Handle any errors
+        console.error(error);
+        return {};
+    }
 }

@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Td,
-    Input,
-    Button,
-    Th,
-    useToast
-} from '@chakra-ui/react';
-import { FaTrashAlt } from "react-icons/fa";
-import { User } from '../model/user.model';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, Table, Tbody, Td, Th, Thead, Tr, useToast} from '@chakra-ui/react';
+import {FaTrashAlt} from "react-icons/fa";
+import {User} from '../model/user.model';
 import Loader from '../../loading';
 
 const TableWithFilters: React.FC = () => {
@@ -44,8 +34,8 @@ const TableWithFilters: React.FC = () => {
             .catch((error) => {
                 console.error(error);
             }).finally(() => {
-                setLoading(false);
-            });
+            setLoading(false);
+        });
     }, []);
 
     useEffect(() => {
@@ -53,30 +43,32 @@ const TableWithFilters: React.FC = () => {
             console.log("item", item);
             console.log(item.user_email);
             const emailMatch = item.user_email?.includes(filterEmail.toLowerCase());
-            const firstNameMatch = item.fname?.includes(filterFirstName.toLowerCase());
-            const lastNameMatch = item.lname?.includes(filterLastName.toLowerCase());
+            const firstNameMatch = item.first_name?.includes(filterFirstName.toLowerCase());
+            const lastNameMatch = item.last_name?.includes(filterLastName.toLowerCase());
             return emailMatch || firstNameMatch || lastNameMatch;
         });
+        console.log(filtered);
         setFilteredData(filtered);
     }, [data, filterEmail, filterFirstName, filterLastName]);
 
-    function handleDelete(id: string | undefined): Promise<string> {
+    async function handleDelete(id: string | undefined): Promise<string> {
         setLoading(true);
         console.log(id);
-        return fetch('http://localhost:3000/deleteUser', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ "id": id }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
+        try {
+            try {
+                const response = await fetch('http://localhost:3000/deleteUser', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"id": id}),
+                });
+                const data = await response.json();
                 console.log(data);
                 if (data.response.deletedCount === 1) {
                     fetchUsers()
-                        .then((response) => {
-                            setData(response.users);
+                        .then((response_1) => {
+                            setData(response_1.users);
                             toast({
                                 title: 'User Deleted!',
                                 status: 'success',
@@ -96,18 +88,18 @@ const TableWithFilters: React.FC = () => {
                     });
                 }
                 return data;
-            })
-            .catch((error) => {
-                console.error(error);
-                return { users: [] };
-            }).finally(()=>{
-                setLoading(false);
-            });
+            } catch (error_1) {
+                console.error(error_1);
+                return "error_1";
+            }
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
         <>
-            {isLoading && <Loader />}
+            {isLoading && <Loader/>}
 
             <Table variant="striped">
                 <Thead>
@@ -148,11 +140,12 @@ const TableWithFilters: React.FC = () => {
                     {filteredData.map((item) => (
                         <Tr key={item._id}>
                             <Td>{item.user_email}</Td>
-                            <Td>{item.fname}</Td>
-                            <Td>{item.lname}</Td>
+                            <Td>{item.first_name}</Td>
+                            <Td>{item.last_name}</Td>
                             <Td>{item.user_type}</Td>
                             <Td>
-                                <Button colorScheme='red' leftIcon={<FaTrashAlt />} onClick={() => handleDelete(item._id)}>
+                                <Button colorScheme='red' leftIcon={<FaTrashAlt/>}
+                                        onClick={() => handleDelete(item._id)}>
                                     Delete
                                 </Button>
                             </Td>
@@ -167,24 +160,22 @@ const TableWithFilters: React.FC = () => {
 export default TableWithFilters;
 
 
-
-function fetchUsers(): Promise<{ users: User[] }> {
-    return fetch('http://localhost:3000/listUsers', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            // Handle the response data
-            console.log(data);
-            return data;
-        })
-        .catch((error) => {
-            // Handle any errors
-            console.error(error);
-            return { users: [] };
+async function fetchUsers(): Promise<{ users: User[] }> {
+    try {
+        const response = await fetch('http://localhost:3000/listUsers', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        return data;
+    } catch (error) {
+        // Handle any errors
+        console.error(error);
+        return {users: []};
+    }
 }
 

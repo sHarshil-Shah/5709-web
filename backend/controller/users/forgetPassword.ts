@@ -7,6 +7,7 @@ export const forgetPasswordRouter = express.Router();
 const userService = new UserService();
 // Login endpoint
 forgetPasswordRouter.patch('/', async (req: Request, res: Response) => {
+    console.log("Checking auto push on backend change in render from github workflow");
     // Extract username and password from the request body
     console.log(req.body);
     const user_id = req.body._id as string;

@@ -55,7 +55,7 @@ const Login: React.FC = () => {
         }
 
         // Validate password
-        if (!formData.password) {
+        if (error === '' && !formData.password) {
             error = 'Password is required';
         }
 

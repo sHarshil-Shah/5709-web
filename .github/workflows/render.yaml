@@ -1,0 +1,18 @@
+name: HTTP Request
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**/*'
+  # You can customize the triggers based on your requirements, like pull_request or schedule.
+
+jobs:
+  hit_url:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: HTTP Request
+        run: curl -X GET https://api.render.com/deploy/srv-circdkdiuie930maojog?key=DQItLtZKvFQ
+        # Replace the URL with the desired URL you want to hit
