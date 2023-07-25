@@ -1,42 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
 import CreateQuiz from './CreateQuiz';
 import QuestionBankPage from './QuestionBank';
 import QuizDetailsModal from './QuizDetailsModal';
 import QuizTableRow from './QuizTableRow';
-import { Quiz } from '../model/quiz.model'
+import { Quiz } from '../model/quiz.model';
+import envVariables from '../../importenv';
+import Loader from '../../loading';
 
 const QuizList: React.FC = () => {
-  const [quizzes, setQuizzes] = useState<Quiz[]>([
-    {
-      _id: "1",
-      title: 'Quiz 1',
-      description: 'This is the description of Quiz 1',
-      startDate: '2023-07-20',
-      dueDate: '2023-07-25',
-    },
-    {
-      _id: "2",
-      title: 'Quiz 2',
-      description: 'This is the description of Quiz 1',
-      startDate: '2023-07-20',
-      dueDate: '2023-07-25',
-    },
-    {
-      _id: "3",
-      title: 'Quiz 3',
-      description: 'This is the description of Quiz 1',
-      startDate: '2023-07-20',
-      dueDate: '2023-07-25',
-    },
-    {
-      _id: "4",
-      title: 'Quiz 4',
-      description: 'This is the description of Quiz 1',
-      startDate: '2023-07-20',
-      dueDate: '2023-07-25',
-    },
-  ]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>();
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchQuizzes()
+      .then((response) => {
+        console.log(response);
+        setQuizzes(response.quizzes);
+      })
+      .catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
 
   const handleEdit = (quizId: string) => {
     console.log(`Edit quiz with ID: ${quizId}`);
@@ -61,15 +50,18 @@ const QuizList: React.FC = () => {
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
 
   const confirmDelete = () => {
-    const updatedQuizzes = quizzes.filter((quiz) => quiz._id !== selectedQuizId);
-    console.log(`Delete quiz with ID: ${selectedQuizId}`);
-    console.log('Updated quizzes:', updatedQuizzes);
-    setQuizzes(updatedQuizzes);
-    onDeleteClose();
+    if (quizzes) {
+      const updatedQuizzes = quizzes.filter((quiz) => quiz._id !== selectedQuizId);
+      console.log(`Delete quiz with ID: ${selectedQuizId}`);
+      console.log('Updated quizzes:', updatedQuizzes);
+      setQuizzes(updatedQuizzes);
+      onDeleteClose();
+    }
   };
 
   return (
     <>
+      {isLoading && <Loader />}
       <Box bg="teal" p={4} color="white">
         <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" align="center">
           <Heading as="h1" size="lg" textAlign="center" mb={2}>
@@ -101,7 +93,7 @@ const QuizList: React.FC = () => {
       </Box>
 
       <Box p={4}>
-        {quizzes.length > 0 ? (
+        {quizzes && quizzes.length > 0 ? (
           quizzes.map((quiz) => (
             <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
           ))
@@ -135,3 +127,21 @@ const QuizList: React.FC = () => {
 };
 
 export default QuizList;
+
+function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/listQuiz', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return { users: [] };
+    });
+}

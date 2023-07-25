@@ -63,7 +63,8 @@ class QuizService {
         socketTimeoutMS: 30000
       });
       const db: Db = client.db(dbName);
-      const returned_quizzes = await db.collection(quizCollectionName).find();
+      const returned_quizzes = await db.collection(quizCollectionName).find().toArray();
+
       client.close();
 
       if (returned_quizzes) {

@@ -20,8 +20,8 @@ import { deleteCourseRouter } from './controller/courses/deleteCourse';
 import { updateCourseRouter } from './controller/courses/updateCourse';
 
 // Quiz Management
-
 import { createQuizRouter } from './controller/quiz/createQuiz';
+import { listQuizzesRouter } from './controller/quiz/listQuiz';
 
 // Create an Express app
 const app = express();
@@ -63,6 +63,8 @@ app.use('/update-course', updateCourseRouter)
 // Quiz routers
 
 app.use('/createQuiz', createQuizRouter);
+app.use('/listQuiz', listQuizzesRouter);
+
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');
