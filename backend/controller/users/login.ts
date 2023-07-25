@@ -16,7 +16,8 @@ loginRouter.post('/', async (req: Request, res: Response) => {
 
         if (user) {
             // User found, return success response
-            res.json({ message: 'Login successful', user_type: user['user_type']});
+            console.log(user);
+            res.json({ message: 'Login successful', user_mail: user['user_email'],user_type: user['user_type']});
         } else {
             // User not found or invalid credentials, return error response
             res.status(401).json({ message: 'Invalid credentials' });

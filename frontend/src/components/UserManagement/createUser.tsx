@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-    Flex,
-    Input,
-    Button,
-    InputGroup,
-    Stack,
-    InputLeftElement,
-    chakra,
-    Box,
-    FormControl,
-    InputRightElement,
-    Radio, RadioGroup,
-    useToast,
     Alert,
-    AlertIcon
+    AlertIcon,
+    Box,
+    Button,
+    chakra,
+    Flex,
+    FormControl,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    InputRightElement,
+    Radio,
+    RadioGroup,
+    Stack,
+    useToast
 } from "@chakra-ui/react";
-import { FaUserAlt, FaLock, FaPortrait } from "react-icons/fa";
-import { User } from '../model/user.model';
+import {FaLock, FaPortrait, FaUserAlt} from "react-icons/fa";
+import {User} from '../model/user.model';
 import Loader from '../../loading';
-
+import envVariables from '../../importenv';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -26,6 +27,8 @@ const CPortrait = chakra(FaPortrait);
 
 
 const SignUp: React.FC = () => {
+
+
     const [showPassword, setShowPassword] = useState(false);
 
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -74,7 +77,7 @@ const SignUp: React.FC = () => {
                 }).finally(() => {
                     setLoading(false);
                 }
-                );
+            );
         }
 
     };
@@ -82,7 +85,7 @@ const SignUp: React.FC = () => {
     const [formData, setFormData] = useState(fields);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target;
+        const {name, value, type} = e.target;
         console.log(name, type);
         if (type === 'radio') {
             // Update the value for radio button
@@ -91,7 +94,7 @@ const SignUp: React.FC = () => {
 
         } else {
             // Update the form data for other input fields
-            setFormData({ ...formData, [name]: value });
+            setFormData({...formData, [name]: value});
         }
     };
 
@@ -126,7 +129,7 @@ const SignUp: React.FC = () => {
 
     return (
         <>
-            {isLoading && <Loader />}
+            {isLoading && <Loader/>}
             <Flex
                 flexDirection="column"
 
@@ -152,8 +155,9 @@ const SignUp: React.FC = () => {
                                     <InputGroup>
                                         <InputLeftElement
                                             pointerEvents="none"
-                                            children={<CFaUserAlt color="gray.300" />} />
-                                        <Input name="user_email" value={formData.user_email} onChange={handleChange} type="email" placeholder="email address" />
+                                            children={<CFaUserAlt color="gray.300"/>}/>
+                                        <Input name="user_email" value={formData.user_email} onChange={handleChange}
+                                               type="email" placeholder="email address"/>
                                     </InputGroup>
                                 </FormControl>
 
@@ -161,8 +165,9 @@ const SignUp: React.FC = () => {
                                     <InputGroup>
                                         <InputLeftElement
                                             pointerEvents="none"
-                                            children={<CPortrait color="gray.300" />} />
-                                        <Input type="text" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="First Name" />
+                                            children={<CPortrait color="gray.300"/>}/>
+                                        <Input type="text" name="first_name" value={formData.first_name}
+                                               onChange={handleChange} placeholder="First Name"/>
                                     </InputGroup>
                                 </FormControl>
 
@@ -170,8 +175,9 @@ const SignUp: React.FC = () => {
                                     <InputGroup>
                                         <InputLeftElement
                                             pointerEvents="none"
-                                            children={<CPortrait color="gray.300" />} />
-                                        <Input type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Last Name" />
+                                            children={<CPortrait color="gray.300"/>}/>
+                                        <Input type="text" name="last_name" value={formData.last_name}
+                                               onChange={handleChange} placeholder="Last Name"/>
                                     </InputGroup>
                                 </FormControl>
 
@@ -180,10 +186,11 @@ const SignUp: React.FC = () => {
                                         <InputLeftElement
                                             pointerEvents="none"
                                             color="gray.300"
-                                            children={<CFaLock color="gray.300" />} />
+                                            children={<CFaLock color="gray.300"/>}/>
                                         <Input
                                             type={showPassword ? "text" : "password"}
-                                            name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+                                            name="password" value={formData.password} onChange={handleChange}
+                                            placeholder="Password"/>
                                         <InputRightElement width="4.5rem">
                                             <Button h="1.75rem" size="sm" onClick={handleShowClick}>
                                                 {showPassword ? "Hide" : "Show"}
@@ -197,10 +204,10 @@ const SignUp: React.FC = () => {
                                         <InputLeftElement
                                             pointerEvents="none"
                                             color="gray.300"
-                                            children={<CFaLock color="gray.300" />} />
+                                            children={<CFaLock color="gray.300"/>}/>
                                         <Input name="conpass" value={formData.conpass} onChange={handleChange}
-                                            type={showConfirmPassword ? "text" : "password"}
-                                            placeholder="Confirm Password"
+                                               type={showConfirmPassword ? "text" : "password"}
+                                               placeholder="Confirm Password"
                                         />
                                         <InputRightElement width="4.5rem">
                                             <Button h="1.75rem" size="sm" onClick={handleShowConfirmClick}>
@@ -233,7 +240,7 @@ const SignUp: React.FC = () => {
                         </form>
                         {errorMessage !== '' && (
                             <Alert status="error" marginTop="2">
-                                <AlertIcon />
+                                <AlertIcon/>
                                 {errorMessage}
                             </Alert>
                         )}
@@ -248,9 +255,10 @@ const SignUp: React.FC = () => {
 export default SignUp;
 
 
-
 function createUser(user: User): Promise<{ user: User }> {
-    return fetch('http://localhost:3000/register', {
+    const backendURL = envVariables.backendURL;
+
+    return fetch(backendURL + '/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
