@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'frontend/**/*'
+      - 'backend/**/*'
   # You can customize the triggers based on your requirements, like pull_request or schedule.
 
 jobs:
