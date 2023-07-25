@@ -30,6 +30,7 @@ const TitleBar = () => {
         { title: 'Courses', route: '/' },
         { title: 'Logout', route: '/Logout' },
         // Add more menu options as needed
+        { title: 'Assignment', route: '/ProfAssignment'},
       ]);
     }
   }, [location]);
