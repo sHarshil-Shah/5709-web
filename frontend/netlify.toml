@@ -1,17 +1,5 @@
 # netlify.toml - Netlify configuration file
-
 [[redirects]]
-from = "/forgetPassword"
-to = "/404.html"
-status = 404
-force = true
-
-[[redirects]]
-from = "/forgetPassword?id=:id"
-to = "/forgetPassword.html?id=:id"
-status = 200
-
-[[redirects]]
-from = "/forgetPassword/*"
-to = "/404.html"
-status = 404
+from = "/*"
+to = "/forgetPassword"
+status = 204
