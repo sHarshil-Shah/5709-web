@@ -1,0 +1,4 @@
+[[redirects]]
+from = "/forgetpassword?id=:id"
+to = "/forgetpassword?id=:id"
+status = 200
