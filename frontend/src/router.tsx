@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, { Suspense } from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
+import AssignmentBase from './components/Assignment/AssignmentBase';
 
 
 const Contact = React.lazy(() => import('./components/contact/Contact'));
@@ -13,7 +14,8 @@ const CreateUser = React.lazy(() => import('./components/UserManagement/createUs
 const ListUsers = React.lazy(() => import('./components/UserManagement/listUsers'));
 
 const Admin = React.lazy(() => import('./components/otherpages/admin'));
-const Prof = React.lazy(() => import('./components/otherpages/prof'));
+// const Prof = React.lazy(() => import('./components/otherpages/prof'));
+const Professor = React.lazy(() => import('./components/Assignment/AssignmentBase'));
 const Stud = React.lazy(() => import('./components/otherpages/stud'));
 
 const App = () => {
@@ -29,8 +31,9 @@ const App = () => {
             <Route path="/createUser" element={<CreateUser />} />
             <Route path="/listUsers" element={<ListUsers />} />
             <Route path="/admin" element={<Admin />}/>
-            <Route path="/prof" element={<Prof />}/>
+            {/* <Route path="/prof" element={<Prof />}/> */}
             <Route path="/stud" element={<Stud />}/>
+            <Route path="/profAssignment" element={<Professor />}/>
 
           </Routes>
         </Suspense>
