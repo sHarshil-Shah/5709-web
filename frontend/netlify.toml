@@ -1,4 +1,4 @@
 [[redirects]]
-from = "/forgetpassword?id=:id"
-to = "/forgetpassword?id=:id"
+from = "/forgetpassword"
+to = "/forgetpassword"
 status = 200
