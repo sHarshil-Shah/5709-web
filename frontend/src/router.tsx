@@ -21,6 +21,8 @@ const AlreadyLoggedInPage = React.lazy(() => import('./components/UserManagement
 const DashBoardRoute = React.lazy(() => import('./DynamicRoute/DashboardRoute'));
 const ForgetPassword = React.lazy(() => import('./components/UserManagement/forgetPassword'));
 
+const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
+const Content = React.lazy(() => import('./components/Content/Content'));
 const App = () => {
 
     const dataString = localStorage.getItem('userData');
@@ -43,6 +45,8 @@ const App = () => {
                         <Route path="/stud" element={<Stud/>}/>
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
+                        <Route path="/announcement" element={<Announcement/>}/>
+                        <Route path="/content" element={<Content/>}/>
                     </Routes>
                 </Suspense>
             </Router>
