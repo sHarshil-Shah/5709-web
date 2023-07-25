@@ -3,6 +3,7 @@ interface announcements {
     type?: string;
     date?: string;
     description?: string;
+    course?: string;
   }
   
   export default announcements;
