@@ -6,6 +6,7 @@ import {listUsersRouter} from './controller/users/listUsers';
 import {deleteUserRouter} from './controller/users/deleteUser';
 import {getUserByIdRouter} from "./controller/users/getUserByEmail";
 import {forgetPasswordRouter} from "./controller/users/forgetPassword";
+import EmailRouter from "./controller/users/forgetPasswordEmail";
 
 
 // Create an Express app
@@ -31,6 +32,7 @@ app.use('/listUsers', listUsersRouter);
 app.use('/deleteUser', deleteUserRouter);
 app.use('/getUserById', getUserByIdRouter);
 app.use('/forgetPassword', forgetPasswordRouter);
+app.use('/send-email', EmailRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');
