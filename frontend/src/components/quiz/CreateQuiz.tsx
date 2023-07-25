@@ -18,8 +18,13 @@ import {
   Stack,
   useBreakpointValue,
   Select,
+  useToast,
 } from '@chakra-ui/react';
 import { QuizQuestion } from '../model/quiz.model';
+import envVariables from '../../importenv';
+import { Quiz } from '../model/quiz.model';
+import Loader from '../../loading';
+
 
 interface CreateQuizProps {
   isOpenQuizModel: boolean;
@@ -27,8 +32,8 @@ interface CreateQuizProps {
 }
 
 const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizModel }) => {
-  const [formData, setFormData] = useState({
-    quizTitle: '',
+  const initialFormData = {
+    title: '',
     description: '',
     startDate: '',
     dueDate: '',
@@ -37,7 +42,9 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     numOfQuestions: '',
     randomQuestions: false,
     questions: [] as QuizQuestion[],
-  });
+    courseID: '',
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   const [filledQuestions, setFilledQuestions] = useState<QuizQuestion>({
     id: Date.now().toString(),
@@ -47,7 +54,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   });
 
   interface ValidationErrors {
-    quizTitle: boolean;
+    title: boolean;
     startDate: boolean;
     dueDate: boolean;
     visibleDate: boolean;
@@ -56,13 +63,15 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   }
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
-    quizTitle: false,
+    title: false,
     startDate: false,
     dueDate: false,
     visibleDate: false,
     timeLimit: false,
     numOfQuestions: false,
   });
+
+  const [isLoading, setLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -119,12 +128,14 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     }));
   };
 
+  const toast = useToast();
   const handleCancel = () => {
     onCloseQuizModel();
   };
 
-  const handleSave = () => {
-    const missingFields: (keyof ValidationErrors)[] = ['quizTitle', 'startDate', 'dueDate', 'visibleDate', 'timeLimit', 'numOfQuestions'];
+  const handleSave = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    const missingFields: (keyof ValidationErrors)[] = ['title', 'startDate', 'dueDate', 'visibleDate', 'timeLimit', 'numOfQuestions'];
     const hasMissingFields = missingFields.some(field => !formData[field]);
 
     if (hasMissingFields) {
@@ -135,7 +146,28 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
       return;
     }
 
-    onCloseQuizModel();
+    setLoading(true);
+    const courseId = localStorage.getItem('courseID');
+    formData.courseID = courseId ? courseId : '';
+    createQuiz(formData)
+      .then((response) => {
+        setFormData(initialFormData);
+        console.log(response);
+        toast({
+          title: 'Quiz Created!',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setLoading(false);
+        onCloseQuizModel();
+      }
+      );
+
   };
 
   const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -144,6 +176,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
 
   return (
     <Modal isOpen={isOpenQuizModel} onClose={onCloseQuizModel} size="xl" scrollBehavior="inside">
+      {isLoading && <Loader />}
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create Quiz</ModalHeader>
@@ -154,12 +187,12 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
               <FormControl isRequired>
                 <FormLabel>Quiz Title</FormLabel>
                 <Input
-                  name="quizTitle"
-                  value={formData.quizTitle}
+                  name="title"
+                  value={formData.title}
                   onChange={handleInputChange}
-                  isInvalid={!formData.quizTitle && validationErrors.quizTitle}
+                  isInvalid={!formData.title && validationErrors.title}
                 />
-                {validationErrors.quizTitle && !formData.quizTitle && (
+                {validationErrors.title && !formData.title && (
                   <Text color="red" fontSize="sm">Quiz Title is required.</Text>
                 )}
               </FormControl>
@@ -374,3 +407,22 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
 };
 
 export default CreateQuiz;
+
+function createQuiz(quiz: Quiz): Promise<{ quiz: Quiz }> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/createQuiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(quiz),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {};
+    });
+}

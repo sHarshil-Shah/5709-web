@@ -21,6 +21,9 @@ const ListUsers = React.lazy(() => import('./components/UserManagement/listUsers
 const Prof = React.lazy(() => import('./components/otherpages/prof'));
 const Stud = React.lazy(() => import('./components/otherpages/stud'));
 
+// Quiz
+const QuizList = React.lazy(() => import('./components/quiz/QuizList'));
+const QuizPage = React.lazy(() => import('./components/quiz/QuizPage'));
 
 const AlreadyLoggedInPage = React.lazy(() => import('./components/UserManagement/alreadyLoggedIn'));
 
@@ -51,6 +54,9 @@ const App = () => {
           <Route path="/stud" element={<Stud />} />
           <Route path="/dashboard" element={<DashBoardRoute />} />
           <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/quiz" element={<QuizList />} />
+          <Route path="/quiz/:quizId" element={<QuizPage />} />
+
           <Route path="/announcement" element={<Announcement />} />
           <Route path="/content" element={<Content />} />
           <Route path="/signup" element={<ProfSignUp />} />

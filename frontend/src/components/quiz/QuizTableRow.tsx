@@ -30,12 +30,16 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
 
     const editQuiz = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onEditQuiz(quiz.id);
+        if (quiz._id) {
+            onEditQuiz(quiz._id);
+        }
     };
 
     const deleteQuiz = (e: React.MouseEvent) => {
         e.stopPropagation();
-        onDeleteQuiz(quiz.id);
+        if (quiz._id) {
+            onDeleteQuiz(quiz._id);
+        }
     };
 
 

@@ -1,23 +1,27 @@
-import express, {Request, Response} from 'express';
-import {loginRouter} from './controller/users/login';
-import {registerRouter} from './controller/users/register';
+import express, { Request, Response } from 'express';
+import { loginRouter } from './controller/users/login';
+import { registerRouter } from './controller/users/register';
 import cors from 'cors';
-import {listUsersRouter} from './controller/users/listUsers';
-import {deleteUserRouter} from './controller/users/deleteUser';
-import {getUserByIdRouter} from "./controller/users/getUserByEmail";
-import {forgetPasswordRouter} from "./controller/users/forgetPassword";
-import {getAnnouncementsRouter} from './controller/announcement/getAnnouncements';
-import {createAnnouncementRouter} from './controller/announcement/createAnnouncements';
-import {createContentRouter} from './controller/content/createContent';
-import {updateContentRouter} from './controller/content/updateContent';
-import {readContentRouter} from './controller/content/getContent';
-import {deleteContentRouter} from './controller/content/deleteContent';
+import { listUsersRouter } from './controller/users/listUsers';
+import { deleteUserRouter } from './controller/users/deleteUser';
+import { getUserByIdRouter } from "./controller/users/getUserByEmail";
+import { forgetPasswordRouter } from "./controller/users/forgetPassword";
+import { getAnnouncementsRouter } from './controller/announcement/getAnnouncements';
+import { createAnnouncementRouter } from './controller/announcement/createAnnouncements';
+import { createContentRouter } from './controller/content/createContent';
+import { updateContentRouter } from './controller/content/updateContent';
+import { readContentRouter } from './controller/content/getContent';
+import { deleteContentRouter } from './controller/content/deleteContent';
 import EmailRouter from './controller/users/forgetPasswordEmail';
 import { readCoursesRouter } from './controller/courses/getCourseList';
-import {updateUserRouter} from "./controller/users/updateUser";
+import { updateUserRouter } from "./controller/users/updateUser";
 import { createCourseRouter } from './controller/courses/addCourse';
 import { deleteCourseRouter } from './controller/courses/deleteCourse';
 import { updateCourseRouter } from './controller/courses/updateCourse';
+
+// Quiz Management
+
+import { createQuizRouter } from './controller/quiz/createQuiz';
 
 // Create an Express app
 const app = express();
@@ -51,10 +55,14 @@ app.use('/delete-content', deleteContentRouter)
 app.use('/send-email', EmailRouter);
 app.use('/updateUser', updateUserRouter);
 //course
-app.use('/get-courses',readCoursesRouter)
-app.use('/add-course',createCourseRouter)
-app.use('/delete-course',deleteCourseRouter)
-app.use('/update-course',updateCourseRouter)
+app.use('/get-courses', readCoursesRouter)
+app.use('/add-course', createCourseRouter)
+app.use('/delete-course', deleteCourseRouter)
+app.use('/update-course', updateCourseRouter)
+
+// Quiz routers
+
+app.use('/createQuiz', createQuizRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

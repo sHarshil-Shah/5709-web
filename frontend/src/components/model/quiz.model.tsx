@@ -1,5 +1,5 @@
 export interface QuizQuestion {
-    quizID?: string; // TO-DO
+    quizID?: string;
     id: string;
     question: string;
     options: string[];
@@ -7,7 +7,7 @@ export interface QuizQuestion {
 }
 
 export interface Quiz {
-    id: string;
+    _id?: string;
     title?: string;
     description?: string;
     startDate?: string;
@@ -17,6 +17,5 @@ export interface Quiz {
     numOfQuestions?: string;
     randomQuestions?: boolean;
     questions?: QuizQuestion[];
-    courseID?: string;  // TO-DO
-    userID?: string;  // TO-DO
+    courseID?: string;
 }

@@ -19,7 +19,7 @@ const StartQuizAlert: React.FC<StartQuizAlertProps> = ({ isOpen, onClose, onStar
                 </AlertDialogHeader>
                 <AlertDialogBody>Are you sure you want to start the quiz?</AlertDialogBody>
                 <AlertDialogFooter>
-                    <Button colorScheme="teal" onClick={onStartQuiz} ml={3}>
+                    <Button colorScheme="teal" onClick={onStartQuiz} m={3}>
                         Start
                     </Button>
                     <Button ref={() => null} onClick={onClose}>

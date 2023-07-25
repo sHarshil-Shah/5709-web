@@ -9,28 +9,28 @@ import { Quiz } from '../model/quiz.model'
 const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([
     {
-      id: "1",
+      _id: "1",
       title: 'Quiz 1',
       description: 'This is the description of Quiz 1',
       startDate: '2023-07-20',
       dueDate: '2023-07-25',
     },
     {
-      id: "2",
+      _id: "2",
       title: 'Quiz 2',
       description: 'This is the description of Quiz 1',
       startDate: '2023-07-20',
       dueDate: '2023-07-25',
     },
     {
-      id: "3",
+      _id: "3",
       title: 'Quiz 3',
       description: 'This is the description of Quiz 1',
       startDate: '2023-07-20',
       dueDate: '2023-07-25',
     },
     {
-      id: "4",
+      _id: "4",
       title: 'Quiz 4',
       description: 'This is the description of Quiz 1',
       startDate: '2023-07-20',
@@ -61,7 +61,7 @@ const QuizList: React.FC = () => {
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
 
   const confirmDelete = () => {
-    const updatedQuizzes = quizzes.filter((quiz) => quiz.id !== selectedQuizId);
+    const updatedQuizzes = quizzes.filter((quiz) => quiz._id !== selectedQuizId);
     console.log(`Delete quiz with ID: ${selectedQuizId}`);
     console.log('Updated quizzes:', updatedQuizzes);
     setQuizzes(updatedQuizzes);
@@ -103,7 +103,7 @@ const QuizList: React.FC = () => {
       <Box p={4}>
         {quizzes.length > 0 ? (
           quizzes.map((quiz) => (
-            <QuizTableRow key={quiz.id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
+            <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
           ))
         ) : (
           <Text>No quizzes found.</Text>
