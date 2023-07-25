@@ -3,6 +3,8 @@ import {Button, Input, Table, Tbody, Td, Th, Thead, Tr, useToast} from '@chakra-
 import {FaTrashAlt} from "react-icons/fa";
 import {User} from '../model/user.model';
 import Loader from '../../loading';
+import envVariables from "../../importenv";
+import MultiSelectMenu from "./MultiSelectMenu";
 
 const TableWithFilters: React.FC = () => {
     const [filterEmail, setFilterEmail] = useState<string>('');
@@ -12,6 +14,12 @@ const TableWithFilters: React.FC = () => {
     const [filteredData, setFilteredData] = useState<User[]>([]);
     const toast = useToast();
     const [isLoading, setLoading] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState<string[]>(['prof', 'stud']);
+
+    const handleMultiSelectChange = (selectedValues: string[]) => {
+        setSelectedOptions(selectedValues);
+        console.log(selectedValues);
+    };
     const handleEmailFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFilterEmail(event.target.value);
     };
@@ -28,10 +36,10 @@ const TableWithFilters: React.FC = () => {
         setLoading(true);
 
         fetchUsers()
-            .then((response) => {
+            .then((response: any) => {
                 setData(response.users);
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 console.error(error);
             }).finally(() => {
             setLoading(false);
@@ -40,23 +48,27 @@ const TableWithFilters: React.FC = () => {
 
     useEffect(() => {
         const filtered = data.filter((item) => {
-            console.log("item", item);
-            console.log(item.user_email);
-            const emailMatch = item.user_email?.includes(filterEmail.toLowerCase());
-            const firstNameMatch = item.first_name?.includes(filterFirstName.toLowerCase());
-            const lastNameMatch = item.last_name?.includes(filterLastName.toLowerCase());
-            return emailMatch || firstNameMatch || lastNameMatch;
+            const emailMatch = filterEmail ? item.user_email?.includes(filterEmail.toLowerCase()) : false;
+            const firstNameMatch = filterFirstName ? item.first_name?.includes(filterFirstName.toLowerCase()) : false;
+            const lastNameMatch = filterLastName ? item.last_name?.includes(filterLastName.toLowerCase()) : false;
+            let userTypeMatch = false;
+            if (item.user_type != null) {
+                userTypeMatch = selectedOptions.length > 0 ? selectedOptions.includes(item.user_type) : false;
+            }
+            console.log(selectedOptions);
+            return emailMatch || firstNameMatch || lastNameMatch || userTypeMatch;
         });
+        console.log(data);
         console.log(filtered);
         setFilteredData(filtered);
-    }, [data, filterEmail, filterFirstName, filterLastName]);
+    }, [data, filterEmail, filterFirstName, filterLastName, selectedOptions]);
 
     async function handleDelete(id: string | undefined): Promise<string> {
+        const backendURL = envVariables.backendURL;
         setLoading(true);
-        console.log(id);
         try {
             try {
-                const response = await fetch('http://localhost:3000/deleteUser', {
+                const response = await fetch(backendURL + '/deleteUser', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,10 +76,9 @@ const TableWithFilters: React.FC = () => {
                     body: JSON.stringify({"id": id}),
                 });
                 const data = await response.json();
-                console.log(data);
                 if (data.response.deletedCount === 1) {
-                    fetchUsers()
-                        .then((response_1) => {
+                    await fetchUsers()
+                        .then((response_1: any) => {
                             setData(response_1.users);
                             toast({
                                 title: 'User Deleted!',
@@ -76,7 +87,7 @@ const TableWithFilters: React.FC = () => {
                                 isClosable: true,
                             });
                         })
-                        .catch((error) => {
+                        .catch((error: any) => {
                             console.error(error);
                         });
                 } else {
@@ -132,7 +143,12 @@ const TableWithFilters: React.FC = () => {
                                 onChange={handleLastNameFilterChange}
                             />
                         </Td>
-                        <Td></Td>
+                        <Td>
+                            <MultiSelectMenu label="User Types"
+                                             options={[{option: "Student", value: "stud"}, {option: "Professor", value: "prof"}]}
+                                             onChange={handleMultiSelectChange}
+                            />
+                        </Td>
                         <Td></Td>
                     </Tr>
                 </Thead>
@@ -161,8 +177,9 @@ export default TableWithFilters;
 
 
 async function fetchUsers(): Promise<{ users: User[] }> {
+    const backendURL = envVariables.backendURL;
     try {
-        const response = await fetch('http://localhost:3000/listUsers', {
+        const response = await fetch(backendURL + '/listUsers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
