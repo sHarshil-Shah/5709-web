@@ -18,7 +18,7 @@ const TitleBar = () => {
 
     const logout = () => {
         localStorage.removeItem('userData');
-        window.location.reload();
+        navigate('/');
     }
 
     const location = useLocation();
