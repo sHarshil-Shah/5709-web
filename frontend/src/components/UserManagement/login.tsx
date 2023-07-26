@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Alert,
     AlertIcon,
@@ -16,10 +16,10 @@ import {
     Stack,
     useToast,
 } from "@chakra-ui/react";
-import {FaLock, FaUserAlt} from "react-icons/fa";
+import { FaLock, FaUserAlt } from "react-icons/fa";
 
 import ForgetPasswordModal from './forgotPasswordModal';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../../loading';
 import envVariables from "../../importenv";
 
@@ -45,7 +45,7 @@ const Login: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e: { target: { name: any; value: any; }; }) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const validateForm = () => {
@@ -118,7 +118,7 @@ const Login: React.FC = () => {
 
 
     return (
-        <> {isLoading && <Loader/>}
+        <> {isLoading && <Loader />}
             <Flex
                 flexDirection="column"
                 justifyContent="center"
@@ -142,10 +142,10 @@ const Login: React.FC = () => {
                                     <InputGroup>
                                         <InputLeftElement
                                             pointerEvents="none"
-                                            children={<CFaUserAlt color="gray.300"/>}
+                                            children={<CFaUserAlt color="gray.300" />}
                                         />
                                         <Input name="email" value={formData.email} onChange={handleChange} type="email"
-                                               placeholder="email address"/>
+                                            placeholder="email address" />
                                     </InputGroup>
 
                                 </FormControl>
@@ -154,11 +154,11 @@ const Login: React.FC = () => {
                                         <InputLeftElement
                                             pointerEvents="none"
                                             color="gray.300"
-                                            children={<CFaLock color="gray.300"/>}
+                                            children={<CFaLock color="gray.300" />}
                                         />
                                         <Input name="password" value={formData.password} onChange={handleChange}
-                                               type={showPassword ? "text" : "password"}
-                                               placeholder="Password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Password"
                                         />
                                         <InputRightElement width="4.5rem">
                                             <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -186,7 +186,7 @@ const Login: React.FC = () => {
                         </form>
                         {errorMessage !== '' && (
                             <Alert status="error" marginTop="2">
-                                <AlertIcon/>
+                                <AlertIcon />
                                 {errorMessage}
                             </Alert>
                         )}
@@ -212,7 +212,7 @@ async function processLogin(formData: { email: string; password: string; }) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"user_email": formData.email, "password": formData.password}),
+            body: JSON.stringify({ "user_email": formData.email, "password": formData.password }),
         });
         const data = await response.json();
         // Handle the response data
@@ -220,6 +220,8 @@ async function processLogin(formData: { email: string; password: string; }) {
         if (data.message === 'Professor Status pending') {
             return '202';
         }
+
+        delete data.message;
         const dataString = JSON.stringify(data);
 
         // Save the data in localStorage
