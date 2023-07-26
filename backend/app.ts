@@ -13,6 +13,7 @@ import { updateContentRouter } from './controller/content/updateContent';
 import { readContentRouter } from './controller/content/getContent';
 import { deleteContentRouter } from './controller/content/deleteContent';
 import EmailRouter from './controller/users/forgetPasswordEmail';
+import { readCoursesRouter } from './controller/courses/getCourseList';
 
 
 // Create an Express app
@@ -45,7 +46,7 @@ app.use('/update-content',updateContentRouter)
 app.use('/get-content',readContentRouter)
 app.use('/delete-content',deleteContentRouter)
 app.use('/send-email', EmailRouter);
-
+app.use('/get-courses',readCoursesRouter)
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });

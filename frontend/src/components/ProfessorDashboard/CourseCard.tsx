@@ -1,21 +1,23 @@
-import React from 'react';
-import Card from 'react-bootstrap/Card';
+import React from "react";
+import Card from "react-bootstrap/Card";
+import { course } from "../model/course.model";
 
-function CourseCard() {
+interface CourseCardProps {
+  course: course;
+}
+
+function CourseCard({ course }: CourseCardProps) {
   return (
-    <div >
-      <Card style={{ width: '100%' }}>
+    <div>
+      <Card style={{ width: "100%" }}>
         <Card.Body>
-          <Card.Title>Card Title</Card.Title>
+          <Card.Title>{course.title}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">
-            Card Subtitle
+            Course Code: {course.courseID}
           </Card.Subtitle>
-          <Card.Text>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Card.Text>
-          <Card.Link href="#"> Link 1</Card.Link>
-          <Card.Link href="#"> Link 2</Card.Link>
+          <Card.Text>{course.description}</Card.Text>
+          <Card.Link href="#">Link 1</Card.Link>
+          <Card.Link href="#">Link 2</Card.Link>
         </Card.Body>
       </Card>
     </div>
