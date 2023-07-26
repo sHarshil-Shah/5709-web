@@ -83,7 +83,7 @@ const AssignmentList: React.FC = () => {
             setAssignments(response.assignments);
           } catch (error) {
             console.error(error);
-            setAssignments([]); // Set assignments to an empty array in case of an error
+            setAssignments([]); 
           }
         };
     
@@ -92,6 +92,7 @@ const AssignmentList: React.FC = () => {
 
     return (
         <Box mt={4}>
+        {assignments.length > 0 ? (
         <Table variant="simple">
             <Thead>
             <Tr>
@@ -119,6 +120,11 @@ const AssignmentList: React.FC = () => {
             ))}
             </Tbody>
         </Table>
+        ) : (
+            <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
+              No Assignment Data
+            </Box>
+          )}
 
         <Modal isOpen={isDeleteModalOpen} onClose={handleDeleteCancel}>
             <ModalOverlay />
@@ -142,7 +148,8 @@ const AssignmentList: React.FC = () => {
             onUpdate={(updatedAssignment) => {
                 // Handle the updated assignment data here, e.g., make an API call to update the assignment
                 console.log('Updated Assignment:', updatedAssignment);
-
+                setIsLoading(true); // Set loading to true before the update API call
+    
                 // Call the API to update the assignment
                 callUpdateAssignmentAPI(updatedAssignment)
                     .then((updatedData) => {
@@ -151,6 +158,7 @@ const AssignmentList: React.FC = () => {
                         assignment._id === updatedData._id ? updatedData : assignment
                     );
                         console.log(updatedAssignments);
+                        setIsLoading(false);
                         setAssignments(updatedAssignments);
                     })
                     .catch((error) => {
@@ -171,6 +179,16 @@ const AssignmentList: React.FC = () => {
             }}
             />
         )}
+
+        {/* Loading Bar */}
+        {isLoading && (
+            <Box position="fixed" top={0} left={0} width="100%" height="100%" display="flex" justifyContent="center" alignItems="center" backgroundColor="rgba(0, 0, 0, 0.6)">
+            <Box p={4} bg="white" rounded="md">
+                Loading...
+            </Box>
+            </Box>
+        )}
+
         </Box>        
     );
 };

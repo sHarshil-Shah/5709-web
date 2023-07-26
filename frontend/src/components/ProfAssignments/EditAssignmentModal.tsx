@@ -17,7 +17,6 @@ import {
   HStack,
 } from '@chakra-ui/react';
 import { Assignment } from '../model/profassignment.model';
-import envVariables from '../../importenv';
 
 interface EditAssignmentModalProps {
   assignment: Assignment;
