@@ -7,9 +7,12 @@ import envVariables from "../../../importenv";
 import { content } from "../../model/content.model";
 // import { v4 as uuidv4 } from "uuid";
 import { ObjectId } from "mongodb";
+import { course } from "../../model/course.model";
 
 function ProfContent() {
   const [contentList, setContentList] = useState<content[]>([]);
+  const [courses, setCourses] = useState<course[]>([]);
+
   const [show, setShow] = useState(false);
   const [newContent, setNewContent] = useState<content>({
     // Change the property name to _id
@@ -38,11 +41,16 @@ function ProfContent() {
   const [selectedCourseID, setSelectedCourseID] = useState<string | undefined>(
     undefined
   ); // State to store selected courseID
+  const [createSelectedCourseId, setCreatedSelectedCourseID] = useState<string | undefined>(
+    undefined
+  ); // State to store selected courseID
 
   const mongoURI = envVariables.mongoURI;
+  const backendURL = envVariables.backendURL;
 
   useEffect(() => {
     fetchContent();
+    fetchCourses();
   }, []);
 
   const fetchContent = () => {
@@ -62,7 +70,41 @@ function ProfContent() {
       setShowEditModal(true);
     }
   };
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch(`${backendURL}/get-courses`);
+      const data = await response.json();
 
+      if (response.ok) {
+        setCourses(data.courseList);
+      } else {
+        console.log("Failed to fetch courses.");
+      }
+    } catch (error) {
+      console.error(error);
+      console.log("An error occurred while fetching courses.");
+    }
+  };
+
+  const handleCourseSelectionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedCourseID(event.target.value);
+  };
+  const createHandleCourseSelectionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setCreatedSelectedCourseID(event.target.value);
+    setNewContent({
+      ...newContent,
+      courseID: event.target.value,
+    })
+  };
+
+  // Extract unique courseIDs from the courses fetched from the backend
+  const uniqueCourseIDs = Array.from(
+    new Set(courses.map((course) => course.courseID))
+  );
   // Handler for updating the content
   const handleEditSubmit = async () => {
     if (editedContent._id) {
@@ -93,8 +135,6 @@ function ProfContent() {
   };
   //fetch content
   function fetchContentFromBackend(): Promise<content[]> {
-    const backendURL = envVariables.backendURL;
-
     return fetch(`${backendURL}/get-content`)
       .then((response) => response.json())
       .then((data) => {
@@ -173,15 +213,6 @@ function ProfContent() {
       }
     }
   };
-  // Handler for dropdown selection change
-  const handleCourseSelectionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedCourseID(event.target.value);
-  };
-  const uniqueCourseIDs = Array.from(
-    new Set(contentList.map((content) => content.courseID))
-  );
 
   return (
     <div style={{ marginLeft: "10%", marginRight: "10%" }}>
@@ -208,17 +239,19 @@ function ProfContent() {
           <Form onSubmit={handleFormSubmit}>
             <Form.Group className="mb-3" controlId="formCourseID">
               <Form.Label>Course ID</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Course ID"
-                value={newContent.courseID}
-                onChange={(e) =>
-                  setNewContent({
-                    ...newContent,
-                    courseID: e.target.value,
-                  })
-                }
-              />
+              <Form.Select
+                value={createSelectedCourseId}
+                onChange={createHandleCourseSelectionChange}
+                className="mt-4"
+              >
+                <option value="">Select a Course ID</option>{" "}
+                {/* Placeholder option */}
+                {uniqueCourseIDs.map((courseID) => (
+                  <option key={courseID} value={courseID}>
+                    {courseID}
+                  </option>
+                ))}
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formTitle">
               <Form.Label>Title</Form.Label>
@@ -268,20 +301,7 @@ function ProfContent() {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleEditSubmit}>
-            <Form.Group className="mb-3" controlId="formCourseID">
-              <Form.Label>Course ID</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Course ID"
-                value={editedContent.courseID}
-                onChange={(e) =>
-                  setEditedContent({
-                    ...editedContent,
-                    courseID: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+            <Form.Group className="mb-3" controlId="formCourseID"></Form.Group>
             <Form.Group className="mb-3" controlId="formTitle">
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -350,22 +370,26 @@ function ProfContent() {
             .map((content, index) => (
               <Accordion.Item eventKey={index.toString()} key={index}>
                 <Accordion.Header>
-                  <div>
+                  <div
+                    className="d-flex justify-content-between"
+                    style={{ width: "100%" }}
+                  >
                     <div>{content.title}</div>
-                  </div>
-                  <div className="content-container">
-                    {/* Edit button */}
-                    <FontAwesomeIcon
-                      icon={faEdit}
-                      style={{ cursor: "pointer", marginRight: "10px" }}
-                      onClick={() => handleEditClick(content._id)}
-                    />
-                    {/* Delete button */}
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleDeleteClick(content._id)}
-                    />
+
+                    <div className="me-2">
+                      {/* Edit button */}
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        style={{ cursor: "pointer", marginRight: "10px" }}
+                        onClick={() => handleEditClick(content._id)}
+                      />
+                      {/* Delete button */}
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDeleteClick(content._id)}
+                      />
+                    </div>
                   </div>
                 </Accordion.Header>
                 <Accordion.Body className="d-flex flex-column align-items-start">
