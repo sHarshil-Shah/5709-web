@@ -24,7 +24,7 @@ const CFaLock = chakra(FaLock);
 const CPortrait = chakra(FaPortrait);
 
 
-const SignUp: React.FC = () => {
+const SignUp = () => {
 
 
     const [showPassword, setShowPassword] = useState(false);
