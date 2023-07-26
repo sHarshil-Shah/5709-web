@@ -16,7 +16,7 @@ const LandingPage = () => {
         const queryParams = new URLSearchParams(location.search);
         const feature = queryParams.get("feature");
 
-        if (feature === "forgetPassword") {
+        if (feature?.toLowerCase() === "forgetPassword".toLowerCase()) {
             navigate('/forgetPassword?user_id=' + queryParams.get("user_id"));
         }
     });

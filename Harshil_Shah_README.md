@@ -62,7 +62,7 @@ Folder structure:
 
 Note: Page URLs might not work on netlify directly
 
-### Page 1: [Login Page](https://classmate-g7.netlify.app/login)
+### Page 1: Login Page
 Route to the page: 
 
 * If not already logged in, From landing page click on Login, 
@@ -92,7 +92,7 @@ Note: Login as an Admin, Create an account as a student or professor (Where you 
 * Go to the link and reset the password
 
 
-### Page 2: [Create User from Admin Dashboard](https://classmate-g7.netlify.app/createuser)
+### Page 2: Create User from Admin Dashboard
 
 Route to the page:
 * Login as Admin to go to admin dashboard
@@ -100,7 +100,7 @@ Route to the page:
 * Enter all details and click on create user
 
 
-### Page 3: [List User from Admin Dashboard](https://classmate-g7.netlify.app/listusers)
+### Page 3: List User from Admin Dashboard
 
 Route to the page:
 * Login as Admin to go to admin dashboard
@@ -108,7 +108,7 @@ Route to the page:
 * Enter all details and click on create user
 * You can filter based on all fields
 
-### Page 4: [Register as a professor Request](https://classmate-g7.netlify.app/signup)
+### Page 4: Register as a professor Request
 
 * Go To SignUp as a professor from landing page
 * Fill the details and click on sign up
