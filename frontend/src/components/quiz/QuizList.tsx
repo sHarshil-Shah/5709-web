@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react';
+import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Table, Tbody } from '@chakra-ui/react';
 import CreateQuiz from './CreateQuiz';
 import QuestionBankPage from './QuestionBank';
 import QuizDetailsModal from './QuizDetailsModal';
@@ -94,9 +94,13 @@ const QuizList: React.FC = () => {
 
       <Box p={4}>
         {quizzes && quizzes.length > 0 ? (
-          quizzes.map((quiz) => (
-            <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
-          ))
+          <Table variant='striped'>
+            <Tbody>
+              {quizzes.map((quiz) => (
+                <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
+              ))}
+            </Tbody>
+          </Table>
         ) : (
           <Text>No quizzes found.</Text>
         )}
