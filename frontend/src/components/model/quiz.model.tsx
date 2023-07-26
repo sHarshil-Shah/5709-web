@@ -12,9 +12,10 @@ export interface Quiz {
     startDate?: string;
     dueDate?: string;
     visibleDate?: string;
-    timeLimit?: string;
-    numOfQuestions?: string;
+    timeLimit?: number;
+    numOfQuestions?: number;
     randomQuestions?: boolean;
     questions?: QuizQuestion[];
+    totalMarks?: number;
     courseID?: string;
 }

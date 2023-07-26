@@ -10,9 +10,9 @@ updateQuizRouter.patch('/', async (req: Request, res: Response) => {
     const current_quiz = req.body;
     const quiz_id: string = req.body._id;
     delete current_quiz._id;
-    const new_quiz = await quizService.updateQuiz(quiz_id, current_quiz as Quiz);
-    if (new_quiz)
-        res.json({ message: 'Quiz Created successful' });
+    const response = await quizService.updateQuiz(quiz_id, current_quiz as Quiz);
+    if (response)
+        res.json({ message: 'Quiz Updated successful' });
     else
-        res.json({ message: 'Quiz Already Exists' });
+        res.json({ message: 'Error updating Quiz' });
 });

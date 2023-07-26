@@ -13,6 +13,7 @@ const ProfessorMapping = React.lazy(() => import('./components/Admin/professorMa
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
 const LandingPage = React.lazy(() => import('./components/Landing/LandingPage'));
+const ErrorPage = React.lazy(() => import('./components/error/ErrorPage'));
 
 const Login = React.lazy(() => import('./components/UserManagement/login'));
 const CreateUser = React.lazy(() => import('./components/UserManagement/createUser'));
@@ -54,7 +55,7 @@ const App = () => {
           <Route path="/stud" element={<Stud />} />
           <Route path="/dashboard" element={<DashBoardRoute />} />
           <Route path="/forgetPassword" element={<ForgetPassword />} />
-          <Route path="/quiz" element={<QuizList />} />
+          <Route path="/quiz" element={dataString ? <QuizList /> : <ErrorPage />} />
           <Route path="/quiz/:quizId" element={<QuizPage />} />
 
           <Route path="/announcement" element={<Announcement />} />

@@ -1,34 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Table, Tbody } from '@chakra-ui/react';
-import CreateQuiz from './CreateQuiz';
-import QuestionBankPage from './QuestionBank';
-import QuizDetailsModal from './QuizDetailsModal';
-import QuizTableRow from './QuizTableRow';
 import { Quiz } from '../model/quiz.model';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
 
+const CreateQuiz = React.lazy(() => import('./CreateQuiz'));
+const QuestionBankPage = React.lazy(() => import('./QuestionBank'));
+const QuizDetailsModal = React.lazy(() => import('./QuizDetailsModal'));
+const QuizTableRow = React.lazy(() => import('./QuizTableRow'));
+
 const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
+  const [userType, setUserType] = useState<string | null>();
 
-  useEffect(() => {
-    setLoading(true);
-    fetchQuizzes()
-      .then((response) => {
-        console.log(response);
-        setQuizzes(response.quizzes);
-      })
-      .catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
+  const fetchQuizzes = useCallback(() => {
+    setUserType(null);
+    const userDataString = localStorage.getItem('userData');
+    const user_type = JSON.parse(userDataString ? userDataString : '').user_type ?? null;
+    if (user_type) {
+      setUserType(user_type);
+      setLoading(true);
+      getAllQuizzes()
+        .then((response) => {
+          setQuizzes(response.quizzes);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, []);
 
+  useEffect(() => {
+    fetchQuizzes();
+  }, [fetchQuizzes]);
 
   const handleEdit = (quizId: string) => {
     console.log(`Edit quiz with ID: ${quizId}`);
+    onCreateQuizOpen();
+  };
+
+  const handleUserType = () => {
+    if (userType === 'prof') {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const handleDelete = (quizId: string) => {
@@ -50,13 +70,9 @@ const QuizList: React.FC = () => {
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
 
   const confirmDelete = () => {
-    if (quizzes) {
-      const updatedQuizzes = quizzes.filter((quiz) => quiz._id !== selectedQuizId);
-      console.log(`Delete quiz with ID: ${selectedQuizId}`);
-      console.log('Updated quizzes:', updatedQuizzes);
-      setQuizzes(updatedQuizzes);
-      onDeleteClose();
-    }
+    deleteQuiz(selectedQuizId);
+    onDeleteClose();
+    fetchQuizzes();
   };
 
   return (
@@ -97,7 +113,7 @@ const QuizList: React.FC = () => {
           <Table variant='striped'>
             <Tbody>
               {quizzes.map((quiz) => (
-                <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={true} />
+                <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={handleUserType()} />
               ))}
             </Tbody>
           </Table>
@@ -132,7 +148,7 @@ const QuizList: React.FC = () => {
 
 export default QuizList;
 
-function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
@@ -147,5 +163,25 @@ function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
     .catch((error) => {
       console.error(error);
       return { users: [] };
+    });
+}
+
+function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
+  const backendURL = envVariables.backendURL;
+  console.log(quiz_id);
+  return fetch(backendURL + '/deleteQuiz', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ "id": quiz_id }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {};
     });
 }

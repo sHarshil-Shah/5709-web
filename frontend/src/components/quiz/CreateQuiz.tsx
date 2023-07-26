@@ -20,9 +20,8 @@ import {
   Select,
   useToast,
 } from '@chakra-ui/react';
-import { QuizQuestion } from '../model/quiz.model';
 import envVariables from '../../importenv';
-import { Quiz } from '../model/quiz.model';
+import { Quiz, QuizQuestion } from '../model/quiz.model';
 import Loader from '../../loading';
 
 
@@ -38,10 +37,11 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     startDate: '',
     dueDate: '',
     visibleDate: '',
-    timeLimit: '',
-    numOfQuestions: '',
+    timeLimit: 0,
+    numOfQuestions: 0,
     randomQuestions: false,
     questions: [] as QuizQuestion[],
+    totalMarks: 0,
     courseID: '',
   };
   const [formData, setFormData] = useState(initialFormData);
@@ -60,6 +60,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     visibleDate: boolean;
     timeLimit: boolean;
     numOfQuestions: boolean;
+    totalMarks: boolean;
   }
 
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
@@ -69,6 +70,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     visibleDate: false,
     timeLimit: false,
     numOfQuestions: false,
+    totalMarks: false,
   });
 
   const [isLoading, setLoading] = useState(false);
@@ -80,6 +82,16 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
         ...prevData,
         [name]: !formData.randomQuestions,
       }));
+    } else if (!isNaN(Number(value))) {
+      const intValue = parseInt(value, 10);
+      const isValidNumber = Number.isInteger(intValue) && intValue >= 0 && intValue <= 100;
+
+      if (isValidNumber) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: intValue,
+        }));
+      }
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -168,7 +180,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
         onCloseQuizModel();
       }
       );
-
   };
 
   const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -265,6 +276,9 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     value={formData.timeLimit}
                     onChange={handleInputChange}
                     isInvalid={!formData.timeLimit && validationErrors.timeLimit}
+                    min={0}
+                    max={100}
+                    step={1}
                   />
                   {validationErrors.timeLimit && !formData.timeLimit && (
                     <Text color="red" fontSize="sm">Time Limit is required.</Text>
@@ -279,9 +293,28 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
                     value={formData.numOfQuestions}
                     onChange={handleInputChange}
                     isInvalid={!formData.numOfQuestions && validationErrors.numOfQuestions}
+                    min={0}
+                    max={100}
+                    step={1}
                   />
                   {validationErrors.numOfQuestions && !formData.numOfQuestions && (
                     <Text color="red" fontSize="sm">Number of Questions is required.</Text>
+                  )}
+                </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Total marks</FormLabel>
+                  <Input
+                    type="number"
+                    name="totalMarks"
+                    value={formData.totalMarks}
+                    onChange={handleInputChange}
+                    isInvalid={!formData.totalMarks && validationErrors.totalMarks}
+                    min={0}
+                    max={100}
+                    step={1}
+                  />
+                  {validationErrors.totalMarks && !formData.totalMarks && (
+                    <Text color="red" fontSize="sm">Total marks is required.</Text>
                   )}
                 </FormControl>
               </Stack>

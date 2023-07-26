@@ -114,7 +114,7 @@ class QuizService {
       client.close();
 
       if (updateResponse.modifiedCount > 0) {
-        return updateResponse;
+        return true;
       } else {
         return null;
       }
