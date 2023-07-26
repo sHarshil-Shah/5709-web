@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Input, Table, Tbody, Td, Th, Thead, Tr, useToast} from '@chakra-ui/react';
-import {FaTrashAlt} from "react-icons/fa";
+import {FaEdit, FaTrashAlt} from "react-icons/fa";
 import {User} from '../model/user.model';
 import Loader from '../../loading';
 import envVariables from "../../importenv";
 import MultiSelectMenu from "./MultiSelectMenu";
+import EditUserModal from "./EditUserModal";
 
 const TableWithFilters: React.FC = () => {
     const [filterEmail, setFilterEmail] = useState<string>('');
@@ -15,7 +16,38 @@ const TableWithFilters: React.FC = () => {
     const toast = useToast();
     const [isLoading, setLoading] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>(['prof', 'stud']);
+    const [editUser, setEditUser] = useState<User | null>(null);
+    const handleEditUser = (user: User) => {
+        setEditUser(user);
+    };
 
+
+    const handleUpdateUser = async (updatedUser: User) => {
+        console.log("in parent");
+        console.log(updatedUser);
+        setLoading(true);
+        const res = await updateUser(updatedUser);
+
+        await fetchUsers();
+        setEditUser(null);
+
+        if (res) {
+            toast({
+                title: 'User Updated!',
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+            });
+        } else {
+            toast({
+                title: 'User Update Error!',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+        setLoading(false);
+    };
     const handleMultiSelectChange = (selectedValues: string[]) => {
         setSelectedOptions(selectedValues);
         console.log(selectedValues);
@@ -119,6 +151,7 @@ const TableWithFilters: React.FC = () => {
                         <Th>First Name</Th>
                         <Th>Last Name</Th>
                         <Th>User Type</Th>
+                        <Th>Edit User</Th>
                         <Th>Delete User</Th>
                     </Tr>
                     <Tr>
@@ -160,6 +193,15 @@ const TableWithFilters: React.FC = () => {
                             <Td>{item.last_name}</Td>
                             <Td>{item.user_type === 'stud' ? 'Student' : 'Professor'}</Td>
                             <Td>
+                                <Button
+                                    colorScheme="teal"
+                                    leftIcon={<FaEdit/>}
+                                    onClick={() => handleEditUser(item)}
+                                >
+                                    Edit
+                                </Button>
+                            </Td>
+                            <Td>
                                 <Button colorScheme='red' leftIcon={<FaTrashAlt/>}
                                         onClick={() => handleDelete(item._id)}>
                                     Delete
@@ -169,12 +211,37 @@ const TableWithFilters: React.FC = () => {
                     ))}
                 </Tbody>
             </Table>
+            <EditUserModal
+                user={editUser}
+                onClose={() => setEditUser(null)}
+                onUpdateUser={handleUpdateUser}
+            />
         </>
     );
 };
 
 export default TableWithFilters;
 
+
+async function updateUser(user: User): Promise<boolean> {
+    const backendURL = envVariables.backendURL;
+    try {
+        const response = await fetch(backendURL + '/updateUser', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+        });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        return data.message === 'User Updated Successfully';
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
 
 async function fetchUsers(): Promise<{ users: User[] }> {
     const backendURL = envVariables.backendURL;
@@ -190,7 +257,6 @@ async function fetchUsers(): Promise<{ users: User[] }> {
         console.log(data);
         return data;
     } catch (error) {
-        // Handle any errors
         console.error(error);
         return {users: []};
     }
