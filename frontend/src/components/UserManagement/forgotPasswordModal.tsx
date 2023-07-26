@@ -39,13 +39,25 @@ const ForgetPasswordModal: React.FC<ForgetPasswordModalProps> = ({isOpen, onClos
                 // Handle the response data
                 console.log(data);
                 if (data.message === 'User fetched successful') {
-                    sendEmail(data.response);
-                    toast({
-                        title: 'Email Sent!',
-                        status: 'success',
-                        duration: 5000,
-                        isClosable: true,
+                    console.log(data.response);
+                    sendEmail(ref_obj.current.value, data.response).then((isEmailSent) => {
+                        if (isEmailSent) {
+                            toast({
+                                title: 'Email Sent!',
+                                status: 'success',
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        } else {
+                            toast({
+                                title: 'Problem with Sending Email!',
+                                status: 'error',
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
                     });
+
                 } else {
                     toast({
                         title: data.message,
@@ -97,8 +109,26 @@ const ForgetPasswordModal: React.FC<ForgetPasswordModalProps> = ({isOpen, onClos
 
 
 // Function to send the forgot password email
-const sendEmail = (email: string) => {
-    // const url = envVariables.frontend + '/forget-password?user_id=' + email;
+const sendEmail = async (email: string, user_id: string) => {
+    const url = envVariables.frontendURL + '?feature=forgetPassword&user_id=' + user_id;
+    console.log("Sending mail to " + email + " with " + url);
+    try {
+        const response = await fetch(envVariables.backendURL + '/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({to: email, url: url}),
+        });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        return data.message === 'Email sent successfully!';
+    } catch (error) {
+        // Handle any errors
+        console.error(error);
+        return false;
+    }
 };
 
 
