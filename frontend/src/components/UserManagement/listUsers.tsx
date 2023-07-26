@@ -158,7 +158,7 @@ const TableWithFilters: React.FC = () => {
                             <Td>{item.user_email}</Td>
                             <Td>{item.first_name}</Td>
                             <Td>{item.last_name}</Td>
-                            <Td>{item.user_type}</Td>
+                            <Td>{item.user_type === 'stud' ? 'Student' : 'Professor'}</Td>
                             <Td>
                                 <Button colorScheme='red' leftIcon={<FaTrashAlt/>}
                                         onClick={() => handleDelete(item._id)}>
