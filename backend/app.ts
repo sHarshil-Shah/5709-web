@@ -18,9 +18,12 @@ import { updateUserRouter } from "./controller/users/updateUser";
 import { createCourseRouter } from './controller/courses/addCourse';
 import { deleteCourseRouter } from './controller/courses/deleteCourse';
 import { updateCourseRouter } from './controller/courses/updateCourse';
+
+// Assignment Management
 import { createAssignmentRouter } from './controller/profassignments/createAssignment';
 import { listAssignmentsRouter } from './controller/profassignments/listAssignments';
 import { deleteAssignmentRouter } from './controller/profassignments/deleteAssignment';
+import { updateAssignmentRouter } from './controller/profassignments/updateAssignment';
 
 // Quiz Management
 import { createQuizRouter } from './controller/quiz/createQuiz';
@@ -72,10 +75,11 @@ app.use('/listQuiz', listQuizzesRouter);
 app.use('/updateQuiz', updateQuizRouter);
 app.use('/deleteQuiz', deleteQuizRouter);
 
-
+// Assignment routers
 app.use('/createAssignment', createAssignmentRouter);
 app.use('/getAssignments', listAssignmentsRouter);
 app.use('/deleteAssignment', deleteAssignmentRouter);
+app.use('/updateAssignment', updateAssignmentRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

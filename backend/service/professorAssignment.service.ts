@@ -8,6 +8,46 @@ const dbName = envVariables.dbName;
 
 class ProfAssignmentService {
 
+    async updateAssignment(assignment_id: string, assignment: assignment){
+        try {
+            // Connect to MongoDB
+            const client = await MongoClient.connect(mongoURI, {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+
+            const db: Db = client.db(dbName);
+
+            // Check user credentials in the MongoDB collection
+            console.log("Before upading assignment data ",assignment);
+            console.log(assignment_id);
+            const objectId = new ObjectId(assignment_id);
+            console.log(assignment_id);
+            console.log(objectId);
+
+        
+
+            const updateAssignment = await db.collection(profAssignmentsCollectionName).updateOne({_id:objectId}, 
+            {
+                $set: 
+                    assignment
+                //   assignmentTitle: assignment.assignmentTitle,
+                //   visibleDate: assignment.visibleDate,
+                //   submissionDate: assignment.submissionDate,
+                //   description: assignment.description,
+                //   grade: assignment.grade,
+                  // Add other fields that you want to update here
+                
+              })
+
+            console.log(updateAssignment);
+            await client.close();
+            return updateAssignment;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async deleteAssignment(assignment_id: string) {
         try {
         const objectId = new ObjectId(assignment_id);

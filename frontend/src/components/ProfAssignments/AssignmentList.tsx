@@ -14,16 +14,30 @@ import {
   ModalHeader, 
   ModalFooter, 
   ModalBody, 
-  ModalCloseButton
+  ModalCloseButton,
+  useToast
 } from '@chakra-ui/react';
 import { Assignment } from '../model/profassignment.model';
 import envVariables from '../../importenv';
+import EditAssignmentModal from './EditAssignmentModal';
 
 const AssignmentList: React.FC = () => {
 
     const [assignments, setAssignments] = useState<Assignment[]>([]);    
     const [deleteAssignmentId, setDeleteAssignmentId] = useState<string | null>(null);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false); // State to manage loading
+
+
+    const toast = useToast();
+
+    const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null); // New state to hold the selected assignment
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // New state to control the visibility of the edit modal
+
+    const handleEditClick = (assignment: Assignment) => {
+        setSelectedAssignment(assignment);
+        setIsEditModalOpen(true);
+      };
 
     const handleDeleteClick = (assignmentId: string) => {
         setDeleteAssignmentId(assignmentId);
@@ -63,14 +77,18 @@ const AssignmentList: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchAssignmentList()
-            .then((response) => {
-                setAssignments(response.assignments);
-            })
-            .catch((error) => {
-                setAssignments([]); // Set assignments to an empty array in case of an error
-            })
-    }, []);
+        const fetchAssignments = async () => {
+          try {
+            const response = await fetchAssignmentList();
+            setAssignments(response.assignments);
+          } catch (error) {
+            console.error(error);
+            setAssignments([]); // Set assignments to an empty array in case of an error
+          }
+        };
+    
+        fetchAssignments();
+      },[assignments]);
 
     return (
         <Box mt={4}>
@@ -90,7 +108,7 @@ const AssignmentList: React.FC = () => {
                 <Td>{assignment.visibleDate}</Td>
                 <Td>{assignment.submissionDate}</Td>
                 <Td>
-                    <Button colorScheme="teal" >
+                    <Button colorScheme="teal" onClick={() => handleEditClick(assignment)}>
                         Edit
                     </Button>
                     <Button colorScheme="red" onClick={() => handleDeleteClick((assignment as Assignment & { _id: string })._id)} ml={2}>
@@ -114,11 +132,73 @@ const AssignmentList: React.FC = () => {
                 </ModalFooter>
             </ModalContent>
         </Modal>
+
+        {/* Edit Assignment Modal */}
+        {selectedAssignment && ( // Only render the modal when selectedAssignment is defined
+        <EditAssignmentModal
+            assignment={selectedAssignment}
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onUpdate={(updatedAssignment) => {
+                // Handle the updated assignment data here, e.g., make an API call to update the assignment
+                console.log('Updated Assignment:', updatedAssignment);
+
+                // Call the API to update the assignment
+                callUpdateAssignmentAPI(updatedAssignment)
+                    .then((updatedData) => {
+                    // Find the updated assignment in the assignments array and replace it with the new data
+                    const updatedAssignments = assignments.map((assignment) =>
+                        assignment._id === updatedData._id ? updatedData : assignment
+                    );
+                        console.log(updatedAssignments);
+                        setAssignments(updatedAssignments);
+                    })
+                    .catch((error) => {
+                    // Handle API call errors
+                    console.error(error);
+                    setIsLoading(false); // Set loading to false in case of an error
+                    toast({
+                        title: 'Error',
+                        description: 'Failed to update assignment. Please try again later.',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                });
+
+                // Close the modal after handling the update
+                setIsEditModalOpen(false);
+            }}
+            />
+        )}
         </Box>        
     );
 };
 
 export default AssignmentList;
+
+async function callUpdateAssignmentAPI(updatedAssignment: Assignment): Promise<Assignment> {
+    const backendURL = envVariables.backendURL;
+  
+    try {
+      const response = await fetch(backendURL + '/updateAssignment', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedAssignment),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw new Error('Failed to update assignment.');
+    }
+  }
 
 async function deleteAssignmentFromList(assignmentId: string) : Promise<void>{
 

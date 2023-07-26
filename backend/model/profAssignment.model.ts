@@ -1,4 +1,4 @@
-interface assignment{
+interface assignment {
     assignmentTitle?: String;
     visibleDate?: String;
     submissionDate?: String;
