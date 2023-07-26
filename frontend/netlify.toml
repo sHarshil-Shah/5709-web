@@ -1,5 +1,0 @@
-# netlify.toml - Netlify configuration file
-[[redirects]]
-from = "/*"
-to = "/*"
-status = 204
