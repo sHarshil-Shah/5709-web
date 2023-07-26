@@ -9,7 +9,8 @@ To address these issues, the Classmate Application was developed as a digital pl
 
 * *Date Created*: 22 May 2023
 * *Last Modification Date*: 20 Jun 2023
-* *Netlify URL*: [ClassMate](https://classmate-g7.netlify.app/) https://classmate-g7.netlify.app/
+* *Netlify URL*: [Frontend](https://classmate-g7.netlify.app/) https://classmate-g7.netlify.app/
+* *Render URL*: [Backend](https://classmate-backend.onrender.com) https://classmate-backend.onrender.com
 * *Git URL*: [ClassMate Git](https://git.cs.dal.ca/harshils/classmate.git) https://git.cs.dal.ca/harshils/classmate.git
 
 ## Authors
@@ -44,11 +45,13 @@ Give an example
 
 ## Deployment
 
-- Thorugh CI/CD pipeline
+### Frontend
+- Through CI/CD pipeline
 - Commit on Main Branch in Frontend folder
 - Frontend automatically get tested and deployed on netlify
-- Commit on Main Branch in Backend folder
-- Backend automatically get tested and deployed on render
+
+### Backend
+- When committed on gitlab, through mirroring auto  
 
 ## Built With
 
