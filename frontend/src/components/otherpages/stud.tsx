@@ -1,9 +1,9 @@
-import StudentAssignmentList from "../studentAssignments/studentAssignment";
+import StudentDashboard from "../studentdashboard";
 
 const Stud = () => {
 
     return (
-        <StudentAssignmentList/>
+        <StudentDashboard/>
     );
 };
 

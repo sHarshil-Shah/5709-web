@@ -103,7 +103,6 @@ const StudentAssignmentList = () => {
             <Th fontWeight="bold" color="black">Submission Status</Th>
             <Th fontWeight="bold" color="black">Submission Deadline</Th>
             <Th fontWeight="bold" color="black">Total Marks</Th>
-            {/* <Th fontWeight="bold" color="black">File</Th> */}
           </Tr>
         </Thead>
         <Tbody>
@@ -113,13 +112,6 @@ const StudentAssignmentList = () => {
               <Td>In Completed</Td>
               <Td>{assignment.submissionDate}</Td>
               <Td>{assignment.grade}</Td>
-              {/* <Td>
-                {assignment.file && (
-                  <Link href={assignment.file} download>
-                    Download File
-                  </Link>
-                )}
-              </Td> */}
             </Tr>
           ))}
         </Tbody>
