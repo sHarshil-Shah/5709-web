@@ -115,8 +115,12 @@ const SignUp: React.FC = () => {
             error = 'Confirm Password should be same as Password!';
         } else if (!formData.first_name) {
             error = 'First Name is Required';
+        } else if (!/^[A-Za-z]+$/.test(formData.first_name)) {
+            error = 'First Name can only contain letters';
         } else if (!formData.last_name) {
             error = 'Last Name is required';
+        } else if (!/^[A-Za-z]+$/.test(formData.last_name)) {
+            error = 'Last Name can only contain letters';
         }
 
         setErrorMessage(error);

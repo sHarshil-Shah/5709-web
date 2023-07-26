@@ -24,6 +24,8 @@ const ForgetPassword = React.lazy(() => import('./components/UserManagement/forg
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
 const Content = React.lazy(() => import('./components/Content/Content'));
 const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
+const Calender = React.lazy(() => import('./components/Calender/calender'));
+
 
 const App = () => {
 
@@ -50,6 +52,7 @@ const App = () => {
                         <Route path="/announcement" element={<Announcement/>}/>
                         <Route path="/content" element={<Content/>}/>
                         <Route path="/signup" element={<ProfSignUp/>}/>
+                        <Route path="/calender" element={<Calender/>}/>
                     </Routes>
                 </Suspense>
             </Router>
