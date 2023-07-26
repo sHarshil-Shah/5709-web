@@ -1,16 +1,149 @@
-import React, { useState } from 'react';
-import { Box, ChakraProvider, Text, Button, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@chakra-ui/react';
-import AdminNavBar from './adminNavigationBar';
-import { Card, Dropdown, DropdownButton, ListGroup,Modal } from 'react-bootstrap';
+// Import the User and Course models
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  ChakraProvider,
+  Text,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@chakra-ui/react";
+import AdminNavBar from "./adminNavigationBar";
+import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
+import envVariables from "../../importenv";
+import { User } from "../model/user.model";
+import { course } from "../model/course.model";
 
 const ProfessorMapping = () => {
+  const backendURL = envVariables.backendURL;
   const [show, setShow] = useState(false);
+  const [courses, setCourses] = useState<course[]>([]);
+  const [professors, setProfessors] = useState<User[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<course | null>(null);
+  const [selectedProfessor, setSelectedProfessor] = useState<User | null>(null);
+  const [selectedProfessors, setSelectedProfessors] = useState<(User | null)[]>(
+    []
+  );
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const isProfessorsLoaded = professors.length > 0;
 
-  const [selectedOption, setSelectedOption] = useState('Select an Instructor');
-  const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
+  useEffect(() => {
+    fetchProfessors();
+    fetchCourses();
+  }, [setProfessors, setSelectedCourse]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch(`${backendURL}/get-courses`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setCourses(data.courseList);
+
+        // Initialize the selectedProfessors array with the instructorID for each course
+        const initialSelectedProfessors = data.courseList.map(
+          (course: course) =>
+            course.instructorID
+              ? professors.find(
+                  (prof) => prof.user_email === course.instructorID
+                )
+              : null
+        );
+        setSelectedProfessors(initialSelectedProfessors);
+      } else {
+        console.log("Failed to fetch courses.");
+      }
+    } catch (error) {
+      console.error(error);
+      console.log("An error occurred while fetching courses.");
+    }
+  };
+
+  const fetchProfessors = async () => {
+    try {
+      const response = await fetch(`${backendURL}/listUsers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        const eligibleProfessors = data.users.filter(
+          (user: User) => user.user_type === "prof" && user.status !== "pending"
+        );
+        setProfessors(eligibleProfessors);
+      } else {
+        console.log("Failed to fetch professors.");
+      }
+    } catch (error) {
+      console.error(error);
+      console.log("An error occurred while fetching professors.");
+    }
+  };
+
+  const handleOptionSelect = (courseIndex: number, professor: User) => {
+    // Create a copy of the selectedProfessors array and update the selected professor for the specific course
+    const updatedSelectedProfessors = [...selectedProfessors];
+    updatedSelectedProfessors[courseIndex] = professor;
+    setSelectedProfessors(updatedSelectedProfessors);
+
+    // Update the selected professor for the entire component
+    setSelectedProfessor(professor);
+  };
+
+  const handleAllocateConfirm = async () => {
+   
+
+    if (selectedCourse && selectedProfessor) {
+      // Find the index of the selected course in the courses array
+      const courseIndex = courses.findIndex(
+        (course) => course._id === selectedCourse._id
+      );
+
+      // Get the selected professor for the specific course
+      const selectedProf = selectedProfessors[courseIndex];
+
+      // Check if a professor is selected for the specific course
+      if (selectedProf) {
+        try {
+          // Make a POST request to update the course with the selected professor's email ID
+          const response = await fetch(
+            `${backendURL}/update-course/${selectedCourse._id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                instructorID: selectedProf.user_email,
+              }),
+            }
+          );
+
+          if (response.ok) {
+            // Course updated successfully, you can fetch the updated course list again if needed
+            console.log("Course updated successfully!");
+            fetchCourses();
+          } else {
+            console.error("Failed to update the course.");
+          }
+        } catch (error) {
+          console.error(error);
+          console.log("An error occurred while updating the course.");
+        }
+      }
+
+      // Close the confirmation modal
+      handleClose();
+    }
   };
 
   return (
@@ -22,51 +155,92 @@ const ProfessorMapping = () => {
         <Text fontSize="xl" fontWeight="bold" mb={4}>
           Welcome to Professor Mapping Section!
         </Text>
-        {/* Use the MappingCard component here */}
-        <div className="d-flex flex-column align-items-start" style={{ marginLeft: '8%', marginRight: '8%', marginTop: '3%', marginBottom: '8%' }}>
-          <div style={{ fontSize: '32px', fontWeight: 700 }}>Mapping</div>
-          <div className="d-flex  flex-wrap justify-content-between" style={{ width: '100%' }}>
-            <div className="mt-5">
-              <div>
-                <Card style={{ width: '18rem' }}>
-                  <Card.Body>
-                    <Card.Title>Course Title</Card.Title>
-                  </Card.Body>
-                  <ListGroup className="list-group-flush">
-                    <ListGroup.Item>Id: Course ID</ListGroup.Item>
-                    <ListGroup.Item>Course Name: Course Name</ListGroup.Item>
-                  </ListGroup>
-                  <Card.Body>
-                    <DropdownButton variant="primary" title={selectedOption}>
-                      <Dropdown.Item onClick={() => handleOptionSelect('Dr. Dey')}>Dr. Dey</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleOptionSelect('Dr. Sharma')}>Dr. Sharma</Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleOptionSelect('Dr. darshana')}>Dr. darshana</Dropdown.Item>
-                    </DropdownButton>
-                    <Button variant="primary" onClick={handleShow} style={{ marginTop: '10px' }}>
-                      Allocate
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </div>
 
-              <Modal show ={show} onHide={handleClose}>
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Are you sure?</ModalHeader>
-                  <ModalBody>You are trying to map a professor to a course!</ModalBody>
-                  <ModalFooter>
-                    <Button variant="secondary" onClick={handleClose}>
-                      Close
-                    </Button>
-                    <Button variant="success" onClick={handleClose}>
-                      Confirm
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            </div>
+        <div
+          className="d-flex flex-column align-items-start"
+          style={{
+            marginLeft: "8%",
+            marginRight: "8%",
+            marginTop: "3%",
+            marginBottom: "8%",
+          }}
+        >
+          <div style={{ fontSize: "32px", fontWeight: 700 }}>Mapping</div>
+          <div
+            className="d-flex flex-wrap justify-content-between"
+            style={{ width: "100%" }}
+          >
+            {courses &&
+              courses.map((course: course, index: number) => (
+                <div className="mt-5" key={course._id}>
+                  <div>
+                    <Card style={{ width: "18rem" }}>
+                      <Card.Body>
+                        <Card.Title>{course.title}</Card.Title>
+                      </Card.Body>
+                      <ListGroup className="list-group-flush">
+                        <ListGroup.Item>Id: {course._id}</ListGroup.Item>
+                        <ListGroup.Item>
+                          Course Name: {course.title}
+                        </ListGroup.Item>
+                      </ListGroup>
+                      <Card.Body>
+                        <DropdownButton
+                          variant="primary"
+                          title={
+                            selectedProfessors[index]
+                              ? `${selectedProfessors[index]?.first_name} ${selectedProfessors[index]?.last_name}`
+                              : "Select an Instructor"
+                          }
+                        >
+                          {professors.map((professor: User) => (
+                            <Dropdown.Item
+                              key={professor._id}
+                              onClick={() =>
+                                handleOptionSelect(index, professor)
+                              }
+                            >
+                              {professor
+                                ? `${professor.first_name} ${professor.user_email}`
+                                : "Select"}
+                            </Dropdown.Item>
+                          ))}
+                        </DropdownButton>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            setSelectedCourse(course);
+                            handleShow();
+                          }}
+                          style={{ marginTop: "10px" }}
+                        >
+                          Allocate
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
+
+        <Modal isOpen={show} onClose={handleClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Are you sure?</ModalHeader>
+            <ModalBody>
+              You are trying to map a professor to a course!
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="success" onClick={handleAllocateConfirm}>
+                Confirm
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
     </ChakraProvider>
   );
