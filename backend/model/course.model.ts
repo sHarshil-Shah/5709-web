@@ -1,8 +1,8 @@
-import { ObjectId } from "mongodb";
 
 interface course {
-  _id?: ObjectId;
+  _id?: string;
   courseID?: string;
+  instructorID?: string;
   title?: string;
   description?: string;
 }
