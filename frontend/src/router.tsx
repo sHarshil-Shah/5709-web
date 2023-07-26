@@ -23,6 +23,8 @@ const ForgetPassword = React.lazy(() => import('./components/UserManagement/forg
 
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
 const Content = React.lazy(() => import('./components/Content/Content'));
+const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
+
 const App = () => {
 
     const dataString = localStorage.getItem('userData');
@@ -47,6 +49,7 @@ const App = () => {
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/announcement" element={<Announcement/>}/>
                         <Route path="/content" element={<Content/>}/>
+                        <Route path="/signup" element={<ProfSignUp/>}/>
                     </Routes>
                 </Suspense>
             </Router>

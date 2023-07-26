@@ -34,7 +34,7 @@ const TitleBar = () => {
     console.log(location);
     if (location.pathname === "/") {
       setMenuOptions(
-        dataString ? [{ title: "Dashboard", route: "/dashboard" }] : []
+        dataString ? [{ title: "Dashboard", route: "/dashboard" }] : [{ title: "Register as a professor", route: "/Signup" }]
       );
     } else if (
       location.pathname === "/dashboard" ||
