@@ -12,6 +12,7 @@ function ProfessorDashboard() {
     title: "",
     courseID: "",
     description: "",
+    instructorID: ""
   });
 
   const mongoURI = envVariables.mongoURI;
