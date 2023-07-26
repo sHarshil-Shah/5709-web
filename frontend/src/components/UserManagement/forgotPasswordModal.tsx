@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 import React, {MutableRefObject} from 'react';
 import {
     Button,

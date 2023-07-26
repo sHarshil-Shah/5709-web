@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 import React, {useState} from 'react';
 import {
     Alert,
@@ -25,8 +26,6 @@ const CPortrait = chakra(FaPortrait);
 
 
 const SignUp = () => {
-
-
     const [showPassword, setShowPassword] = useState(false);
 
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);

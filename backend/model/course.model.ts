@@ -1,4 +1,4 @@
-
+// Author: Yatrik Pravinbhai Amrutiya
 interface course {
   _id?: string;
   courseID?: string;

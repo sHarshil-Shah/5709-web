@@ -1,3 +1,4 @@
+// Author: Yatrik Pravinbhai Amrutiya
 import React from "react";
 import CourseCard from "./CourseCard";
 import { course } from "../model/course.model"; // Assuming you have a model for the course

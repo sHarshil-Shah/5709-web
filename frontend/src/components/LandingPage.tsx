@@ -1,3 +1,4 @@
+// Author: Viral Siddhapura
 import React from "react";
 import { Box, Divider } from "@chakra-ui/react";
 import LandingPageHeader from "./Landing/LandingPageHeader";

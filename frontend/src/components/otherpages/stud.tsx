@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 const Stud = () => {
 
     return (

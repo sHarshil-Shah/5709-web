@@ -1,9 +1,13 @@
+// Author: Harshil Shah
+// Author: Viral Siddhapura
+// Author: Aanandi Pankhania
+
 import React from 'react';
 import { Grid, Flex, Box, Heading, Text, FormControl, FormLabel, Input, Textarea, Button, useBreakpointValue } from '@chakra-ui/react';
 import { useState, ChangeEvent, ChangeEventHandler } from 'react';
 
 import ContactCard from './indContactCard';
-import ModalComponent from './sucessMailSentModal';
+import ModalComponent from './successMailSentModal';
 import harsilImg from '../../assests/images/harshil.png';
 import viralImg from '../../assests/images/viral.png';
 import rajImg from '../../assests/images/raj.png';
