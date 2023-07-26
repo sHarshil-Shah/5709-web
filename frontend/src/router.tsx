@@ -2,6 +2,11 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
+import AdminDashboard from './components/Admin/adminDashboard';
+import CourseManagement from './components/Admin/courseManagement';
+import PendingApproval from './components/Admin/pendingApproval';
+import UserInformationPage from './components/Admin/userInformationPage';
+import ProfessorMapping from './components/Admin/professorMapping';
 
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
@@ -40,13 +45,21 @@ const App = () => {
                         <Route path="/login" element={dataString ? <AlreadyLoggedInPage/> : <Login/>}/>
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
-                        <Route path="/admin" element={<Admin/>}/>
+                        {/* <Route path="/admin" element={<Admin/>}/> */}
                         <Route path="/prof" element={<Prof/>}/>
                         <Route path="/stud" element={<Stud/>}/>
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/announcement" element={<Announcement/>}/>
                         <Route path="/content" element={<Content/>}/>
+                        <Route path="/admin" element={<AdminDashboard/>}/>
+
+                        <Route path="/admin/course-management" element={<CourseManagement/>}/>          
+                        <Route path="/admin/pending-requests" element={<PendingApproval />} />
+
+                        <Route path="/admin/users" element={<UserInformationPage/>}/>
+                        <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
+
                     </Routes>
                 </Suspense>
             </Router>
