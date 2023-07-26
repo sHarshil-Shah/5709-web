@@ -1,3 +1,4 @@
+// Author: Aanandi Pankhania
 import express, { Request, Response } from 'express';
 import CourseService from '../../service/course.service'; // Import the CourseService
 import course from '../../model/course.model'; // Assuming you have a model for the course

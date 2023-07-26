@@ -1,3 +1,4 @@
+// Author: Raj Soni
 export interface QuizQuestion {
     id: string;
     question: string;

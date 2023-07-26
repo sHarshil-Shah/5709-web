@@ -1,3 +1,6 @@
+// Author: Harshil Shah
+// Author: Viral Siddhapura
+// Author: Aanandi Pankhania
 import { useState } from 'react';
 import { Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Box, Heading, Input } from '@chakra-ui/react';
 

@@ -1,3 +1,4 @@
+// Author: Viral Siddhapura
 import React from "react";
 import { Box, Flex, Heading, Image } from "@chakra-ui/react";
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from "@chakra-ui/react";

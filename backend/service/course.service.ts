@@ -1,4 +1,6 @@
-import { Db, MongoClient, ObjectId } from "mongodb";
+// Author: Aanandi Pankhania
+// Author: Yatrik Pravinbhai Amrutiya
+import {Db, MongoClient} from "mongodb";
 import envVariables from '../importenv';
 import course from "../model/course.model"; // Assuming you have a model for the course
 
@@ -59,8 +61,8 @@ class CourseService {
 
             // Update the course in the MongoDB collection
             await db.collection<course>(coursesCollectionName).updateOne(
-                { _id: courseId },
-                { $set: updatedCourse }
+                {_id: courseId},
+                {$set: updatedCourse}
             );
 
             await client.close();
@@ -81,7 +83,7 @@ class CourseService {
             const db: Db = client.db(dbName);
 
             // Delete the course from the MongoDB collection
-            await db.collection<course>(coursesCollectionName).deleteOne({ _id: _id });
+            await db.collection<course>(coursesCollectionName).deleteOne({_id: _id});
 
             await client.close();
 

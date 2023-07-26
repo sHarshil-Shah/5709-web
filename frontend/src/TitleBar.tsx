@@ -1,3 +1,6 @@
+// Author: Harshil Shah
+// Author: Viral Siddhapura
+// Author: Yatrik Pravinbhai Amrutiya
 import {Box, Button, Flex, Link as ChakraLink, Text} from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
@@ -34,7 +37,10 @@ const TitleBar = () => {
         console.log(location);
         if (location.pathname === "/") {
             setMenuOptions(
-                dataString ? [{title: "Dashboard", route: "/dashboard"}] : [{title: "Register as a professor", route: "/Signup"}]
+                dataString ? [{title: "Dashboard", route: "/dashboard"}] : [{
+                    title: "Register as a professor",
+                    route: "/Signup"
+                }]
             );
         } else if (
             location.pathname === "/dashboard" ||

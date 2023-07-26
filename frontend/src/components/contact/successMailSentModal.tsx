@@ -1,12 +1,13 @@
+// Author: Harshil Shah
 import React from 'react';
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
 
-interface sucessMailSentModalProps {
+interface successMailSentModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const sucessMailSentModal: React.FC<sucessMailSentModalProps> = ({ isOpen, onClose }) => {
+const successMailSentModal: React.FC<successMailSentModalProps> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm">
       <ModalOverlay />
@@ -24,4 +25,4 @@ const sucessMailSentModal: React.FC<sucessMailSentModalProps> = ({ isOpen, onClo
   );
 };
 
-export default sucessMailSentModal;
+export default successMailSentModal;

@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 import {Box} from "@chakra-ui/react";
 import LandingPageHeader from "./LandingPageHeader";
 import LandingCardViews from "./LandingCardViews";

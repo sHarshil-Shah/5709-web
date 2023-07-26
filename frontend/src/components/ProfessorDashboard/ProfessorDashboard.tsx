@@ -1,3 +1,4 @@
+// Author: Yatrik Pravinbhai Amrutiya
 import React, {useEffect, useState} from 'react'
 import CourseList from './CourseList'
 import Analytics from './Analytics'

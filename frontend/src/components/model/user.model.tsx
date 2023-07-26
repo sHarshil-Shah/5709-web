@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 export interface User{
     user_email?: string;
     first_name?: string;
@@ -6,4 +7,5 @@ export interface User{
     conpass?: string;
     user_type?: string;
     _id?: string;
+    status?: string;
 }

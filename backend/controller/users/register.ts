@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 import express, { Request, Response } from 'express';
 import user from '../../model/user.model';
 import UserService from '../../service/user.service'

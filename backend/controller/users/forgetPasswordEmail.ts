@@ -1,4 +1,4 @@
-// src/routes/emailRoutes.ts
+// Author: Harshil Shah
 import express, {Request, Response} from 'express';
 import nodemailer from 'nodemailer';
 

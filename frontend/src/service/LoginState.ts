@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 export const isLoggedIn = (): boolean => {
     const userDataString = localStorage.getItem("userData");
     if (userDataString) {

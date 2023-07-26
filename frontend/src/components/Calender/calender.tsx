@@ -1,5 +1,8 @@
+// Author: Harshil Shah
+
 import React from "react";
 import {Box, Heading, List, ListItem, Text} from "@chakra-ui/react";
+
 
 const deadlinesList = [
     {id: 1, title: "Deadline 1", dueDate: "2023-08-15"},

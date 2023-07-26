@@ -1,3 +1,4 @@
+// Author: Yatrik Pravinbhai Amrutiya
 import React from "react";
 import Card from "react-bootstrap/Card";
 import { course } from "../model/course.model";
