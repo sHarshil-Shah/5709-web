@@ -1,9 +1,9 @@
 import {Box, Button, Flex, Link as ChakraLink, Text} from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
+import {isLoggedIn} from "./service/LoginState";
 
 const TitleBar = () => {
-    const isLoggedIn = !!JSON.parse(localStorage.getItem("userData") as string).user_type;
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -92,7 +92,7 @@ const TitleBar = () => {
                                 {option.title}
                             </ChakraLink>
                         ))}
-                        {isLoggedIn ? (
+                        {isLoggedIn() ? (
                             <Button colorScheme="red" onClick={logout}>
                                 Logout
                             </Button>
