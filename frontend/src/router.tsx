@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
+import {isLoggedIn} from "./service/LoginState";
 
 const AdminDashboard = React.lazy(() => import( './components/Admin/adminDashboard'));
 const CourseManagement = React.lazy(() => import( './components/Admin/courseManagement'));
@@ -34,9 +35,6 @@ const Calender = React.lazy(() => import('./components/Calender/calender'));
 
 const App = () => {
 
-    const dataString = localStorage.getItem('userData');
-
-    const dataJSON = JSON.parse(dataString as string);
 
     return (<>
             <Router>
@@ -46,7 +44,7 @@ const App = () => {
                         <Route path="/" element={<LandingPage/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/faq" element={<FAQ/>}/>
-                        <Route path="/login" element={dataJSON.user_type ? <AlreadyLoggedInPage/> : <Login/>}/>
+                        <Route path="/login" element={isLoggedIn() ? <AlreadyLoggedInPage/> : <Login/>}/>
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
                         <Route path="/prof" element={<Prof/>}/>
