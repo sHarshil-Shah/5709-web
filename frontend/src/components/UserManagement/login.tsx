@@ -14,18 +14,22 @@ import {
     InputRightElement,
     Link,
     Stack,
+    useToast,
 } from "@chakra-ui/react";
 import {FaLock, FaUserAlt} from "react-icons/fa";
 
 import ForgetPasswordModal from './forgotPasswordModal';
 import {useNavigate} from 'react-router-dom';
 import Loader from '../../loading';
+import envVariables from "../../importenv";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const Login: React.FC = () => {
 
+
+    const toast = useToast();
 
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -82,7 +86,19 @@ const Login: React.FC = () => {
 
             const userType = await processLogin(formData);
             console.log(userType);
+
+
             switch (userType) {
+                case "202":
+                    setLoading(false);
+                    toast({
+                        title: 'Professor request is pending with an admin!',
+                        description: `An admin will verify and approve your request`,
+                        status: 'success',
+                        duration: 5000,
+                        isClosable: true,
+                    });
+                    break;
                 case "admin":
                     navigate('/admin');
                     break;
@@ -188,27 +204,29 @@ const Login: React.FC = () => {
 
 export default Login;
 
-function processLogin(formData: { email: string; password: string; }) {
-    return fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({"user_email": formData.email, "password": formData.password}),
-    })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response data
-            console.log(data);
-            const dataString = JSON.stringify(data);
-
-            // Save the data in localStorage
-            localStorage.setItem('userData', dataString);
-
-            return data['user_type'];
-        })
-        .catch(error => {
-            // Handle any errors
-            console.error(error);
+async function processLogin(formData: { email: string; password: string; }) {
+    const backendURL = envVariables.backendURL;
+    try {
+        const response = await fetch(backendURL + '/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({"user_email": formData.email, "password": formData.password}),
         });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        if (data.message === 'Professor Status pending') {
+            return '202';
+        }
+        const dataString = JSON.stringify(data);
+
+        // Save the data in localStorage
+        localStorage.setItem('userData', dataString);
+        return data['user_type'];
+    } catch (error) {
+        // Handle any errors
+        console.error(error);
+    }
 }

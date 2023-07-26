@@ -32,12 +32,11 @@ const TitleBar = () => {
     // Perform any logic to update menu options based on the current state
     // Example: Update menu options based on the user's role or authentication status
     console.log(location);
-    if (location.pathname.includes("/")) {
+    if (location.pathname === "/") {
       setMenuOptions(
-        dataString ? [{ title: "Dashboard", route: "/dashboard" }] : []
+        dataString ? [{ title: "Dashboard", route: "/dashboard" }] : [{ title: "Register as a professor", route: "/Signup" }]
       );
-    }
-    if (
+    } else if (
       location.pathname === "/dashboard" ||
       location.pathname === "/announcement" ||
       location.pathname === "/content"

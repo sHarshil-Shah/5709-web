@@ -85,6 +85,7 @@ Route to the page:
 
 
 ### Forgot password?
+Note: Login as an Admin, Create an account as a student or professor (Where you can receive mails) from admin dashboard and follow this steps:
 * Click on forgot password 
 * Enter your email click on "Send Password Reset Link"
 * An email containing a link to reset the password will be sent
@@ -105,6 +106,13 @@ Route to the page:
 * Login as Admin to go to admin dashboard
 * From Admin dashboard move to List User (To manage students and professors)
 * Enter all details and click on create user
+* You can filter based on all fields
+
+### Page 4: [Register as a professor Request](https://classmate-g7.netlify.app/signup)
+
+* Go To SignUp as a professor from landing page
+* Fill the details and click on sign up
+
 
 ## Sources Used
 

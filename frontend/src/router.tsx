@@ -2,11 +2,12 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
-import AdminDashboard from './components/Admin/adminDashboard';
-import CourseManagement from './components/Admin/courseManagement';
-import PendingApproval from './components/Admin/pendingApproval';
-import UserInformationPage from './components/Admin/userInformationPage';
-import ProfessorMapping from './components/Admin/professorMapping';
+
+const AdminDashboard = React.lazy(() => import( './components/Admin/adminDashboard'));
+const CourseManagement = React.lazy(() => import( './components/Admin/courseManagement'));
+const PendingApproval = React.lazy(() => import('./components/Admin/pendingApproval'));
+const UserInformationPage = React.lazy(() => import('./components/Admin/userInformationPage'));
+const ProfessorMapping = React.lazy(() => import('./components/Admin/professorMapping'));
 
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
@@ -28,6 +29,10 @@ const ForgetPassword = React.lazy(() => import('./components/UserManagement/forg
 
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
 const Content = React.lazy(() => import('./components/Content/Content'));
+const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
+const Calender = React.lazy(() => import('./components/Calender/calender'));
+
+
 const App = () => {
 
     const dataString = localStorage.getItem('userData');
@@ -52,10 +57,12 @@ const App = () => {
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/announcement" element={<Announcement/>}/>
                         <Route path="/content" element={<Content/>}/>
+                        <Route path="/signup" element={<ProfSignUp/>}/>
+                        <Route path="/calender" element={<Calender/>}/>
                         <Route path="/admin" element={<AdminDashboard/>}/>
 
-                        <Route path="/admin/course-management" element={<CourseManagement/>}/>          
-                        <Route path="/admin/pending-requests" element={<PendingApproval />} />
+                        <Route path="/admin/course-management" element={<CourseManagement/>}/>
+                        <Route path="/admin/pending-requests" element={<PendingApproval/>}/>
 
                         <Route path="/admin/users" element={<UserInformationPage/>}/>
                         <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
