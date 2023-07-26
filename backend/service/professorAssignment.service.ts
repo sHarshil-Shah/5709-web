@@ -7,6 +7,53 @@ const profAssignmentsCollectionName = envVariables.professorAssignmentCollection
 const dbName = envVariables.dbName;
 
 class ProfAssignmentService {
+
+    async deleteAssignment(assignment_id: string) {
+        try {
+        const objectId = new ObjectId(assignment_id);
+
+        const client = await MongoClient.connect(mongoURI, {
+            connectTimeoutMS: 5000,
+            socketTimeoutMS: 30000
+        });
+        const db: Db = client.db(dbName);
+
+        const deleteResponse = await db.collection(profAssignmentsCollectionName).deleteOne({ _id: objectId });
+        client.close();
+
+        console.log(deleteResponse);
+        return deleteResponse;
+        } catch (error) {
+        console.log(error);
+        return null;
+        }
+    }
+
+    async listAssignments() {
+        try {
+            // Connect to MongoDB
+            const client = await MongoClient.connect(mongoURI ? mongoURI : '', {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+            const db: Db = client.db(dbName);
+
+            // Check user credentials in the MongoDB collection
+            const assignments = await db.collection(profAssignmentsCollectionName).find().toArray();
+            await client.close();
+
+            console.log(assignments);
+            if (assignments) {
+                return assignments;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
     async createAssignment(assignment: assignment) {
         // if (await this.getUser({"user_email": user.user_email}) != null) {
         //     return;

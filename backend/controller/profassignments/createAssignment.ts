@@ -9,7 +9,6 @@ const profAssignmentService = new ProfAssignmentService();
 createAssignmentRouter.post('/', async (req: Request, res: Response) => {
     console.log(req.body);
     const curren_assignment: assignment = req.body;
-    // const { user_email, password } = req.body;
 
     const new_assignment = await profAssignmentService.createAssignment(curren_assignment);
     console.log(new_assignment);

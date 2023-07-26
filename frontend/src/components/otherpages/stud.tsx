@@ -1,7 +1,9 @@
+import StudentAssignmentList from "../studentAssignments/studentAssignment";
+
 const Stud = () => {
 
     return (
-        <>This is team memeber's section. Since logged in user is a student, this page is showing. This is student's dashboard</>
+        <StudentAssignmentList/>
     );
 };
 

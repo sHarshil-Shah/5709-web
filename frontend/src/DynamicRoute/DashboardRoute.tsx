@@ -3,7 +3,7 @@ import React from 'react';
 
 import Stud from '../components/otherpages/stud';
 import Prof from '../components/otherpages/prof';
-import AssignmentBase from '../components/ProfAssignments/AssignmentBase';
+import FinalAssignmentPage from '../components/ProfAssignments/FinalAssignmentPage';
 import Admin from '../components/otherpages/admin';
 const DashboardRoute = () => {
     const userDataString = localStorage.getItem('userData');
@@ -16,7 +16,7 @@ const DashboardRoute = () => {
             return <Stud/>;
         case 'prof':
             // return <Prof/>;
-            return <AssignmentBase/>;
+            return <FinalAssignmentPage/>;
     }
 
     return null;

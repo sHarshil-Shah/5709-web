@@ -1,9 +1,12 @@
 interface assignment{
-    assignmentTitle?: string;
-    visibleDate?: string;
-    submissionDate?: string;
-    description?: string;
+    assignmentTitle?: String;
+    visibleDate?: String;
+    submissionDate?: String;
+    description?: String;
     file?: File | null;
+    grade?: number;
+    courseId?: String;
+    assignment_id?: String;
 }
 
 export default assignment;

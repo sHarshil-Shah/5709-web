@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -14,6 +14,7 @@ import {
   Textarea,
   Box,
   useToast, 
+  HStack, // Import HStack from Chakra UI
 } from '@chakra-ui/react';
 import envVariables from '../../importenv';
 import {Assignment} from '../model/profassignment.model';
@@ -25,6 +26,7 @@ const CreateAssignmentModal: React.FC = () => {
   const [submissionDate, setSubmissionDate] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [grade, setGrade] = useState<number | ''>('');
 
   const toast = useToast(); // Initialize the useToast hook
 
@@ -35,6 +37,7 @@ const CreateAssignmentModal: React.FC = () => {
       setSubmissionDate('');
       setDescription('');
       setFile(null);
+      setGrade('');
     };
 
   const handleOpen = () => {
@@ -44,6 +47,13 @@ const CreateAssignmentModal: React.FC = () => {
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleGradeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value === '' || !isNaN(Number(value))) {
+      setGrade(value as number | '');
+    }
   };
 
   const handleSave = () => {
@@ -83,6 +93,14 @@ const CreateAssignmentModal: React.FC = () => {
         duration: 2000,
         isClosable: true,
       });
+    } else if (grade === '' || isNaN(grade)) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid grade (a number).',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
     } else if (!file || !allowedFileTypes.includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase())) {
 
       toast({
@@ -93,21 +111,18 @@ const CreateAssignmentModal: React.FC = () => {
         isClosable: true,
       });
     } else {
-      // Perform save logic here (e.g., API call to save assignment data)
-      toast({
-        title: 'Success',
-        description: 'Assignment saved successfully!',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-      });
 
+      const courseId = localStorage.getItem('courseID');
+
+      // Perform save logic here (e.g., API call to save assignment data)
       const assignmentData: Assignment = {
         assignmentTitle,
         visibleDate,
         submissionDate,
         description,
         file,
+        grade,
+        courseId: courseId ? courseId : '',
       };
 
       const data = callCreateAssignmentAPI(assignmentData);
@@ -150,20 +165,28 @@ const CreateAssignmentModal: React.FC = () => {
                 onChange={(e) => setAssignmentTitle(e.target.value)} />
             </FormControl>
 
-            <FormControl mt={4}>
-              <FormLabel>Visible Date</FormLabel>
-              <Input 
-                type="date"
-                value={visibleDate}
-                onChange={(e) => setVisibleDate(e.target.value)} />
-            </FormControl>
+            <HStack mt={4}>
+              {/* Horizontal stack for the Visible Date and Submission Date fields */}
+              <FormControl>
+                <FormLabel>Visible Date</FormLabel>
+                <Input type="date" value={visibleDate} onChange={(e) => setVisibleDate(e.target.value)} />
+              </FormControl>
 
+              <FormControl>
+                <FormLabel>Submission Date</FormLabel>
+                <Input type="date" value={submissionDate} onChange={(e) => setSubmissionDate(e.target.value)} />
+              </FormControl>
+            </HStack>
+
+            {/* New FormControl for the grade field */}
             <FormControl mt={4}>
-              <FormLabel>Submission Date</FormLabel>
-              <Input 
-                type="date"
-                value={submissionDate}
-                onChange={(e) => setSubmissionDate(e.target.value)}/>
+              <FormLabel>Grade</FormLabel>
+              <Input
+                type="number"
+                placeholder="Enter grade"
+                value={grade}
+                onChange={handleGradeChange}
+              />
             </FormControl>
 
             <FormControl mt={4}>
@@ -204,7 +227,7 @@ function callCreateAssignmentAPI(assignment : Assignment): Promise<{ assignment:
   return fetch(backendURL + '/createAssignment', {
       method: 'POST',
       headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
       },
       body: JSON.stringify(assignment),
   })

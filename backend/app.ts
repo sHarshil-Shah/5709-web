@@ -7,6 +7,8 @@ import {deleteUserRouter} from './controller/users/deleteUser';
 import {getUserByIdRouter} from "./controller/users/getUserByEmail";
 import {forgetPasswordRouter} from "./controller/users/forgetPassword";
 import { createAssignmentRouter } from './controller/profassignments/createAssignment';
+import { listAssignmentsRouter } from './controller/profassignments/listAssignments';
+import { deleteAssignmentRouter } from './controller/profassignments/deleteAssignment';
 
 
 // Create an Express app
@@ -34,6 +36,8 @@ app.use('/getUserById', getUserByIdRouter);
 app.use('/forgetPassword', forgetPasswordRouter);
 
 app.use('/createAssignment', createAssignmentRouter);
+app.use('/getAssignments', listAssignmentsRouter);
+app.use('/deleteAssignment', deleteAssignmentRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

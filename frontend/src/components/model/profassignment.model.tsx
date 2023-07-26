@@ -4,4 +4,7 @@ export interface Assignment {
     submissionDate?: string;
     description?: string;
     file?: File | null;
+    grade?: number;
+    courseId: string | null;
+    _id?: string | null;
   }
