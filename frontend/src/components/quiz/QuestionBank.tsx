@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -16,14 +16,11 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  useToast
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
-
-interface QuizQuestion {
-  question: string;
-  options: string[];
-  correctAnswer: string;
-}
+import { Quiz, QuizQuestion } from '../model/quiz.model';
+import envVariables from '../../importenv';
+import Loader from '../../loading';
 
 interface QuestionBankProps {
   isQuestionBankModel: boolean;
@@ -32,50 +29,107 @@ interface QuestionBankProps {
 
 const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, onCloseQuestionBankModel }) => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [newQuestion, setNewQuestion] = useState<string>('');
-  const [newOptions, setNewOptions] = useState<string[]>(['', '', '', '']);
-  const [newCorrectAnswer, setNewCorrectAnswer] = useState<string>('');
   const [selectedQuiz, setSelectedQuiz] = useState<string>('');
+  const [isLoading, setLoading] = useState(false);
+  const [quizzes, setQuizzes] = useState<Quiz[]>();
+
+  const initialQuestion: QuizQuestion = {
+    id: Date.now().toString(),
+    question: '',
+    options: ['', '', '', ''],
+    correctAnswer: 0,
+  };
+
+  const [filledQuestions, setFilledQuestions] = useState<QuizQuestion>(initialQuestion);
+  const toast = useToast();
+
+  useEffect(() => {
+    setLoading(true);
+    fetchQuizzes()
+      .then((response) => {
+        setQuizzes(response.quizzes);
+      })
+      .catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const handleAddQuestion = () => {
-    const updatedQuestions: QuizQuestion[] = [
-      ...questions,
-      {
-        question: newQuestion,
-        options: newOptions,
-        correctAnswer: newCorrectAnswer,
-      },
-    ];
-    setQuestions(updatedQuestions);
-    setNewQuestion('');
-    setNewOptions(['', '', '', '']);
-    setNewCorrectAnswer('');
+    setQuestions((prevData) => [...prevData, filledQuestions]);
+    setFilledQuestions(initialQuestion);
   };
 
   const handleAddOption = () => {
-    const updatedOptions = [...newOptions, ''];
-    setNewOptions(updatedOptions);
+    setFilledQuestions((prevData) => ({
+      ...prevData,
+      options: [...prevData.options, '']
+    }));
   };
 
-  const handleRemoveOption = (index: number) => {
-    const updatedOptions = newOptions.filter((_, i) => i !== index);
-    setNewOptions(updatedOptions);
+  const handleRemoveOption = (optionIndex: number) => {
+    setFilledQuestions((prevData) => ({
+      ...prevData,
+      options: prevData.options.filter((_, index) => index !== optionIndex),
+    }));
+  };
+
+  const handleDeleteQuestion = (questionId: string) => {
+    setQuestions((prevData) => ({
+      ...prevData,
+      questions: prevData.filter((question) => question.id !== questionId),
+    }));
+  };
+
+  const handleCancel = () => {
+    setFilledQuestions(initialQuestion);
+    onCloseQuestionBankModel();
   };
 
   const handleSaveQuestions = () => {
-    // Logic to save the questions
-    console.log(questions);
-  };
+    if (quizzes) {
+      setLoading(true);
 
-  const handleDeleteQuestion = (index: number) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(updatedQuestions);
+      const selectedQuizData = quizzes.find((quiz) => quiz._id === selectedQuiz);
+      console.log(selectedQuizData);
+      if (selectedQuizData && selectedQuizData.questions) {
+        const updatedQuestions: QuizQuestion[] = selectedQuizData.questions?.concat(questions);
+        const updatedQuizData = { _id: selectedQuizData._id, questions: updatedQuestions };
+        console.log(updatedQuizData);
+        saveQuestions(updatedQuizData)
+          .then(() => {
+            setQuestions(updatedQuestions);
+            setFilledQuestions(initialQuestion);
+            toast({
+              title: 'Questions Saved!',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            toast({
+              title: 'Error',
+              description: 'Failed to save the question.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    }
   };
 
   const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
-    <Modal isOpen={isQuestionBankModel} onClose={onCloseQuestionBankModel} size="xl" scrollBehavior="inside">
+    <Modal isOpen={isQuestionBankModel} onClose={handleCancel} size="xl" scrollBehavior="inside">
+      {isLoading && <Loader />}
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Question Bank</ModalHeader>
@@ -89,9 +143,11 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
                 value={selectedQuiz}
                 onChange={(e) => setSelectedQuiz(e.target.value)}
               >
-                <option value="quiz1">Quiz 1</option>
-                <option value="quiz2">Quiz 2</option>
-                <option value="quiz3">Quiz 3</option>
+                {quizzes?.map((quiz) => (
+                  <option key={quiz._id} value={quiz._id}>
+                    {quiz.title}
+                  </option>
+                ))}
               </Select>
             </FormControl>
 
@@ -99,12 +155,17 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
               <FormLabel>Question</FormLabel>
               <Input
                 placeholder="Enter a question"
-                value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
+                value={filledQuestions.question}
+                onChange={(e) => {
+                  setFilledQuestions((prevData) => ({
+                    ...prevData,
+                    question: e.target.value,
+                  }));
+                }}
               />
             </FormControl>
 
-            {newOptions.map((option, index) => (
+            {filledQuestions.options.map((option, index) => (
               <Box key={index}>
                 <FormControl>
                   <FormLabel>Option {index + 1}</FormLabel>
@@ -113,9 +174,10 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
                       placeholder="Enter an option"
                       value={option}
                       onChange={(e) => {
-                        const updatedOptions = [...newOptions];
-                        updatedOptions[index] = e.target.value;
-                        setNewOptions(updatedOptions);
+                        setFilledQuestions((prevData) => ({
+                          ...prevData,
+                          options: prevData.options.map((opt, i) => (i === index ? e.target.value : opt)),
+                        }));
                       }}
                     />
                     <Button
@@ -138,10 +200,16 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
               <FormLabel>Correct Answer</FormLabel>
               <Select
                 placeholder="Select a correct answer"
-                value={newCorrectAnswer}
-                onChange={(e) => setNewCorrectAnswer(e.target.value)}
+                value={filledQuestions.correctAnswer || ''}
+                onChange={(e) => {
+                  const correctAnswer = Number(e.target.value);
+                  setFilledQuestions((prevData) => ({
+                    ...prevData,
+                    correctAnswer: correctAnswer,
+                  }));
+                }}
               >
-                {newOptions.map((option, index) => (
+                {filledQuestions.options.map((option, index) => (
                   <option key={index} value={index}>
                     Option {index + 1}
                   </option>
@@ -168,21 +236,20 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
                   mt={2}
                   size="sm"
                   colorScheme="red"
-                  onClick={() => handleDeleteQuestion(index)}
+                  onClick={() => handleDeleteQuestion(question.id)}
                 >
                   Delete Question
                 </Button>
               </Box>
             ))}
-
-            <Button colorScheme="blue" onClick={handleSaveQuestions}>
-              <Link to={`/quiz-list`}>Save Questions</Link>
-            </Button>
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="gray" onClick={onCloseQuestionBankModel}>
-            Close
+          <Button colorScheme="gray" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button colorScheme="teal" onClick={handleSaveQuestions} ml={2}>
+            Save
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -191,3 +258,41 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
 }
 
 export default QuestionBankPage;
+
+function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/listQuiz', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return { quizzes: [] };
+    });
+}
+
+function saveQuestions(quizData: Quiz): Promise<void> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/updateQuiz', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(quizData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to save the question.');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}

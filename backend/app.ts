@@ -22,6 +22,7 @@ import { updateCourseRouter } from './controller/courses/updateCourse';
 // Quiz Management
 import { createQuizRouter } from './controller/quiz/createQuiz';
 import { listQuizzesRouter } from './controller/quiz/listQuiz';
+import { updateQuizRouter } from './controller/quiz/updateQuiz';
 
 // Create an Express app
 const app = express();
@@ -64,6 +65,7 @@ app.use('/update-course', updateCourseRouter)
 
 app.use('/createQuiz', createQuizRouter);
 app.use('/listQuiz', listQuizzesRouter);
+app.use('/updateQuiz', updateQuizRouter);
 
 
 app.listen(3000, () => {

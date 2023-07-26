@@ -130,6 +130,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
 
   const toast = useToast();
   const handleCancel = () => {
+    setFormData(initialFormData);
     onCloseQuizModel();
   };
 
@@ -175,7 +176,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   const isStartDateFilled = !!formData.startDate;
 
   return (
-    <Modal isOpen={isOpenQuizModel} onClose={onCloseQuizModel} size="xl" scrollBehavior="inside">
+    <Modal isOpen={isOpenQuizModel} onClose={handleCancel} size="xl" scrollBehavior="inside">
       {isLoading && <Loader />}
       <ModalOverlay />
       <ModalContent>

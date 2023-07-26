@@ -99,32 +99,22 @@ class QuizService {
     }
   }
 
-  async editQuiz(quiz_id: string, updatedQuiz: Quiz) {
+  async updateQuiz(quiz_id: string, updatedQuiz: Quiz) {
     try {
       const objectId = new ObjectId(quiz_id);
-
       const client = await MongoClient.connect(mongoURI, {
         connectTimeoutMS: 5000,
         socketTimeoutMS: 30000
       });
       const db: Db = client.db(dbName);
-      const existingQuiz = await db.collection(quizCollectionName).findOne({ _id: objectId });
-      if (!existingQuiz) {
-        client.close();
-        return null;
-      }
-
-      const updatedFields = { ...existingQuiz, ...updatedQuiz };
-
       const updateResponse = await db.collection(quizCollectionName).updateOne(
         { _id: objectId },
-        { $set: updatedFields }
+        { $set: updatedQuiz }
       );
-
       client.close();
 
       if (updateResponse.modifiedCount > 0) {
-        return updatedFields;
+        return updateResponse;
       } else {
         return null;
       }
