@@ -1,5 +1,5 @@
 # netlify.toml - Netlify configuration file
 [[redirects]]
 from = "/*"
-to = "/forgetPassword"
+to = "/*"
 status = 204
