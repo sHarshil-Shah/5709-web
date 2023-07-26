@@ -1,9 +1,7 @@
-import { ObjectId } from "mongodb";
-
 export interface course {
-  _id?: ObjectId;
-  courseID?: string;
-  title?: string;
+  _id?: string;
+  courseID: string;
+  instructorID?: string;
+  title: string;
   description?: string;
 }
-

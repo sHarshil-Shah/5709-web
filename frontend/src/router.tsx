@@ -2,11 +2,12 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
-import AdminDashboard from './components/Admin/adminDashboard';
-import CourseManagement from './components/Admin/courseManagement';
-import PendingApproval from './components/Admin/pendingApproval';
-import UserInformationPage from './components/Admin/userInformationPage';
-import ProfessorMapping from './components/Admin/professorMapping';
+
+const AdminDashboard = React.lazy(() => import( './components/Admin/adminDashboard'));
+const CourseManagement = React.lazy(() => import( './components/Admin/courseManagement'));
+const PendingApproval = React.lazy(() => import('./components/Admin/pendingApproval'));
+const UserInformationPage = React.lazy(() => import('./components/Admin/userInformationPage'));
+const ProfessorMapping = React.lazy(() => import('./components/Admin/professorMapping'));
 
 const Contact = React.lazy(() => import('./components/contact/Contact'));
 const FAQ = React.lazy(() => import('./components/FAQ'));
@@ -16,7 +17,6 @@ const Login = React.lazy(() => import('./components/UserManagement/login'));
 const CreateUser = React.lazy(() => import('./components/UserManagement/createUser'));
 const ListUsers = React.lazy(() => import('./components/UserManagement/listUsers'));
 
-const Admin = React.lazy(() => import('./components/otherpages/admin'));
 const Prof = React.lazy(() => import('./components/otherpages/prof'));
 const Stud = React.lazy(() => import('./components/otherpages/stud'));
 
@@ -28,11 +28,15 @@ const ForgetPassword = React.lazy(() => import('./components/UserManagement/forg
 
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
 const Content = React.lazy(() => import('./components/Content/Content'));
+const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
+const Calender = React.lazy(() => import('./components/Calender/calender'));
+
+
 const App = () => {
 
     const dataString = localStorage.getItem('userData');
-    console.log(dataString);
 
+    const dataJSON = JSON.parse(dataString as string);
 
     return (<>
             <Router>
@@ -42,24 +46,22 @@ const App = () => {
                         <Route path="/" element={<LandingPage/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/faq" element={<FAQ/>}/>
-                        <Route path="/login" element={dataString ? <AlreadyLoggedInPage/> : <Login/>}/>
+                        <Route path="/login" element={dataJSON.user_type ? <AlreadyLoggedInPage/> : <Login/>}/>
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
-                        {/* <Route path="/admin" element={<Admin/>}/> */}
                         <Route path="/prof" element={<Prof/>}/>
                         <Route path="/stud" element={<Stud/>}/>
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/announcement" element={<Announcement/>}/>
                         <Route path="/content" element={<Content/>}/>
+                        <Route path="/signup" element={<ProfSignUp/>}/>
+                        <Route path="/calender" element={<Calender/>}/>
                         <Route path="/admin" element={<AdminDashboard/>}/>
-
-                        <Route path="/admin/course-management" element={<CourseManagement/>}/>          
-                        <Route path="/admin/pending-requests" element={<PendingApproval />} />
-
+                        <Route path="/admin/course-management" element={<CourseManagement/>}/>
+                        <Route path="/admin/pending-requests" element={<PendingApproval/>}/>
                         <Route path="/admin/users" element={<UserInformationPage/>}/>
                         <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
-
                     </Routes>
                 </Suspense>
             </Router>

@@ -48,7 +48,7 @@ const ForgetPasswordModal: React.FC<ForgetPasswordModalProps> = ({isOpen, onClos
                                 duration: 5000,
                                 isClosable: true,
                             });
-                        }else{
+                        } else {
                             toast({
                                 title: 'Problem with Sending Email!',
                                 status: 'error',
@@ -110,7 +110,7 @@ const ForgetPasswordModal: React.FC<ForgetPasswordModalProps> = ({isOpen, onClos
 
 // Function to send the forgot password email
 const sendEmail = async (email: string, user_id: string) => {
-    const url = envVariables.frontendURL + '/forgetPassword?user_id=' + user_id;
+    const url = envVariables.frontendURL + '?feature=forgetPassword&user_id=' + user_id;
     console.log("Sending mail to " + email + " with " + url);
     try {
         const response = await fetch(envVariables.backendURL + '/send-email', {

@@ -11,8 +11,6 @@ import {
     InputGroup,
     InputLeftElement,
     InputRightElement,
-    Radio,
-    RadioGroup,
     Stack,
     useToast
 } from "@chakra-ui/react";
@@ -39,15 +37,14 @@ const SignUp: React.FC = () => {
 
     const toast = useToast();
 
-    const [value, setValue] = React.useState('1');
-
     const fields = {
         user_email: '',
         first_name: '',
         last_name: '',
         password: '',
         conpass: '',
-        user_type: '',
+        user_type: 'prof',
+        status: 'pending'
     };
 
 
@@ -57,15 +54,14 @@ const SignUp: React.FC = () => {
         event.preventDefault();
         setLoading(true);
         console.log('Form submitted:', formData);
-        formData.user_type = value;
         if (validateForm()) {
             createUser(formData)
                 .then((response) => {
                     console.log(response);
                     setFormData(fields);
                     toast({
-                        title: 'User Created!',
-                        // description: `Message: ${response.user.user_email}`,
+                        title: 'Professor Created!',
+                        description: `An admin will verify and approve your request`,
                         status: 'success',
                         duration: 5000,
                         isClosable: true,
@@ -87,15 +83,10 @@ const SignUp: React.FC = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value, type} = e.target;
         console.log(name, type);
-        if (type === 'radio') {
-            // Update the value for radio button
-            console.log("here");
-            setValue(value);
 
-        } else {
-            // Update the form data for other input fields
-            setFormData({...formData, [name]: value});
-        }
+        // Update the form data for other input fields
+        setFormData({...formData, [name]: value});
+
     };
 
 
@@ -115,12 +106,8 @@ const SignUp: React.FC = () => {
             error = 'Confirm Password should be same as Password!';
         } else if (!formData.first_name) {
             error = 'First Name is Required';
-        } else if (!/^[A-Za-z]+$/.test(formData.first_name)) {
-            error = 'First Name can only contain letters';
         } else if (!formData.last_name) {
             error = 'Last Name is required';
-        } else if (!/^[A-Za-z]+$/.test(formData.last_name)) {
-            error = 'Last Name can only contain letters';
         }
 
         setErrorMessage(error);
@@ -221,16 +208,7 @@ const SignUp: React.FC = () => {
                                     </InputGroup>
                                 </FormControl>
 
-                                <FormControl>
-                                    <InputGroup>
-                                        <RadioGroup name="user_type" onChange={setValue} value={value}>
-                                            <Stack direction='row'>
-                                                <Radio value='stud'>Student</Radio>
-                                                <Radio value='prof'>Professor</Radio>
-                                            </Stack>
-                                        </RadioGroup>
-                                    </InputGroup>
-                                </FormControl>
+
                                 <Button
                                     borderRadius={0}
                                     type="submit"
@@ -238,7 +216,7 @@ const SignUp: React.FC = () => {
                                     colorScheme="teal"
                                     width="full"
                                 >
-                                    Create User
+                                    Request for Professor Profile Approval
                                 </Button>
                             </Stack>
                         </form>

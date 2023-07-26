@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
   ChakraProvider,
   Text,
-  Link,
   VStack,
   Input,
   Button,
@@ -24,71 +23,54 @@ import {
   FormLabel,
   Textarea,
   useToast,
-  FormErrorMessage,
-} from '@chakra-ui/react';
-import { FaTrashAlt } from 'react-icons/fa';
-import AdminNavBar from './adminNavigationBar';
-
-type Course = {
-  id: number;
-  courseNumber: string;
-  name: string;
-  description: string;
-  enrollmentRequirements: string;
-  editing: boolean;
-};
+} from "@chakra-ui/react";
+import AdminNavBar from "./adminNavigationBar";
+import envVariables from "../../importenv";
+import { course } from "../model/course.model";
 
 const CourseManagement = () => {
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 1,
-      courseNumber: 'CSCI 101',
-      name: 'Introduction to Computer Science',
-      description: 'Course 1 description',
-      enrollmentRequirements: 'Course 1 enrollment requirements',
-      editing: false,
-    },
-    {
-      id: 2,
-      courseNumber: 'CSCI 202',
-      name: 'Data Structures',
-      description: 'Course 2 description',
-      enrollmentRequirements: 'Course 2 enrollment requirements',
-      editing: false,
-    },
-    {
-      id: 3,
-      courseNumber: 'CSCI 303',
-      name: 'Algorithm Design',
-      description: 'Course 3 description',
-      enrollmentRequirements: 'Course 3 enrollment requirements',
-      editing: false,
-    },
-  ]);
+  const backendURL = envVariables.backendURL;
 
-  const [newCourse, setNewCourse] = useState<Course>({
-    id: Date.now(),
-    courseNumber: '',
-    name: '',
-    description: '',
-    enrollmentRequirements: '',
-    editing: false,
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [courses, setCourses] = useState<course[]>([]);
+  const [newCourse, setNewCourse] = useState<course>({
+    title: "",
+    courseID: "",
+    description: "",
   });
-
-  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [editingCourse, setEditingCourse] = useState<course | null>(null);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
   const toast = useToast();
 
-  // Keep track of the last used ID to auto-increment new course IDs
-  const [lastUsedId, setLastUsedId] = useState(courses.length > 0 ? courses[courses.length - 1].id : 0);
+  useEffect(() => {
+    fetchCoursesFromBackend();
+  }, [setCourses]);
 
-  const openCreateModal = (course?: Course) => {
+  const fetchCoursesFromBackend = async () => {
+    try {
+      const response = await fetch(`${backendURL}/get-courses`);
+      const data = await response.json();
+      if (data.courseList) {
+        setCourses(data.courseList);
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const openCreateModal = (course?: course) => {
     if (course) {
-      // If a course is provided, it means we are editing an existing course
       setEditingCourse(course);
+      setNewCourse({ ...course });
     } else {
-      // If no course is provided, it means we are creating a new course
       setEditingCourse(null);
+      setNewCourse({
+        title: "",
+        courseID: "",
+        description: "",
+      });
     }
     setCreateModalOpen(true);
   };
@@ -96,236 +78,334 @@ const CourseManagement = () => {
   const closeCreateModal = () => {
     setCreateModalOpen(false);
     setNewCourse({
-      id: Date.now(),
-      courseNumber: '',
-      name: '',
-      description: '',
-      enrollmentRequirements: '',
-      editing: false,
+      title: "",
+      courseID: "",
+      description: "",
     });
     setEditingCourse(null);
   };
 
-  const addCourse = () => {
-    if (newCourse.courseNumber.trim() === '' || newCourse.name.trim() === '') {
+  const createCourse = async (newCourse: course) => {
+    try {
+      const response = await fetch(`${backendURL}/add-course`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCourse),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Course Created",
+          description: "The course has been created successfully.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+
+        // Fetch the updated courses from the backend and add the new course to the local state
+        fetchCoursesFromBackend();
+        closeCreateModal();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to create course",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
       toast({
-        title: 'Validation Error',
-        description: 'Course Number and Course Name are required fields.',
-        status: 'error',
+        title: "Error",
+        description: "An error occurred while creating the course.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const addCourse = () => {
+    if (!newCourse.courseID.trim() || !newCourse.title.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Course ID and Course Title are required fields.",
+        status: "error",
         duration: 2000,
         isClosable: true,
       });
       return;
     }
 
-    const newCourseWithId = {
+    const newCourseWithId: course = {
       ...newCourse,
-      id: Date.now(),
+      _id: Date.now().toString(),
     };
 
     setCourses([...courses, newCourseWithId]);
     closeCreateModal();
     toast({
-      title: 'Course Created',
-      description: 'The course has been created successfully.',
-      status: 'success',
+      title: "Course Created",
+      description: "The course has been created successfully.",
+      status: "success",
       duration: 2000,
       isClosable: true,
     });
+
+    createCourse(newCourseWithId);
   };
 
-  const deleteCourse = (courseId: number) => {
-    setCourses(courses.filter((course) => course.id !== courseId));
+  const deleteCourse = async (_id: string) => {
+    try {
+      const response = await fetch(`${backendURL}/delete-course/${_id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Course deleted successfully, update the local state
+        fetchCoursesFromBackend();
+
+        toast({
+          title: "Course Deleted",
+          description: "The course has been deleted successfully.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      } else {
+        // Course not found or failed to delete, show error message
+        toast({
+          title: "Error",
+          description: "Failed to delete course",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      // An error occurred while deleting the course
+      toast({
+        title: "Error",
+        description: "An error occurred while deleting the course.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
   };
 
-  const toggleEdit = (courseId: number) => {
-    const courseToEdit = courses.find((course) => course.id === courseId);
+  const toggleEdit = (courseId: string) => {
+    const courseToEdit = courses.find((course) => course._id === courseId);
 
     if (courseToEdit) {
       openCreateModal(courseToEdit);
     }
   };
 
-  const updateCourse = (courseId: number, updatedCourse: Course) => {
-    setCourses(
-      courses.map((course) => (course.id === courseId ? { ...updatedCourse } : course))
-    );
-    toast({
-      title: 'Course Updated',
-      description: 'The course has been updated successfully.',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
-    closeCreateModal();
+  const updateCourse = async (courseId: string, updatedCourse: course) => {
+    try {
+      // Make a PUT request to the backend API to update the course
+      const response = await fetch(`${backendURL}/update-course/${courseId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedCourse),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Course updated successfully, return success response
+        toast({
+          title: "Course Updated",
+          description: "The course has been updated successfully.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+
+        // Fetch the updated courses from the backend and update the local state
+        fetchCoursesFromBackend();
+        closeCreateModal();
+      } else {
+        // Failed to update course, return error response
+        toast({
+          title: "Error",
+          description: "Failed to update course",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "An error occurred while updating the course.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleSave = () => {
     if (editingCourse) {
-      // Update the existing course
-      const updatedCourse: Course = {
+      const updatedCourse: course = {
         ...editingCourse,
-        courseNumber: newCourse.courseNumber,
-        name: newCourse.name,
+        courseID: newCourse.courseID,
+        title: newCourse.title,
         description: newCourse.description,
-        enrollmentRequirements: newCourse.enrollmentRequirements,
       };
-      updateCourse(editingCourse.id, updatedCourse);
+      updateCourse(editingCourse._id || "", updatedCourse);
       setEditingCourse(null);
     } else {
-      // Create a new course
       addCourse();
-    }};
-  
-    return (
-      <ChakraProvider>
-        <Box>
-          <AdminNavBar />
-        </Box>
-        <Box p={8}>
-          <Text fontSize="xl" fontWeight="bold" mb={4}>
-            Welcome to Course Management!
-          </Text>
-          <VStack spacing={4} align="start">
-            <Box>
-              <Button
-                colorScheme="teal"
-                leftIcon={<Box as="span">+</Box>}
-                onClick={() => openCreateModal()}
-              >
-                Create Course
-              </Button>
-            </Box>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>No</Th>
-                  <Th>Course Number</Th>
-                  <Th>Course Name</Th>
-                  <Th>Description</Th>
-                  <Th>Enrollment Requirements</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {courses.map((course) => (
-                  <Tr key={course.id}>
-                    <Td>{course.id}</Td>
-                    <Td>{course.courseNumber}</Td>
-                    <Td>
-                      {course.editing ? (
-                        <Input
-                          value={newCourse.name}
-                          onChange={(e) =>
-                            setNewCourse({ ...newCourse, name: e.target.value })
-                          }
-                          marginRight={2}
-                        />
-                      ) : (
-                        course.name
-                      )}
-                    </Td>
-                    <Td>{course.description}</Td>
-                    <Td>{course.enrollmentRequirements}</Td>
-                    <Td>
-                      {course.editing ? (
-                        <Button
-                          colorScheme="blue"
-                          size="sm"
-                          onClick={() => handleSave()}
-                        >
-                          Save
-                        </Button>
-                      ) : (
-                        <>
-                          <Button
-                            colorScheme="green"
-                            size="sm"
-                            marginLeft={2}
-                            onClick={() => toggleEdit(course.id)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            colorScheme="red"
-                            size="sm"
-                            marginLeft={2}
-                            onClick={() => deleteCourse(course.id)}
-                          >
-                            Delete
-                          </Button>
-                        </>
-                      )}
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </VStack>
-        </Box>
-  
-        {/* Create Course Modal */}
-        <Modal isOpen={isCreateModalOpen} onClose={closeCreateModal}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>{newCourse.editing ? 'Edit Course' : 'Create Course'}</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <VStack spacing={4} align="stretch">
-                <FormControl isRequired>
-                  <FormLabel>Course Number</FormLabel>
-                  <Input
-                    value={newCourse.courseNumber}
-                    onChange={(e) =>
-                      setNewCourse({ ...newCourse, courseNumber: e.target.value })
-                    }
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Course Name</FormLabel>
-                  <Input
-                    value={newCourse.name}
-                    onChange={(e) =>
-                      setNewCourse({ ...newCourse, name: e.target.value })
-                    }
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Description</FormLabel>
-                  <Textarea
-                    value={newCourse.description}
-                    onChange={(e) =>
-                      setNewCourse({ ...newCourse, description: e.target.value })
-                    }
-                  />
-                </FormControl>
-                <FormControl isRequired>
-                  <FormLabel>Enrollment Requirements</FormLabel>
-                  <Textarea
-                    value={newCourse.enrollmentRequirements}
-                    onChange={(e) =>
-                      setNewCourse({
-                        ...newCourse,
-                        enrollmentRequirements: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-                {newCourse.editing ? (
-                  <Button colorScheme="teal" onClick={() => handleSave()}>
-                    Save
-                  </Button>
-                ) : (
-                  <Button colorScheme="teal" onClick={addCourse}>
-                    Create
-                  </Button>
-                )}
-              </VStack>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      </ChakraProvider>
-    );
+    }
   };
-  
-  export default CourseManagement;
+
+  return (
+    <ChakraProvider>
+      <Box>
+        <AdminNavBar />
+      </Box>
+      <Box p={8}>
+        <Text fontSize="xl" fontWeight="bold" mb={4}>
+          Welcome to Course Management!
+        </Text>
+        <VStack spacing={4} align="start">
+          <Box>
+            <Button
+              colorScheme="teal"
+              leftIcon={<Box as="span">+</Box>}
+              onClick={() => openCreateModal()}
+            >
+              Create Course
+            </Button>
+          </Box>
+          <Table variant="striped">
+            <Thead>
+              <Tr>
+                <Th>Course ID</Th>
+                <Th>Course Title</Th>
+                <Th>Description</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {courses.map((course) => (
+                <Tr key={course._id || ""}>
+                  <Td>{course.courseID || ""}</Td>
+                  <Td>
+                    {editingCourse?._id === course._id ? (
+                      <Input
+                        value={newCourse.title}
+                        onChange={(e) =>
+                          setNewCourse({ ...newCourse, title: e.target.value })
+                        }
+                        marginRight={2}
+                      />
+                    ) : (
+                      course.title
+                    )}
+                  </Td>
+                  <Td>{course.description}</Td>
+                  <Td>
+                    {editingCourse?._id === course._id ? (
+                      <Button
+                        colorScheme="blue"
+                        size="sm"
+                        onClick={() => handleSave()}
+                      >
+                        Save
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          colorScheme="green"
+                          size="sm"
+                          marginLeft={2}
+                          onClick={() => toggleEdit(course._id || "")}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          size="sm"
+                          marginLeft={2}
+                          onClick={() => deleteCourse(course._id || "")}
+                        >
+                          Delete
+                        </Button>
+                      </>
+                    )}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </VStack>
+      </Box>
+
+      {/* Create Course Modal */}
+      <Modal isOpen={isCreateModalOpen} onClose={closeCreateModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {editingCourse ? "Edit Course" : "Create Course"}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack spacing={4} align="stretch">
+              <FormControl isRequired>
+                <FormLabel>Course Code</FormLabel>
+                <Input
+                  value={newCourse.courseID}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, courseID: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Course Title</FormLabel>
+                <Input
+                  value={newCourse.title}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, title: e.target.value })
+                  }
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Description</FormLabel>
+                <Textarea
+                  value={newCourse.description}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, description: e.target.value })
+                  }
+                />
+              </FormControl>
+              {editingCourse ? (
+                <Button colorScheme="teal" onClick={() => handleSave()}>
+                  Save
+                </Button>
+              ) : (
+                <Button colorScheme="teal" onClick={addCourse}>
+                  Create
+                </Button>
+              )}
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </ChakraProvider>
+  );
+};
+
+export default CourseManagement;
