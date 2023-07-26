@@ -55,7 +55,7 @@ const App = () => {
           <Route path="/stud" element={<Stud />} />
           <Route path="/dashboard" element={<DashBoardRoute />} />
           <Route path="/forgetPassword" element={<ForgetPassword />} />
-          <Route path="/quiz" element={dataString ? <QuizList /> : <ErrorPage />} />
+          <Route path="/quiz" element={isLoggedIn() ? <QuizList /> : <ErrorPage />} />
           <Route path="/quiz/:quizId" element={<QuizPage />} />
 
           <Route path="/announcement" element={<Announcement />} />
