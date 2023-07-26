@@ -56,6 +56,32 @@ class UserService {
     }
 
 
+    async updateUser(user: user) {
+        try {
+            // Connect to MongoDB
+            const client = await MongoClient.connect(mongoURI ? mongoURI : '', {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+            const db: Db = client.db(dbName);
+
+            const user_id = user.user_id;
+            delete user.user_id
+
+            // Check user credentials in the MongoDB collection
+            const users = await db.collection(usersCollectionName).updateOne(
+                {_id: new ObjectId(user_id as string)},
+                {$set: user}
+            );
+            await client.close();
+
+            console.log(users);
+            return users;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async forgetPassword(user: user) {
         console.log(user);
         try {

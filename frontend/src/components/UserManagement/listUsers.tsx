@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Input, Table, Tbody, Td, Th, Thead, Tr, useToast} from '@chakra-ui/react';
-import {FaTrashAlt} from "react-icons/fa";
+import {FaEdit, FaTrashAlt} from "react-icons/fa";
 import {User} from '../model/user.model';
 import Loader from '../../loading';
+import envVariables from "../../importenv";
+import MultiSelectMenu from "./MultiSelectMenu";
+import EditUserModal from "./EditUserModal";
 
 const TableWithFilters: React.FC = () => {
     const [filterEmail, setFilterEmail] = useState<string>('');
@@ -12,6 +15,43 @@ const TableWithFilters: React.FC = () => {
     const [filteredData, setFilteredData] = useState<User[]>([]);
     const toast = useToast();
     const [isLoading, setLoading] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState<string[]>(['prof', 'stud']);
+    const [editUser, setEditUser] = useState<User | null>(null);
+    const handleEditUser = (user: User) => {
+        setEditUser(user);
+    };
+
+
+    const handleUpdateUser = async (updatedUser: User) => {
+        console.log("in parent");
+        console.log(updatedUser);
+        setLoading(true);
+        const res = await updateUser(updatedUser);
+
+        await fetchUsers();
+        setEditUser(null);
+
+        if (res) {
+            toast({
+                title: 'User Updated!',
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+            });
+        } else {
+            toast({
+                title: 'User Update Error!',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+        setLoading(false);
+    };
+    const handleMultiSelectChange = (selectedValues: string[]) => {
+        setSelectedOptions(selectedValues);
+        console.log(selectedValues);
+    };
     const handleEmailFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFilterEmail(event.target.value);
     };
@@ -28,10 +68,10 @@ const TableWithFilters: React.FC = () => {
         setLoading(true);
 
         fetchUsers()
-            .then((response) => {
+            .then((response: any) => {
                 setData(response.users);
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 console.error(error);
             }).finally(() => {
             setLoading(false);
@@ -40,23 +80,27 @@ const TableWithFilters: React.FC = () => {
 
     useEffect(() => {
         const filtered = data.filter((item) => {
-            console.log("item", item);
-            console.log(item.user_email);
-            const emailMatch = item.user_email?.includes(filterEmail.toLowerCase());
-            const firstNameMatch = item.first_name?.includes(filterFirstName.toLowerCase());
-            const lastNameMatch = item.last_name?.includes(filterLastName.toLowerCase());
-            return emailMatch || firstNameMatch || lastNameMatch;
+            const emailMatch = filterEmail ? item.user_email?.includes(filterEmail.toLowerCase()) : false;
+            const firstNameMatch = filterFirstName ? item.first_name?.includes(filterFirstName.toLowerCase()) : false;
+            const lastNameMatch = filterLastName ? item.last_name?.includes(filterLastName.toLowerCase()) : false;
+            let userTypeMatch = false;
+            if (item.user_type != null) {
+                userTypeMatch = selectedOptions.length > 0 ? selectedOptions.includes(item.user_type) : false;
+            }
+            console.log(selectedOptions);
+            return emailMatch || firstNameMatch || lastNameMatch || userTypeMatch;
         });
+        console.log(data);
         console.log(filtered);
         setFilteredData(filtered);
-    }, [data, filterEmail, filterFirstName, filterLastName]);
+    }, [data, filterEmail, filterFirstName, filterLastName, selectedOptions]);
 
     async function handleDelete(id: string | undefined): Promise<string> {
+        const backendURL = envVariables.backendURL;
         setLoading(true);
-        console.log(id);
         try {
             try {
-                const response = await fetch('http://localhost:3000/deleteUser', {
+                const response = await fetch(backendURL + '/deleteUser', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,10 +108,9 @@ const TableWithFilters: React.FC = () => {
                     body: JSON.stringify({"id": id}),
                 });
                 const data = await response.json();
-                console.log(data);
                 if (data.response.deletedCount === 1) {
-                    fetchUsers()
-                        .then((response_1) => {
+                    await fetchUsers()
+                        .then((response_1: any) => {
                             setData(response_1.users);
                             toast({
                                 title: 'User Deleted!',
@@ -76,7 +119,7 @@ const TableWithFilters: React.FC = () => {
                                 isClosable: true,
                             });
                         })
-                        .catch((error) => {
+                        .catch((error: any) => {
                             console.error(error);
                         });
                 } else {
@@ -108,6 +151,7 @@ const TableWithFilters: React.FC = () => {
                         <Th>First Name</Th>
                         <Th>Last Name</Th>
                         <Th>User Type</Th>
+                        <Th>Edit User</Th>
                         <Th>Delete User</Th>
                     </Tr>
                     <Tr>
@@ -132,7 +176,12 @@ const TableWithFilters: React.FC = () => {
                                 onChange={handleLastNameFilterChange}
                             />
                         </Td>
-                        <Td></Td>
+                        <Td>
+                            <MultiSelectMenu label="User Types"
+                                             options={[{option: "Student", value: "stud"}, {option: "Professor", value: "prof"}]}
+                                             onChange={handleMultiSelectChange}
+                            />
+                        </Td>
                         <Td></Td>
                     </Tr>
                 </Thead>
@@ -142,7 +191,16 @@ const TableWithFilters: React.FC = () => {
                             <Td>{item.user_email}</Td>
                             <Td>{item.first_name}</Td>
                             <Td>{item.last_name}</Td>
-                            <Td>{item.user_type}</Td>
+                            <Td>{item.user_type === 'stud' ? 'Student' : 'Professor'}</Td>
+                            <Td>
+                                <Button
+                                    colorScheme="teal"
+                                    leftIcon={<FaEdit/>}
+                                    onClick={() => handleEditUser(item)}
+                                >
+                                    Edit
+                                </Button>
+                            </Td>
                             <Td>
                                 <Button colorScheme='red' leftIcon={<FaTrashAlt/>}
                                         onClick={() => handleDelete(item._id)}>
@@ -153,6 +211,11 @@ const TableWithFilters: React.FC = () => {
                     ))}
                 </Tbody>
             </Table>
+            <EditUserModal
+                user={editUser}
+                onClose={() => setEditUser(null)}
+                onUpdateUser={handleUpdateUser}
+            />
         </>
     );
 };
@@ -160,9 +223,30 @@ const TableWithFilters: React.FC = () => {
 export default TableWithFilters;
 
 
-async function fetchUsers(): Promise<{ users: User[] }> {
+async function updateUser(user: User): Promise<boolean> {
+    const backendURL = envVariables.backendURL;
     try {
-        const response = await fetch('http://localhost:3000/listUsers', {
+        const response = await fetch(backendURL + '/updateUser', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+        });
+        const data = await response.json();
+        // Handle the response data
+        console.log(data);
+        return data.message === 'User Updated Successfully';
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+async function fetchUsers(): Promise<{ users: User[] }> {
+    const backendURL = envVariables.backendURL;
+    try {
+        const response = await fetch(backendURL + '/listUsers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -173,7 +257,6 @@ async function fetchUsers(): Promise<{ users: User[] }> {
         console.log(data);
         return data;
     } catch (error) {
-        // Handle any errors
         console.error(error);
         return {users: []};
     }
