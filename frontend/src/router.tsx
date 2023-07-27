@@ -1,8 +1,8 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import React, {Suspense} from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { Suspense } from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
-import {getLoggedInUserType} from "./service/LoginState";
+import { getLoggedInUserType } from "./service/LoginState";
 
 const AdminDashboard = React.lazy(() => import('./components/Admin/adminDashboard'));
 const CourseManagement = React.lazy(() => import('./components/Admin/courseManagement'));

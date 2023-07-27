@@ -78,7 +78,7 @@ const Login: React.FC = () => {
         if (getLoggedInUserType() !== '') {
             navigate('/alreadyLoggedIn');
         }
-    },);
+    }, []);
 
 
     const openForgetPasswordModal = () => {

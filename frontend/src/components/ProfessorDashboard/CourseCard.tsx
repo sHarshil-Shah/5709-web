@@ -17,8 +17,7 @@ function CourseCard({ course }: CourseCardProps) {
             Course Code: {course.courseID}
           </Card.Subtitle>
           <Card.Text>{course.description}</Card.Text>
-          <Card.Link href="#">Link 1</Card.Link>
-          <Card.Link href="#">Link 2</Card.Link>
+          <Card.Link href="/content" style={{color: "blue"}}>Content page</Card.Link>
         </Card.Body>
       </Card>
     </div>

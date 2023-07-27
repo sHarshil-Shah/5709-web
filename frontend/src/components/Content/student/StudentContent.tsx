@@ -4,10 +4,11 @@ import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faShare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Modal, Button, Form } from "react-bootstrap";
-import envVariables from "../../../importenv";
 import { content } from "../../model/content.model";
 // import { v4 as uuidv4 } from "uuid";
 import { ObjectId } from "mongodb";
+import envVariables from "../../../importenv";
+import { course } from "../../model/course.model";
 
 function StudContent() {
   const [contentList, setContentList] = useState<content[]>([]);
@@ -44,6 +45,7 @@ function StudContent() {
 
   useEffect(() => {
     fetchContent();
+    fetchCourses();
   }, []);
 
   const fetchContent = () => {
@@ -180,8 +182,26 @@ function StudContent() {
   ) => {
     setSelectedCourseID(event.target.value);
   };
+  const [courses, setCourses] = useState<course[]>([]);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch(`${envVariables.backendURL}/get-courses`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setCourses(data.courseList);
+      } else {
+        console.log("Failed to fetch courses.");
+      }
+    } catch (error) {
+      console.error(error);
+      console.log("An error occurred while fetching courses.");
+    }
+  };
+
   const uniqueCourseIDs = Array.from(
-    new Set(contentList.map((content) => content.courseID))
+    new Set(courses.map((course) => course.courseID))
   );
 
   return (
