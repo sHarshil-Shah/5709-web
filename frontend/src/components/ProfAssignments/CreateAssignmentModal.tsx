@@ -20,10 +20,10 @@ import envVariables from '../../importenv';
 import {Assignment} from '../model/profassignment.model';
 
 interface CreateAssignmentModalProps {
-  onAssignmentCreated: (newAssignment: Assignment) => void;
+  handleAssignmentCreated: (newAssignment: Assignment) => void;
 }
 
-const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ onAssignmentCreated }) => {
+const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ handleAssignmentCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [assignmentTitle, setAssignmentTitle] = useState('');
   const [visibleDate, setVisibleDate] = useState('');
@@ -142,8 +142,9 @@ const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ onAssignm
             isClosable: true,
           });
 
+          console.log(data);
           // Pass the assignment data back to the parent component (AssignmentList) using the callback prop
-          onAssignmentCreated(assignmentData);
+          handleAssignmentCreated(assignmentData);
 
           resetState();
           setIsOpen(false);

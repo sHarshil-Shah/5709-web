@@ -36,8 +36,8 @@ const Content = React.lazy(() => import('./components/Content/Content'));
 const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
 const Calender = React.lazy(() => import('./components/Calender/calender'));
 
-const FinalAssignmentPage = React.lazy(() => import('./components/ProfAssignments/FinalAssignmentPage'))
-
+const ProfessorAssignmentPage = React.lazy(() => import('./components/ProfAssignments/ProfessorAssignmentPage'))
+const StudentAssignmentPage = React.lazy(() => import('./components/studentAssignments/StudentAssignmentPage'))
 
 const App = () => {
     return (<>
@@ -67,7 +67,8 @@ const App = () => {
                         <Route path="/admin/users" element={<UserInformationPage/>}/>
                         <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
                         <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage/>}/>
-                        <Route path="/profAssignment" element={<FinalAssignmentPage/>}/>
+                        <Route path="/profAssignment" element={<ProfessorAssignmentPage/>}/>
+                        <Route path="/studAssignment" element={<StudentAssignmentPage/>}/>
                     </Routes>
                 </Suspense>
             </Router>

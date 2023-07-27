@@ -29,9 +29,10 @@ const AssignmentList: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
     const [isLoading, setLoading] = useState(false);
 
+    // Callback function to handle the newly created assignment
     const handleAssignmentCreated = (newAssignment: Assignment) => {
         setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
-      };
+    };
 
     const toast = useToast();
 
@@ -95,10 +96,7 @@ const AssignmentList: React.FC = () => {
       const handleAssignmentUpdated = (updatedAssignment: Assignment) => {
         setLoading(true);
         callUpdateAssignmentAPI(updatedAssignment)
-          .then(async (updatedData) => {
-            // const updatedAssignments = assignments.map((assignment) =>
-            //   assignment._id === updatedData._id ? updatedData : assignment
-            // );
+          .then(async () => {
             const assignments = await fetchAssignmentList();
             setAssignments(assignments.assignments);
             setLoading(false);
