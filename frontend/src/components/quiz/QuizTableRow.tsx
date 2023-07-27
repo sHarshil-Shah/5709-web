@@ -19,10 +19,10 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
 
     const navigate = useNavigate();
 
-    const handleStartQuiz = useCallback(() => {
+    const handleStartQuiz = () => {
         setIsStartQuizAlertOpen(false);
         navigate('/quiz/' + quiz._id);
-    }, []);
+    };
 
     const handleQuizDetails = useCallback(() => {
         if (isProfessor) {

@@ -1,5 +1,5 @@
 // Author: Raj Soni
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Table, Tbody } from '@chakra-ui/react';
 import { Quiz } from '../model/quiz.model';
 import envVariables from '../../importenv';
@@ -19,7 +19,7 @@ const QuizList: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const fetchQuizzes = useCallback(() => {
+  const fetchQuizzes = () => {
     const user_type = getLoggedInUserType();
     if (user_type) {
       setLoading(true);
@@ -51,7 +51,7 @@ const QuizList: React.FC = () => {
     } else {
       navigate('/error');
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchQuizzes();
