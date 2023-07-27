@@ -49,8 +49,8 @@ const TitleBar = () => {
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
-                // {title: "Assignment", route: "/profAssignment"},
-                // { title: "Quiz", route: "/quiz"},
+                {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
+                {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
             ]);
