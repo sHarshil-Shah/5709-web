@@ -38,7 +38,7 @@ const Calender = React.lazy(() => import('./components/Calender/calender'));
 
 
 const App = () => {
-
+    console.log(getLoggedInUserType());
 
     return (<>
             <Router>
