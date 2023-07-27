@@ -89,7 +89,7 @@ const TableWithFilters: React.FC = () => {
                 userTypeMatch = selectedOptions.length > 0 ? selectedOptions.includes(item.user_type) : false;
             }
             console.log(selectedOptions);
-            return emailMatch || firstNameMatch || lastNameMatch || userTypeMatch;
+            return (emailMatch || firstNameMatch || lastNameMatch) && userTypeMatch;
         });
         console.log(data);
         console.log(filtered);
