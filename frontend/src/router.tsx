@@ -39,6 +39,7 @@ const Calender = React.lazy(() => import('./components/Calender/calender'));
 
 const ProfessorAssignmentPage = React.lazy(() => import('./components/ProfAssignments/ProfessorAssignmentPage'))
 const StudentAssignmentPage = React.lazy(() => import('./components/studentAssignments/StudentAssignmentPage'))
+const StudentHistoryPage = React.lazy(() => import('./components/studentAssignments/StudentHistoryPage'))
 
 const App = () => {
     return (<>
@@ -72,6 +73,7 @@ const App = () => {
                         <Route path="/course" element={<CourseDashboard/>}/>
                         <Route path="/profAssignment" element={<ProfessorAssignmentPage/>}/>
                         <Route path="/studAssignment" element={<StudentAssignmentPage/>}/>
+                        <Route path="/historyAssignments" element={<StudentHistoryPage/>}/>
                     </Routes>
                 </Suspense>
             </Router>
