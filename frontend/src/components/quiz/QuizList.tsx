@@ -16,8 +16,12 @@ const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
+  const [courseId, setcourseID] = useState<string>('');
 
   const navigate = useNavigate();
+
+  const localCourseId = localStorage.getItem('course_id');
+  setcourseID(localCourseId ? localCourseId : '');
 
   const fetchQuizzes = useCallback(() => {
     const user_type = getLoggedInUserType();
@@ -25,7 +29,7 @@ const QuizList: React.FC = () => {
       setLoading(true);
       if (user_type === 'prof') {
         setIsProfessor(true);
-        getAllQuizzes()
+        getAllQuizzes(courseId)
           .then((response) => {
             setQuizzes(response.quizzes);
           })
@@ -37,7 +41,7 @@ const QuizList: React.FC = () => {
           });
       } else {
         setIsProfessor(false);
-        getAllQuizzesForStudent()
+        getAllQuizzesForStudent(courseId)
           .then((response) => {
             setQuizzes(response.quizzes);
           })
@@ -161,12 +165,13 @@ const QuizList: React.FC = () => {
 
 export default QuizList;
 
-function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
+function getAllQuizzes(courseID: string): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
@@ -179,13 +184,14 @@ function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
+function getAllQuizzesForStudent(courseID: string): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'user-type': 'stud',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())

@@ -161,7 +161,7 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     }
 
     setLoading(true);
-    const courseId = localStorage.getItem('courseID');
+    const courseId = localStorage.getItem('course_id');
     formData.courseID = courseId ? courseId : '';
     createQuiz(formData)
       .then((response) => {
