@@ -81,18 +81,15 @@ const TableWithFilters: React.FC = () => {
 
     useEffect(() => {
         const filtered = data.filter((item) => {
-            const emailMatch = filterEmail ? item.user_email?.includes(filterEmail.toLowerCase()) : false;
-            const firstNameMatch = filterFirstName ? item.first_name?.includes(filterFirstName.toLowerCase()) : false;
-            const lastNameMatch = filterLastName ? item.last_name?.includes(filterLastName.toLowerCase()) : false;
+            const emailMatch = filterEmail ? item.user_email?.toLowerCase()?.startsWith(filterEmail.toLowerCase()) : true;
+            const firstNameMatch = filterFirstName ? item.first_name?.toLowerCase().startsWith(filterFirstName.toLowerCase()) : true;
+            const lastNameMatch = filterLastName ? item.last_name?.toLowerCase().startsWith(filterLastName.toLowerCase()) : true;
             let userTypeMatch = false;
             if (item.user_type != null) {
                 userTypeMatch = selectedOptions.length > 0 ? selectedOptions.includes(item.user_type) : false;
             }
-            console.log(selectedOptions);
-            return (emailMatch || firstNameMatch || lastNameMatch) && userTypeMatch;
+            return emailMatch && firstNameMatch && lastNameMatch && userTypeMatch;
         });
-        console.log(data);
-        console.log(filtered);
         setFilteredData(filtered);
     }, [data, filterEmail, filterFirstName, filterLastName, selectedOptions]);
 
@@ -236,7 +233,6 @@ async function updateUser(user: User): Promise<boolean> {
         });
         const data = await response.json();
         // Handle the response data
-        console.log(data);
         return data.message === 'User Updated Successfully';
     } catch (error) {
         console.error(error);
@@ -253,10 +249,8 @@ async function fetchUsers(): Promise<{ users: User[] }> {
                 'Content-Type': 'application/json',
             },
         });
-        const data = await response.json();
         // Handle the response data
-        console.log(data);
-        return data;
+        return await response.json();
     } catch (error) {
         console.error(error);
         return {users: []};

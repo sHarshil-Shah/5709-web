@@ -30,17 +30,15 @@ const TitleBar = () => {
     };
 
     useEffect(() => {
-        const dataString = localStorage.getItem("userData");
-        console.log(dataString);
+        const loggedInUserType = getLoggedInUserType();
+
         // Perform any logic to update menu options based on the current state
         // Example: Update menu options based on the user's role or authentication status
         console.log(location);
         if (location.pathname === "/") {
             setMenuOptions(
-                dataString ? [{title: "Dashboard", route: "/dashboard"}] : [{
-                    title: "Register as a professor",
-                    route: "/Signup"
-                }]
+                loggedInUserType !== '' ? [{title: "Dashboard", route: "/dashboard"}] :
+                    [{title: "Register as a professor", route: "/Signup"}]
             );
         } else if (
             location.pathname === "/dashboard" ||
