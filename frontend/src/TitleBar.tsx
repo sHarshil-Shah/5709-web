@@ -50,7 +50,7 @@ const TitleBar = () => {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
                 // {title: "Assignment", route: "/profAssignment"},
-                // {title: "Quiz", route: "/quiz"},
+                // { title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
             ]);
@@ -62,8 +62,13 @@ const TitleBar = () => {
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
             ]);
-        } else if (location.pathname === "/course") {
+        } else if (location.pathname === "/course" ||
+            location.pathname === "/quiz" ||
+            location.pathname === "/profAssignment" ||
+            location.pathname === "/studAssignment"
+        ) {
             setMenuOptions([
+                {title: "Dashboard", route: "/dashboard"},
                 {title: "Quiz", route: "/quiz"},
                 {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
             ])
