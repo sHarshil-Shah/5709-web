@@ -4,6 +4,7 @@ import { Tr, Td, Button, Flex, ButtonGroup } from '@chakra-ui/react';
 import { Quiz } from '../model/quiz.model';
 import StartQuizAlert from './StartQuizAlert';
 import QuizDetailsModal from './QuizDetailsModal';
+import { useNavigate } from 'react-router-dom';
 
 interface QuizTableRowProps {
     quiz: Quiz;
@@ -16,9 +17,11 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
     const [isStartQuizAlertOpen, setIsStartQuizAlertOpen] = useState(false);
     const [isQuizDetailsModalOpen, setIsQuizDetailsModalOpen] = useState(false);
 
+    const navigate = useNavigate();
+
     const handleStartQuiz = useCallback(() => {
         setIsStartQuizAlertOpen(false);
-        // Logic to handle quiz start here...
+        navigate('/quiz/' + quiz._id);
     }, []);
 
     const handleQuizDetails = useCallback(() => {

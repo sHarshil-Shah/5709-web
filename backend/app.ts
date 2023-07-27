@@ -30,6 +30,8 @@ import { createQuizRouter } from './controller/quiz/createQuiz';
 import { listQuizzesRouter } from './controller/quiz/listQuiz';
 import { updateQuizRouter } from './controller/quiz/updateQuiz';
 import { deleteQuizRouter } from './controller/quiz/deleteQuiz';
+import { getStudentQuizRouter } from './controller/quiz/getStudentQuiz';
+import { submitQuizRouter } from './controller/quiz/submitQuiz';
 
 // Create an Express app
 const app = express();
@@ -74,6 +76,8 @@ app.use('/createQuiz', createQuizRouter);
 app.use('/listQuiz', listQuizzesRouter);
 app.use('/updateQuiz', updateQuizRouter);
 app.use('/deleteQuiz', deleteQuizRouter);
+app.use('/getStudentQuiz', getStudentQuizRouter);
+app.use('/submitQuiz', submitQuizRouter);
 
 // Assignment routers
 app.use('/createAssignment', createAssignmentRouter);

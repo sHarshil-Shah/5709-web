@@ -89,10 +89,10 @@ const QuizList: React.FC = () => {
   return (
     <>
       {isLoading && <Loader />}
-      <Box bg="teal" p={4} color="white">
+      <Box p={4}>
         <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" align="center">
-          <Heading as="h1" size="lg" textAlign="center" mb={2}>
-            CSCI5709 - Advanced Web Services
+          <Heading as="h1" size="lg" textAlign="center" mb={2} ml={5}>
+            Quiz List
           </Heading>
           {isProfessor && (
             <Flex>
@@ -194,7 +194,7 @@ function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
     })
     .catch((error) => {
       console.error(error);
-      return { users: [] };
+      return { quizzes: [] };
     });
 }
 

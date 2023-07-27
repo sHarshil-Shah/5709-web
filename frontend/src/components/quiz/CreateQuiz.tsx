@@ -166,7 +166,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
     createQuiz(formData)
       .then((response) => {
         setFormData(initialFormData);
-        console.log(response);
         toast({
           title: 'Quiz Created!',
           status: 'success',
