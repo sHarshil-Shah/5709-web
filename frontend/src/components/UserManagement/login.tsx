@@ -115,7 +115,7 @@ const Login: React.FC = () => {
                     navigate('/prof');
                     break;
                 case "stud":
-                    navigate('/stud');
+                    navigate('/dashboard');
                     break;
                 default:
                     setErrorMessage('Wrong Email or Password!');
