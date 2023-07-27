@@ -1,8 +1,10 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { Suspense } from 'react';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, {Suspense} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
-import { getLoggedInUserType } from "./service/LoginState";
+import {getLoggedInUserType} from "./service/LoginState";
+
+const CourseDashboard = React.lazy(() => import( "./components/Course/CourseDashboard"));
 
 const AdminDashboard = React.lazy(() => import('./components/Admin/adminDashboard'));
 const CourseManagement = React.lazy(() => import('./components/Admin/courseManagement'));
@@ -38,7 +40,6 @@ const Calender = React.lazy(() => import('./components/Calender/calender'));
 
 const FinalAssignmentPage = React.lazy(() => import('./components/ProfAssignments/FinalAssignmentPage'))
 
-
 const App = () => {
     return (<>
             <Router>
@@ -52,7 +53,7 @@ const App = () => {
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
                         <Route path="/prof" element={<Prof/>}/>
-                         <Route path="/stud" element={<Stud/>}/>
+                        <Route path="/stud" element={<Stud/>}/>
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/quiz" element={getLoggedInUserType() !== '' ? <QuizList/> : <ErrorPage/>}/>
@@ -68,6 +69,7 @@ const App = () => {
                         <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
                         <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage/>}/>
                         <Route path="/profAssignment" element={<FinalAssignmentPage/>}/>
+                        <Route path="/course" element={<CourseDashboard/>}/>
                     </Routes>
                 </Suspense>
             </Router>
