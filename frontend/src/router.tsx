@@ -53,7 +53,7 @@ const App = () => {
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
                         <Route path="/prof" element={<Prof/>}/>
-                        <Route path="/stud" element={<Stud/>}/>
+                        {/* <Route path="/stud" element={<Stud/>}/> */}
                         <Route path="/dashboard" element={<DashBoardRoute/>}/>
                         <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                         <Route path="/quiz" element={getLoggedInUserType() === '' ? <QuizList/> : <ErrorPage/>}/>
