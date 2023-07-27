@@ -46,7 +46,8 @@ const TitleBar = () => {
             location.pathname === "/dashboard" ||
             location.pathname === "/announcement" ||
             location.pathname === "/content" ||
-            location.pathname === "/prof" 
+            location.pathname === "/prof" ||
+            location.pathname === "/stud"
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
