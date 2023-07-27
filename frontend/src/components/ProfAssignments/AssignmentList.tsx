@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { Assignment } from '../model/profassignment.model';
 import envVariables from '../../importenv';
+import Loader from '../../loading';
 import EditAssignmentModal from './EditAssignmentModal';
 
 const AssignmentList: React.FC = () => {
@@ -26,8 +27,11 @@ const AssignmentList: React.FC = () => {
     const [assignments, setAssignments] = useState<Assignment[]>([]);    
     const [deleteAssignmentId, setDeleteAssignmentId] = useState<string | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
-    const [isLoading, setIsLoading] = useState(false); // State to manage loading
+    const [isLoading, setLoading] = useState(false);
 
+    const handleAssignmentCreated = (newAssignment: Assignment) => {
+        setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
+      };
 
     const toast = useToast();
 
@@ -77,119 +81,121 @@ const AssignmentList: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchAssignments = async () => {
-          try {
-            const response = await fetchAssignmentList();
-            setAssignments(response.assignments);
-          } catch (error) {
-            console.error(error);
-            setAssignments([]); 
-          }
-        };
-    
-        fetchAssignments();
-      },[assignments]);
+        fetchAssignmentList()
+            .then((response: any) => {
+                setAssignments(response.assignments);
+            })
+            .catch((error: any) => {
+                console.error(error);
+            }).finally(() => {
+            setLoading(false);
+        });
+    }, []);
 
     return (
-        <Box mt={4}>
-        {assignments.length > 0 ? (
-        <Table variant="simple">
-            <Thead>
-            <Tr>
-                <Th>Assignment Title</Th>
-                <Th>Visible Date</Th>
-                <Th>Submission Date</Th>
-                <Th>Action</Th>
-            </Tr>
-            </Thead>
-            <Tbody>
-            {assignments?.map((assignment) => (
-                <Tr key={(assignment as Assignment & { _id: string })._id}>
-                <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
-                <Td>{assignment.visibleDate}</Td>
-                <Td>{assignment.submissionDate}</Td>
-                <Td>
-                    <Button colorScheme="teal" onClick={() => handleEditClick(assignment)}>
-                        Edit
-                    </Button>
-                    <Button colorScheme="red" onClick={() => handleDeleteClick((assignment as Assignment & { _id: string })._id)} ml={2}>
-                        Delete
-                    </Button>
-                </Td>
+        <>
+            {isLoading && <Loader/>}
+
+            <Box mt={4}>
+            {assignments.length > 0 ? (
+            <Table variant="simple">
+                <Thead>
+                <Tr>
+                    <Th>Assignment Title</Th>
+                    <Th>Visible Date</Th>
+                    <Th>Submission Date</Th>
+                    <Th>Action</Th>
                 </Tr>
-            ))}
-            </Tbody>
-        </Table>
-        ) : (
-            <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
-              No Assignment Data
-            </Box>
-          )}
+                </Thead>
+                <Tbody>
+                {assignments?.map((assignment) => (
+                    <Tr key={(assignment as Assignment & { _id: string })._id}>
+                    <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
+                    <Td>{assignment.visibleDate}</Td>
+                    <Td>{assignment.submissionDate}</Td>
+                    <Td>
+                        <Button colorScheme="teal" onClick={() => handleEditClick(assignment)}>
+                            Edit
+                        </Button>
+                        <Button colorScheme="red" onClick={() => handleDeleteClick((assignment as Assignment & { _id: string })._id)} ml={2}>
+                            Delete
+                        </Button>
+                    </Td>
+                    </Tr>
+                ))}
+                </Tbody>
+            </Table>
+            ) : (
+                <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
+                No Assignment Data
+                </Box>
+            )}
 
-        <Modal isOpen={isDeleteModalOpen} onClose={handleDeleteCancel}>
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>Delete Assignment</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>Are you sure you want to delete this assignment?</ModalBody>
-                <ModalFooter>
-                    <Button colorScheme="red" onClick={handleDeleteConfirm}>Yes</Button>
-                    <Button ml={4} onClick={handleDeleteCancel}>Cancel</Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+            <Modal isOpen={isDeleteModalOpen} onClose={handleDeleteCancel}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Delete Assignment</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>Are you sure you want to delete this assignment?</ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="red" onClick={handleDeleteConfirm}>Yes</Button>
+                        <Button ml={4} onClick={handleDeleteCancel}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
-        {/* Edit Assignment Modal */}
-        {selectedAssignment && ( // Only render the modal when selectedAssignment is defined
-        <EditAssignmentModal
-            assignment={selectedAssignment}
-            isOpen={isEditModalOpen}
-            onClose={() => setIsEditModalOpen(false)}
-            onUpdate={(updatedAssignment) => {
-                // Handle the updated assignment data here, e.g., make an API call to update the assignment
-                console.log('Updated Assignment:', updatedAssignment);
-                setIsLoading(true); // Set loading to true before the update API call
-    
-                // Call the API to update the assignment
-                callUpdateAssignmentAPI(updatedAssignment)
-                    .then((updatedData) => {
-                    // Find the updated assignment in the assignments array and replace it with the new data
-                    const updatedAssignments = assignments.map((assignment) =>
-                        assignment._id === updatedData._id ? updatedData : assignment
-                    );
-                        console.log(updatedAssignments);
-                        setIsLoading(false);
-                        setAssignments(updatedAssignments);
-                    })
-                    .catch((error) => {
-                    // Handle API call errors
-                    console.error(error);
-                    setIsLoading(false); // Set loading to false in case of an error
-                    toast({
-                        title: 'Error',
-                        description: 'Failed to update assignment. Please try again later.',
-                        status: 'error',
-                        duration: 3000,
-                        isClosable: true,
+            {/* Edit Assignment Modal */}
+            {selectedAssignment && ( // Only render the modal when selectedAssignment is defined
+            <EditAssignmentModal
+                assignment={selectedAssignment}
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onUpdate={(updatedAssignment) => {
+                    // Handle the updated assignment data here, e.g., make an API call to update the assignment
+                    console.log('Updated Assignment:', updatedAssignment);
+                    setLoading(true); // Set loading to true before the update API call
+        
+                    // Call the API to update the assignment
+                    callUpdateAssignmentAPI(updatedAssignment)
+                        .then((updatedData) => {
+                        // Find the updated assignment in the assignments array and replace it with the new data
+                        const updatedAssignments = assignments.map((assignment) =>
+                            assignment._id === updatedData._id ? updatedData : assignment
+                        );
+                            console.log(updatedAssignments);
+                            setLoading(false);
+                            setAssignments(updatedAssignments);
+                        })
+                        .catch((error) => {
+                        // Handle API call errors
+                        console.error(error);
+                        setLoading(false); // Set loading to false in case of an error
+                        toast({
+                            title: 'Error',
+                            description: 'Failed to update assignment. Please try again later.',
+                            status: 'error',
+                            duration: 3000,
+                            isClosable: true,
+                        });
                     });
-                });
 
-                // Close the modal after handling the update
-                setIsEditModalOpen(false);
-            }}
-            />
-        )}
+                    // Close the modal after handling the update
+                    setIsEditModalOpen(false);
+                }}
+                />
+            )}
 
-        {/* Loading Bar */}
-        {isLoading && (
-            <Box position="fixed" top={0} left={0} width="100%" height="100%" display="flex" justifyContent="center" alignItems="center" backgroundColor="rgba(0, 0, 0, 0.6)">
-            <Box p={4} bg="white" rounded="md">
-                Loading...
-            </Box>
-            </Box>
-        )}
+            {/* Loading Bar */}
+            {isLoading && (
+                <Box position="fixed" top={0} left={0} width="100%" height="100%" display="flex" justifyContent="center" alignItems="center" backgroundColor="rgba(0, 0, 0, 0.6)">
+                <Box p={4} bg="white" rounded="md">
+                    Loading...
+                </Box>
+                </Box>
+            )}
 
-        </Box>        
+            </Box>    
+        </>  
     );
 };
 
