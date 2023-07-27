@@ -6,7 +6,6 @@ const Professor = () => {
 
     return (
         <ProfessorDashboard/>
-
     );
 };
 
