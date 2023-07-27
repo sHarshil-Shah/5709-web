@@ -81,14 +81,14 @@ class QuizService {
     }
 
 
-    async getAllQuizzes() {
+    async getAllQuizzes(courseId: string) {
         try {
             const client = await MongoClient.connect(mongoURI, {
                 connectTimeoutMS: 5000,
                 socketTimeoutMS: 30000
             });
             const db: Db = client.db(dbName);
-            const returned_quizzes = await db.collection(quizCollectionName).find().toArray();
+            const returned_quizzes = await db.collection(quizCollectionName).find({courseID: courseId}).toArray();
 
             client.close();
 
@@ -103,7 +103,7 @@ class QuizService {
         }
     }
 
-    async getAllQuizzesForStudents() {
+    async getAllQuizzesForStudents(courseId: string) {
         try {
             const client = await MongoClient.connect(mongoURI, {
                 connectTimeoutMS: 5000,
@@ -117,7 +117,7 @@ class QuizService {
                 "title": 1,
                 "description": 1,
             };
-            const returned_quizzes = await db.collection(quizCollectionName).find().project(projection).toArray();
+            const returned_quizzes = await db.collection(quizCollectionName).find({courseID: courseId}).project(projection).toArray();
             client.close();
 
             if (returned_quizzes) {

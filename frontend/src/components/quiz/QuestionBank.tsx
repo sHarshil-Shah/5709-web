@@ -34,6 +34,7 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
   const [selectedQuiz, setSelectedQuiz] = useState<string>('');
   const [isLoading, setLoading] = useState(false);
   const [quizzes, setQuizzes] = useState<Quiz[]>();
+  const [courseId, setcourseID] = useState<string>('');
 
   const initialQuestion: QuizQuestion = {
     id: Date.now().toString(),
@@ -45,10 +46,13 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
   const [filledQuestions, setFilledQuestions] = useState<QuizQuestion>(initialQuestion);
   const toast = useToast();
 
+  const localCourseId = localStorage.getItem('course_id');
+  setcourseID(localCourseId ? localCourseId : '');
+
   useEffect(() => {
     const user_type = getLoggedInUserType();
     if (user_type && user_type === 'prof') {
-      fetchQuizzes()
+      fetchQuizzes(courseId)
         .then((response) => {
           setQuizzes(response.quizzes);
         })
@@ -261,12 +265,13 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
 
 export default QuestionBankPage;
 
-function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+function fetchQuizzes(courseID: string): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
