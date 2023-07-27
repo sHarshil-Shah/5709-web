@@ -15,7 +15,6 @@ const QuizTableRow = React.lazy(() => import('./QuizTableRow'));
 const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
-  const [userType, setUserType] = useState<string>();
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -23,9 +22,8 @@ const QuizList: React.FC = () => {
   const fetchQuizzes = useCallback(() => {
     const user_type = getLoggedInUserType();
     if (user_type) {
-      setUserType(user_type);
       setLoading(true);
-      if (userType === 'prof') {
+      if (user_type === 'prof') {
         setIsProfessor(true);
         getAllQuizzes()
           .then((response) => {
