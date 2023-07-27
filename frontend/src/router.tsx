@@ -40,39 +40,72 @@ const FinalAssignmentPage = React.lazy(() => import('./components/ProfAssignment
 
 
 const App = () => {
-    return (<>
-            <Router>
-                <TitleBar/>
-                <Suspense fallback={<Loader/>}>
-                    <Routes>
-                        <Route path="/" element={<LandingPage/>}/>
-                        <Route path="/contact" element={<Contact/>}/>
-                        <Route path="/faq" element={<FAQ/>}/>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/createUser" element={<CreateUser/>}/>
-                        <Route path="/listUsers" element={<ListUsers/>}/>
-                        <Route path="/prof" element={<Prof/>}/>
-                         <Route path="/stud" element={<Stud/>}/>
-                        <Route path="/dashboard" element={<DashBoardRoute/>}/>
-                        <Route path="/forgetPassword" element={<ForgetPassword/>}/>
-                        <Route path="/quiz" element={getLoggedInUserType() !== '' ? <QuizList/> : <ErrorPage/>}/>
-                        <Route path="/quiz/:quizId" element={<QuizPage/>}/>
-                        <Route path="/announcement" element={<Announcement/>}/>
-                        <Route path="/content" element={<Content/>}/>
-                        <Route path="/signup" element={<ProfSignUp/>}/>
-                        <Route path="/calender" element={<Calender/>}/>
-                        <Route path="/admin" element={<AdminDashboard/>}/>
-                        <Route path="/admin/course-management" element={<CourseManagement/>}/>
-                        <Route path="/admin/pending-requests" element={<PendingApproval/>}/>
-                        <Route path="/admin/users" element={<UserInformationPage/>}/>
-                        <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
-                        <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage/>}/>
-                        <Route path="/profAssignment" element={<FinalAssignmentPage/>}/>
-                    </Routes>
-                </Suspense>
-            </Router>
-        </>
-    );
+  return (<>
+    <Router>
+      <TitleBar />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/createUser" element={<CreateUser />} />
+          <Route path="/listUsers" element={<ListUsers />} />
+          <Route path="/prof" element={<Prof />} />
+          <Route path="/stud" element={<Stud />} />
+          <Route path="/dashboard" element={<DashBoardRoute />} />
+          <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/quiz" element={<QuizList />} />
+          <Route path="/quiz/:quizId" element={<QuizPage />} />
+          <Route path="/announcement" element={<Announcement />} />
+          <Route path="/content" element={<Content />} />
+          <Route path="/signup" element={<ProfSignUp />} />
+          <Route path="/calender" element={<Calender />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/course-management" element={<CourseManagement />} />
+          <Route path="/admin/pending-requests" element={<PendingApproval />} />
+          <Route path="/admin/users" element={<UserInformationPage />} />
+          <Route path="/admin/mapping" element={<ProfessorMapping />} />
+          <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage />} />
+          <Route path="/error" element={<ErrorPage />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  </>
+  );
+  return (<>
+    <Router>
+      <TitleBar />
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/createUser" element={<CreateUser />} />
+          <Route path="/listUsers" element={<ListUsers />} />
+          <Route path="/prof" element={<Prof />} />
+          <Route path="/stud" element={<Stud />} />
+          <Route path="/dashboard" element={<DashBoardRoute />} />
+          <Route path="/forgetPassword" element={<ForgetPassword />} />
+          <Route path="/quiz" element={getLoggedInUserType() !== '' ? <QuizList /> : <ErrorPage />} />
+          <Route path="/quiz/:quizId" element={<QuizPage />} />
+          <Route path="/announcement" element={<Announcement />} />
+          <Route path="/content" element={<Content />} />
+          <Route path="/signup" element={<ProfSignUp />} />
+          <Route path="/calender" element={<Calender />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/course-management" element={<CourseManagement />} />
+          <Route path="/admin/pending-requests" element={<PendingApproval />} />
+          <Route path="/admin/users" element={<UserInformationPage />} />
+          <Route path="/admin/mapping" element={<ProfessorMapping />} />
+          <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage />} />
+          <Route path="/profAssignment" element={<FinalAssignmentPage />} />
+        </Routes>
+      </Suspense>
+    </Router>
+  </>
+  );
 };
 
 export default App;

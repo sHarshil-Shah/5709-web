@@ -22,6 +22,7 @@ import {
 import { Quiz, QuizQuestion } from '../model/quiz.model';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
+import { getLoggedInUserType } from '../../service/LoginState';
 
 interface QuestionBankProps {
   isQuestionBankModel: boolean;
@@ -45,16 +46,16 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
   const toast = useToast();
 
   useEffect(() => {
-    setLoading(true);
-    fetchQuizzes()
-      .then((response) => {
-        setQuizzes(response.quizzes);
-      })
-      .catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
+    const user_type = getLoggedInUserType();
+    if (user_type && user_type === 'prof') {
+      fetchQuizzes()
+        .then((response) => {
+          setQuizzes(response.quizzes);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
   }, []);
 
   const handleAddQuestion = () => {
