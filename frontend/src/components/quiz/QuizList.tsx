@@ -4,6 +4,8 @@ import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDial
 import { Quiz } from '../model/quiz.model';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
+import { getLoggedInUserType } from '../../service/LoginState';
+import { useNavigate } from 'react-router-dom';
 
 const CreateQuiz = React.lazy(() => import('./CreateQuiz'));
 const QuestionBankPage = React.lazy(() => import('./QuestionBank'));
@@ -13,13 +15,13 @@ const QuizTableRow = React.lazy(() => import('./QuizTableRow'));
 const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
-  const [userType, setUserType] = useState<string | null>();
+  const [userType, setUserType] = useState<string>();
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const fetchQuizzes = useCallback(() => {
-    setUserType(null);
-    const userDataString = localStorage.getItem('userData');
-    const user_type = JSON.parse(userDataString ? userDataString : '').user_type ?? null;
+    const user_type = getLoggedInUserType();
     if (user_type) {
       setUserType(user_type);
       setLoading(true);
@@ -48,13 +50,14 @@ const QuizList: React.FC = () => {
             setLoading(false);
           });
       }
-
+    } else {
+      navigate('/error');
     }
   }, []);
 
   useEffect(() => {
     fetchQuizzes();
-  }, [fetchQuizzes]);
+  }, []);
 
   const handleEdit = (quizId: string) => {
     console.log(`Edit quiz with ID: ${quizId}`);
