@@ -1,6 +1,6 @@
 // Author: Raj Soni
-import {Db, MongoClient, ObjectId} from "mongodb";
-import {Quiz} from "../model/quiz.model";
+import { Db, MongoClient, ObjectId } from "mongodb";
+import { Quiz } from "../model/quiz.model";
 import envVariables from '../importenv';
 
 const mongoURI = envVariables.mongoURI;
@@ -31,7 +31,7 @@ class QuizService {
     }
 
     async createNewQuiz(quiz: Quiz) {
-        if (await this.getOneQuiz({"title": quiz.title}) != null) {
+        if (await this.getOneQuiz({ "title": quiz.title }) != null) {
             return null;
         }
         try {
@@ -73,6 +73,34 @@ class QuizService {
         }
     }
 
+    async getAllQuizzesForStudents() {
+        try {
+            const client = await MongoClient.connect(mongoURI, {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+            const db: Db = client.db(dbName);
+            const projection = {
+                "_id": 1,
+                "startDate": 1,
+                "dueDate": 1,
+                "title": 1,
+                "description": 1,
+            };
+            const returned_quizzes = await db.collection(quizCollectionName).find().project(projection).toArray();
+            client.close();
+
+            if (returned_quizzes) {
+                return returned_quizzes;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
     async deleteQuiz(quiz_id: string) {
         try {
             const objectId = new ObjectId(quiz_id);
@@ -83,7 +111,7 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
 
-            const deleteResponse = await db.collection(quizCollectionName).deleteOne({_id: objectId});
+            const deleteResponse = await db.collection(quizCollectionName).deleteOne({ _id: objectId });
             client.close();
 
             console.log(deleteResponse);
@@ -103,8 +131,8 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
             const updateResponse = await db.collection(quizCollectionName).updateOne(
-                {_id: objectId},
-                {$set: updatedQuiz}
+                { _id: objectId },
+                { $set: updatedQuiz }
             );
             client.close();
 
