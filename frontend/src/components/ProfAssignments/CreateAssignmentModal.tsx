@@ -205,7 +205,7 @@ const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ onAssignm
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel>Upload File (.doc or .pdf)</FormLabel>
+              <FormLabel>Upload File (Any image type)</FormLabel>
               <Input type="file" accept=".doc,.pdf" onChange={(e) => setFile(e.target.files && e.target.files[0])} />
             </FormControl>
           </ModalBody>
@@ -217,7 +217,7 @@ const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ onAssignm
               </Button>
             </Box>
             <Button colorScheme="teal" onClick={handleSave}>
-              Save
+                Save
             </Button>
           </ModalFooter>
         </ModalContent>

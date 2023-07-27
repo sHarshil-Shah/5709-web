@@ -1,14 +1,19 @@
 import React, {useState} from 'react';
-import { ChakraProvider, Flex, Text, Box } from '@chakra-ui/react';
+import { ChakraProvider, Flex, Text, Box, Button } from '@chakra-ui/react';
 
 import CreateAssignmentModal from './CreateAssignmentModal';
 
 const AssignmentBase: React.FC = () => {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
   const handleAssignmentCreated = () => {
-    setIsCreateModalOpen(false);
+    setIsModalOpen(false);
   };
+
   return (
     <ChakraProvider>
       <Box>
@@ -37,7 +42,6 @@ const AssignmentBase: React.FC = () => {
           <CreateAssignmentModal onAssignmentCreated={handleAssignmentCreated}/>
         </Flex>
       </Box>
-
     </ChakraProvider>
     
   );

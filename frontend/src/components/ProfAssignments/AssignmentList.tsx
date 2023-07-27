@@ -92,108 +92,93 @@ const AssignmentList: React.FC = () => {
         });
     }, []);
 
+      const handleAssignmentUpdated = (updatedAssignment: Assignment) => {
+        setLoading(true);
+        callUpdateAssignmentAPI(updatedAssignment)
+          .then(async (updatedData) => {
+            // const updatedAssignments = assignments.map((assignment) =>
+            //   assignment._id === updatedData._id ? updatedData : assignment
+            // );
+            const assignments = await fetchAssignmentList();
+            setAssignments(assignments.assignments);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error(error);
+            setLoading(false);
+            toast({
+              title: 'Error',
+              description: 'Failed to update assignment. Please try again later.',
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+          });
+    
+        setIsEditModalOpen(false);
+      };
+
     return (
         <>
             {isLoading && <Loader/>}
 
             <Box mt={4}>
             {assignments.length > 0 ? (
-            <Table variant="simple">
-                <Thead>
-                <Tr>
-                    <Th>Assignment Title</Th>
-                    <Th>Visible Date</Th>
-                    <Th>Submission Date</Th>
-                    <Th>Action</Th>
-                </Tr>
-                </Thead>
-                <Tbody>
-                {assignments?.map((assignment) => (
-                    <Tr key={(assignment as Assignment & { _id: string })._id}>
-                    <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
-                    <Td>{assignment.visibleDate}</Td>
-                    <Td>{assignment.submissionDate}</Td>
-                    <Td>
-                        <Button colorScheme="teal" onClick={() => handleEditClick(assignment)}>
-                            Edit
-                        </Button>
-                        <Button colorScheme="red" onClick={() => handleDeleteClick((assignment as Assignment & { _id: string })._id)} ml={2}>
-                            Delete
-                        </Button>
-                    </Td>
+                <Table variant="simple">
+                    <Thead>
+                    <Tr>
+                        <Th>Assignment Title</Th>
+                        <Th>Visible Date</Th>
+                        <Th>Submission Date</Th>
+                        <Th>Action</Th>
                     </Tr>
-                ))}
-                </Tbody>
-            </Table>
-            ) : (
-                <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
-                No Assignment Data
-                </Box>
-            )}
+                    </Thead>
+                    <Tbody>
+                    {assignments?.map((assignment) => (
+                        <Tr key={(assignment as Assignment & { _id: string })._id}>
+                        <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
+                        <Td>{assignment.visibleDate}</Td>
+                        <Td>{assignment.submissionDate}</Td>
+                        <Td>
+                            <Button colorScheme="teal" onClick={() => handleEditClick(assignment)}>
+                                Edit
+                            </Button>
+                            <Button colorScheme="red" onClick={() => handleDeleteClick((assignment as Assignment & { _id: string })._id)} ml={2}>
+                                Delete
+                            </Button>
+                        </Td>
+                        </Tr>
+                    ))}
+                    </Tbody>
+                </Table>
+                ) : (
+                    <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
+                        No Assignment Data
+                    </Box>
+                )}
 
-            <Modal isOpen={isDeleteModalOpen} onClose={handleDeleteCancel}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Delete Assignment</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>Are you sure you want to delete this assignment?</ModalBody>
-                    <ModalFooter>
-                        <Button colorScheme="red" onClick={handleDeleteConfirm}>Yes</Button>
-                        <Button ml={4} onClick={handleDeleteCancel}>Cancel</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+                <Modal isOpen={isDeleteModalOpen} onClose={handleDeleteCancel}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalHeader>Delete Assignment</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>Are you sure you want to delete this assignment?</ModalBody>
+                        <ModalFooter>
+                            <Button colorScheme="red" onClick={handleDeleteConfirm}>Yes</Button>
+                            <Button ml={4} onClick={handleDeleteCancel}>Cancel</Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
 
-            {/* Edit Assignment Modal */}
-            {selectedAssignment && ( // Only render the modal when selectedAssignment is defined
-            <EditAssignmentModal
-                assignment={selectedAssignment}
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                onUpdate={(updatedAssignment) => {
-                    // Handle the updated assignment data here, e.g., make an API call to update the assignment
-                    console.log('Updated Assignment:', updatedAssignment);
-                    setLoading(true); // Set loading to true before the update API call
-        
-                    // Call the API to update the assignment
-                    callUpdateAssignmentAPI(updatedAssignment)
-                        .then((updatedData) => {
-                        // Find the updated assignment in the assignments array and replace it with the new data
-                        const updatedAssignments = assignments.map((assignment) =>
-                            assignment._id === updatedData._id ? updatedData : assignment
-                        );
-                            console.log(updatedAssignments);
-                            setLoading(false);
-                            setAssignments(updatedAssignments);
-                        })
-                        .catch((error) => {
-                        // Handle API call errors
-                        console.error(error);
-                        setLoading(false); // Set loading to false in case of an error
-                        toast({
-                            title: 'Error',
-                            description: 'Failed to update assignment. Please try again later.',
-                            status: 'error',
-                            duration: 3000,
-                            isClosable: true,
-                        });
-                    });
-
-                    // Close the modal after handling the update
-                    setIsEditModalOpen(false);
-                }}
-                />
-            )}
-
-            {/* Loading Bar */}
-            {isLoading && (
-                <Box position="fixed" top={0} left={0} width="100%" height="100%" display="flex" justifyContent="center" alignItems="center" backgroundColor="rgba(0, 0, 0, 0.6)">
-                <Box p={4} bg="white" rounded="md">
-                    Loading...
-                </Box>
-                </Box>
-            )}
-
+                {/* Edit Assignment Modal */}
+                {selectedAssignment && ( // Only render the modal when selectedAssignment is defined
+                <EditAssignmentModal
+                    assignment={selectedAssignment}
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onUpdate={handleAssignmentUpdated}
+                    />
+                )}
             </Box>    
         </>  
     );
@@ -251,7 +236,7 @@ async function deleteAssignmentFromList(assignmentId: string) : Promise<void>{
     }
 }
 
-function fetchAssignmentList(): Promise<{ assignments: Assignment[] }> {
+async function fetchAssignmentList(): Promise<{ assignments: Assignment[] }> {
 
     const backendURL = envVariables.backendURL;
 
