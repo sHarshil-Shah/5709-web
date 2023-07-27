@@ -74,6 +74,10 @@ Route to the page:
 * If not already logged in, From landing page click on Login, 
 * If already logged in, click on logout page and then login button will appear
 
+#### Login as Admin
+* Email ID: admin@mail.com
+* Password: AdminPass
+
 #### Login as a professor
 
 * Email ID: prof@test.com
