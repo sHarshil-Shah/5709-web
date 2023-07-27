@@ -14,6 +14,7 @@ const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
   const [userType, setUserType] = useState<string | null>();
+  const [isProfessor, setIsProfessor] = useState<boolean>(false);
 
   const fetchQuizzes = useCallback(() => {
     setUserType(null);
@@ -22,16 +23,32 @@ const QuizList: React.FC = () => {
     if (user_type) {
       setUserType(user_type);
       setLoading(true);
-      getAllQuizzes()
-        .then((response) => {
-          setQuizzes(response.quizzes);
-        })
-        .catch((error) => {
-          console.error(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      if (userType === 'prof') {
+        setIsProfessor(true);
+        getAllQuizzes()
+          .then((response) => {
+            setQuizzes(response.quizzes);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      } else {
+        setIsProfessor(false);
+        getAllQuizzesForStudent()
+          .then((response) => {
+            setQuizzes(response.quizzes);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+
     }
   }, []);
 
@@ -42,14 +59,6 @@ const QuizList: React.FC = () => {
   const handleEdit = (quizId: string) => {
     console.log(`Edit quiz with ID: ${quizId}`);
     onCreateQuizOpen();
-  };
-
-  const handleUserType = () => {
-    if (userType === 'prof') {
-      return true;
-    } else {
-      return false;
-    }
   };
 
   const handleDelete = (quizId: string) => {
@@ -84,28 +93,30 @@ const QuizList: React.FC = () => {
           <Heading as="h1" size="lg" textAlign="center" mb={2}>
             CSCI5709 - Advanced Web Services
           </Heading>
-          <Flex>
-            <Button
-              onClick={onCreateQuizOpen}
-              colorScheme="green"
-              variant="solid"
-              mr={2}
-              mb={{ base: 2, md: 0 }}
-              width={{ base: '100%', md: 'auto' }}
-            >
-              Create Quiz
-            </Button>
-            <Button
-              onClick={onQuestionBankOpen}
-              colorScheme="green"
-              variant="solid"
-              mr={2}
-              mb={{ base: 2, md: 0 }}
-              width={{ base: '100%', md: 'auto' }}
-            >
-              Question Bank
-            </Button>
-          </Flex>
+          {isProfessor && (
+            <Flex>
+              <Button
+                onClick={onCreateQuizOpen}
+                colorScheme="green"
+                variant="solid"
+                mr={2}
+                mb={{ base: 2, md: 0 }}
+                width={{ base: '100%', md: 'auto' }}
+              >
+                Create Quiz
+              </Button>
+              <Button
+                onClick={onQuestionBankOpen}
+                colorScheme="green"
+                variant="solid"
+                mr={2}
+                mb={{ base: 2, md: 0 }}
+                width={{ base: '100%', md: 'auto' }}
+              >
+                Question Bank
+              </Button>
+            </Flex>
+          )}
         </Flex>
       </Box>
 
@@ -114,7 +125,7 @@ const QuizList: React.FC = () => {
           <Table variant='striped'>
             <Tbody>
               {quizzes.map((quiz) => (
-                <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={handleUserType()} />
+                <QuizTableRow key={quiz._id} quiz={quiz} onEditQuiz={handleEdit} onDeleteQuiz={handleDelete} isProfessor={isProfessor} />
               ))}
             </Tbody>
           </Table>
@@ -166,6 +177,26 @@ function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
       return { users: [] };
     });
 }
+
+function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/listQuiz', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'user-type': 'stud',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return { users: [] };
+    });
+}
+
 
 function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;

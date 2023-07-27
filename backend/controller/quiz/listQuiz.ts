@@ -7,7 +7,12 @@ export const listQuizzesRouter = express.Router();
 const quizService = new QuizService();
 listQuizzesRouter.get('/', async (req: Request, res: Response) => {
     try {
-        const quiz = await quizService.getAllQuizzes();
+        let quiz;
+        if (req.headers['user-type'] && req.headers['user-type'] === 'stud') {
+            quiz = await quizService.getAllQuizzesForStudents();
+        } else {
+            quiz = await quizService.getAllQuizzes();
+        }
 
         if (quiz) {
             res.json({ message: 'Quizzes fetched successful', quizzes: quiz });
