@@ -46,8 +46,7 @@ const App = () => {
                         <Route path="/" element={<LandingPage/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/faq" element={<FAQ/>}/>
-                        <Route path="/login"
-                               element={getLoggedInUserType() !== '' ? <AlreadyLoggedInPage/> : <Login/>}/>
+                        <Route path="/login" element={<Login/>}/>
                         <Route path="/createUser" element={<CreateUser/>}/>
                         <Route path="/listUsers" element={<ListUsers/>}/>
                         <Route path="/prof" element={<Prof/>}/>
@@ -65,6 +64,7 @@ const App = () => {
                         <Route path="/admin/pending-requests" element={<PendingApproval/>}/>
                         <Route path="/admin/users" element={<UserInformationPage/>}/>
                         <Route path="/admin/mapping" element={<ProfessorMapping/>}/>
+                        <Route path="/alreadyLoggedIn" element={<AlreadyLoggedInPage/>}/>
                     </Routes>
                 </Suspense>
             </Router>
