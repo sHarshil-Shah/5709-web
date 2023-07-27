@@ -1,3 +1,4 @@
+// Author: Viral Siddhapura
 import { Box, Heading, Text } from "@chakra-ui/react";
 
 const LandingPageHeader = () => {

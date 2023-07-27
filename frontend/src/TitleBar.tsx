@@ -1,7 +1,10 @@
+// Author: Harshil Shah
+// Author: Viral Siddhapura
+// Author: Yatrik Pravinbhai Amrutiya
 import {Box, Button, Flex, Link as ChakraLink, Text} from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {isLoggedIn} from "./service/LoginState";
+import {getLoggedInUserType} from "./service/LoginState";
 
 const TitleBar = () => {
 
@@ -27,14 +30,15 @@ const TitleBar = () => {
     };
 
     useEffect(() => {
-        const dataString = localStorage.getItem("userData");
-        console.log(dataString);
+        const loggedInUserType = getLoggedInUserType();
+
         // Perform any logic to update menu options based on the current state
         // Example: Update menu options based on the user's role or authentication status
         console.log(location);
         if (location.pathname === "/") {
             setMenuOptions(
-                dataString ? [{title: "Dashboard", route: "/dashboard"}] : [{title: "Register as a professor", route: "/Signup"}]
+                loggedInUserType !== '' ? [{title: "Dashboard", route: "/dashboard"}] :
+                    [{title: "Register as a professor", route: "/Signup"}]
             );
         } else if (
             location.pathname === "/dashboard" ||
@@ -94,7 +98,7 @@ const TitleBar = () => {
                                 {option.title}
                             </ChakraLink>
                         ))}
-                        {isLoggedIn() ? (
+                        {getLoggedInUserType() !== '' ? (
                             <Button colorScheme="red" onClick={logout}>
                                 Logout
                             </Button>

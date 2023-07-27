@@ -1,3 +1,4 @@
+// Author: Yatrik Pravinbhai Amrutiya
 import React, { useEffect, useState } from "react";
 import StudContent from "./student/StudentContent";
 import ProfContent from "./professor/ProfessorContent";

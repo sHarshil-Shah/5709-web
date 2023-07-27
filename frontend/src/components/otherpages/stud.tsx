@@ -1,5 +1,6 @@
 import StudentDashboard from "../studentdashboard";
 
+// Author: Harshil Shah
 const Stud = () => {
 
     return (

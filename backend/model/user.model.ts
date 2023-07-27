@@ -1,3 +1,4 @@
+// Author: Harshil Shah
 interface user {
     user_email?: String;
     first_name?: String;
