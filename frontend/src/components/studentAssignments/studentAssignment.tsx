@@ -2,6 +2,21 @@ import { useState, useEffect } from 'react';
 import { useToast, Box, Table, Thead, Tbody, Tr, Th, Td, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Input } from '@chakra-ui/react';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
+import { initializeApp } from "firebase/app";
+import { getDownloadURL, getStorage, ref, uploadBytes  } from "firebase/storage";
+import { submissionModal } from '../model/submission.model';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBmT0WKHDhcDGupjI0d1WNB0NS6t8H_lnk",
+  authDomain: "viralproject-365216.firebaseapp.com",
+  projectId: "viralproject-365216",
+  storageBucket: "viralproject-365216.appspot.com",
+  messagingSenderId: "784898434856",
+  appId: "1:784898434856:web:ba08d82ce4ea701a8d121d",
+  measurementId: "G-MPW8JNDGCP"
+};
+
+const app = initializeApp(firebaseConfig);
 
 interface Assignment {
   _id: string;
@@ -35,7 +50,7 @@ const StudentAssignmentList = () => {
         })
         .catch((error) => {
             console.error(error);
-            setAssignments([]); // Set assignments to an empty array in case of an error
+            setAssignments([]);
         })
   }, []);
 
@@ -55,7 +70,6 @@ const StudentAssignmentList = () => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        // const base64String = await getBase64(file);
         setFileToUpload(file);
       } else {
         toast({
@@ -67,15 +81,6 @@ const StudentAssignmentList = () => {
       }
     }
   };
-
-  // const getBase64 = (file: File): Promise<string> => {
-  //   return new Promise<string>((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => resolve(reader.result as string);
-  //     reader.onerror = (error) => reject(error);
-  //   });
-  // };
 
   const handleSave = async () => {
     if (!comments.trim()) {
@@ -99,66 +104,85 @@ const StudentAssignmentList = () => {
     }
 
     if (selectedAssignment) {
-      const formData = new FormData();
-      formData.append('comments', comments);
       if (fileToUpload) {
-        formData.append('image', fileToUpload);
         console.log("File data : ",fileToUpload);
       }else{
         console.log("No data exists");
       }
 
-      console.log(formData.get('comments'));
-      console.log(formData.get('image'));
+      try{
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileToUpload.name);
+    
+        const snapshot = await uploadBytes(storageRef, fileToUpload);
+        const fileURL = await getDownloadURL(snapshot.ref);
+    
+        console.log('Uploaded a blob or file!');
+        console.log('Download URL:', fileURL);
 
-      const backendURL = 'http://localhost:3000'
+        const backendURL = 'http://localhost:3000'
 
-      try {
-        const response = await fetch(backendURL + '/uploadAssignment', {
-          method: 'POST',
-          body: formData,
-        });
+        try {
 
-        console.log(response);
+          const studentAssignmentSubmission : submissionModal = {
+            comments,
+            fileURL,
+          };
 
-        if (response.ok) {
-          // Update assignment status and comments locally
-          const updatedAssignments = assignments.map((assignment) =>
-            assignment._id === selectedAssignment._id
-              ? {
-                  ...assignment,
-                  comments,
-                  status: 'Completed',
-                }
-              : assignment
-          );
+          console.log(studentAssignmentSubmission);
 
-          setAssignments(updatedAssignments);
-          toast({
-            title: 'Assignment data saved successfully',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
+          const response = await fetch(backendURL + '/uploadAssignment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(studentAssignmentSubmission),
           });
-          handleModalClose();
-        } else {
-          console.error('Failed to update assignment');
+
+          console.log(response);
+
+          if (response.ok) {
+            // Update assignment status and comments locally
+            // const updatedAssignments = assignments.map((assignment) =>
+            //   assignment._id === selectedAssignment._id
+            //     ? {
+            //         ...assignment,
+            //         comments,
+            //         status: 'Completed',
+            //       }
+            //     : assignment
+            // );
+
+            // setAssignments(updatedAssignments);
+            toast({
+              title: 'Assignment data saved successfully',
+              status: 'success',
+              duration: 3000,
+              isClosable: true,
+            });
+            handleModalClose();
+          } else {
+            console.error('Failed to update assignment');
+            toast({
+              title: 'Failed to update assignment',
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
           toast({
-            title: 'Failed to update assignment',
+            title: 'Error while saving assignment data',
             status: 'error',
             duration: 3000,
             isClosable: true,
           });
         }
-      } catch (error) {
-        console.error(error);
-        toast({
-          title: 'Error while saving assignment data',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-      }
+      
+        }catch (error) {
+            console.log(error);
+        }
     }else{
       console.log("Not selected assignment");
     }
@@ -174,7 +198,6 @@ const StudentAssignmentList = () => {
             <Thead>
               <Tr>
                 <Th fontWeight="bold" color="black">Assignment Title</Th>
-                <Th fontWeight="bold" color="black">Submission Status</Th>
                 <Th fontWeight="bold" color="black">Submission Deadline</Th>
                 <Th fontWeight="bold" color="black">Total Marks</Th>
                 <Th fontWeight="bold" color="black">Action</Th>
@@ -184,7 +207,6 @@ const StudentAssignmentList = () => {
               {assignments.map((assignment) => (
                 <Tr key={assignment._id} cursor="pointer">
                   <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
-                  <Td>In Completed</Td>
                   <Td>{assignment.submissionDate}</Td>
                   <Td>{assignment.grade}</Td>
                   <Td>

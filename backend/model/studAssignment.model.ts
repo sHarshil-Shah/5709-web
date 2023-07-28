@@ -1,6 +1,6 @@
 interface assignmentStudents {
     comments?: string;
-    file?: string;
+    fileURL?: string;
 }
 
 export default assignmentStudents;
