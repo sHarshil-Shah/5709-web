@@ -1,6 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Link, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Input } from '@chakra-ui/react';
+import { useToast, Box, Table, Thead, Tbody, Tr, Th, Td, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Input } from '@chakra-ui/react';
 import envVariables from '../../importenv';
+import Loader from '../../loading';
+import { initializeApp } from "firebase/app";
+import { getDownloadURL, getStorage, ref, uploadBytes  } from "firebase/storage";
+import { submissionModal } from '../model/submission.model';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBmT0WKHDhcDGupjI0d1WNB0NS6t8H_lnk",
+  authDomain: "viralproject-365216.firebaseapp.com",
+  projectId: "viralproject-365216",
+  storageBucket: "viralproject-365216.appspot.com",
+  messagingSenderId: "784898434856",
+  appId: "1:784898434856:web:ba08d82ce4ea701a8d121d",
+  measurementId: "G-MPW8JNDGCP"
+};
+
+const app = initializeApp(firebaseConfig);
 
 interface Assignment {
   _id: string;
@@ -19,6 +35,9 @@ const StudentAssignmentList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comments, setComments] = useState('');
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+  const [isLoading, setLoading] = useState(false);
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchAssignmentList()
@@ -31,11 +50,11 @@ const StudentAssignmentList = () => {
         })
         .catch((error) => {
             console.error(error);
-            setAssignments([]); // Set assignments to an empty array in case of an error
+            setAssignments([]);
         })
   }, []);
 
-  const handleRowClick = (assignment: Assignment) => {
+  const handleUploadButtonClick = (assignment: Assignment)=> {
     setSelectedAssignment(assignment);
     setIsModalOpen(true);
   };
@@ -47,100 +66,189 @@ const StudentAssignmentList = () => {
     setFileToUpload(null);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFileToUpload(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        setFileToUpload(file);
+      } else {
+        toast({
+          title: 'Only .jpeg and .png files are allowed',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     }
   };
 
   const handleSave = async () => {
+    if (!comments.trim()) {
+      toast({
+        title: 'Comments cannot be empty',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!fileToUpload) {
+      toast({
+        title: 'Please select a file to upload',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     if (selectedAssignment) {
-        const formData = new FormData();
-        formData.append('comments', comments);
       if (fileToUpload) {
-        formData.append('file', fileToUpload);
+        console.log("File data : ",fileToUpload);
+      }else{
+        console.log("No data exists");
       }
 
-      formData.append('assignment_id', selectedAssignment._id);
-        
-      const backendURL = envVariables.backendURL;
+      try{
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileToUpload.name);
+    
+        const snapshot = await uploadBytes(storageRef, fileToUpload);
+        const fileURL = await getDownloadURL(snapshot.ref);
+    
+        console.log('Uploaded a blob or file!');
+        console.log('Download URL:', fileURL);
 
-      try {
-        const response = await fetch(backendURL + '/updateAssignment/:' + selectedAssignment._id, {
-          method: 'POST',
-          body: formData,
-        });
+        const backendURL = 'http://localhost:3000'
 
-        if (response.ok) {
-          // Update assignment status and comments locally
-          const updatedAssignments = assignments.map((assignment) =>
-            assignment._id === selectedAssignment._id
-              ? {
-                  ...assignment,
-                  comments,
-                  status: 'Completed',
-                }
-              : assignment
-          );
+        try {
 
-          setAssignments(updatedAssignments);
-          handleModalClose();
-        } else {
-          console.error('Failed to update assignment');
+          const studentAssignmentSubmission : submissionModal = {
+            comments,
+            fileURL,
+          };
+
+          console.log(studentAssignmentSubmission);
+
+          const response = await fetch(backendURL + '/uploadAssignment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(studentAssignmentSubmission),
+          });
+
+          console.log(response);
+
+          if (response.ok) {
+            // Update assignment status and comments locally
+            // const updatedAssignments = assignments.map((assignment) =>
+            //   assignment._id === selectedAssignment._id
+            //     ? {
+            //         ...assignment,
+            //         comments,
+            //         status: 'Completed',
+            //       }
+            //     : assignment
+            // );
+
+            // setAssignments(updatedAssignments);
+            toast({
+              title: 'Assignment data saved successfully',
+              status: 'success',
+              duration: 3000,
+              isClosable: true,
+            });
+            handleModalClose();
+          } else {
+            console.error('Failed to update assignment');
+            toast({
+              title: 'Failed to update assignment',
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error while saving assignment data',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
         }
-      } catch (error) {
-        console.error(error);
-      }
+      
+        }catch (error) {
+            console.log(error);
+        }
+    }else{
+      console.log("Not selected assignment");
     }
   };
 
   return (
-    <Box p={4}>
-      <Table variant="simple" colorScheme="teal">
-        <Thead>
-          <Tr>
-            <Th fontWeight="bold" color="black">Assignment Title</Th>
-            <Th fontWeight="bold" color="black">Submission Status</Th>
-            <Th fontWeight="bold" color="black">Submission Deadline</Th>
-            <Th fontWeight="bold" color="black">Total Marks</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {assignments.map((assignment) => (
-            <Tr key={assignment._id} cursor="pointer" onClick={() => handleRowClick(assignment)}>
-              <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
-              <Td>In Completed</Td>
-              <Td>{assignment.submissionDate}</Td>
-              <Td>{assignment.grade}</Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+    <>
+      {isLoading && <Loader/>}
+        <Box p={4}>
 
-        {/* Modal */}
-        <Modal isOpen={isModalOpen} onClose={handleModalClose}>
-            <ModalOverlay />
-            <ModalContent>
-            <ModalHeader>Add Comments and Upload File</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-                <Textarea
-                placeholder="Add comments..."
-                value={comments}
-                onChange={(e) => setComments(e.target.value)}
-                />
-                <Input type="file" onChange={handleFileChange} />
-            </ModalBody>
-            <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleSave}>
-                    Save
-                </Button>
-                <Button onClick={handleModalClose}>Cancel</Button>
-            </ModalFooter>
-            </ModalContent>
-        </Modal>
-
-    </Box>
+        {assignments.length > 0 ? (
+          <Table variant="simple" colorScheme="teal">
+            <Thead>
+              <Tr>
+                <Th fontWeight="bold" color="black">Assignment Title</Th>
+                <Th fontWeight="bold" color="black">Submission Deadline</Th>
+                <Th fontWeight="bold" color="black">Total Marks</Th>
+                <Th fontWeight="bold" color="black">Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {assignments.map((assignment) => (
+                <Tr key={assignment._id} cursor="pointer">
+                  <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
+                  <Td>{assignment.submissionDate}</Td>
+                  <Td>{assignment.grade}</Td>
+                  <Td>
+                    <Button colorScheme="blue" onClick={() => handleUploadButtonClick(assignment)}>
+                      Upload Assignment
+                    </Button>
+                </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+            <Box textAlign="center" fontSize="18px" fontWeight="bold" mt={4}>
+                No Assignment Data
+            </Box>
+        )}
+        
+          {/* Modal */}
+          <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+              <ModalOverlay />
+              <ModalContent>
+              <ModalHeader>Add Comments and Upload File</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                  <Textarea
+                  placeholder="Add comments..."
+                  value={comments}
+                  onChange={(e) => setComments(e.target.value)}
+                  />
+                  <Input name='file' type="file" accept=".jpeg, .png" onChange={handleFileChange} />
+              </ModalBody>
+              <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                      Save
+                  </Button>
+                  <Button onClick={handleModalClose}>Cancel</Button>
+              </ModalFooter>
+              </ModalContent>
+          </Modal>
+      </Box>
+    </>
+    
   );
 };
 

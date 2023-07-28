@@ -24,6 +24,7 @@ import { createAssignmentRouter } from './controller/profassignments/createAssig
 import { listAssignmentsRouter } from './controller/profassignments/listAssignments';
 import { deleteAssignmentRouter } from './controller/profassignments/deleteAssignment';
 import { updateAssignmentRouter } from './controller/profassignments/updateAssignment';
+import { submitAssignmentRouter } from './controller/studassignments/assignmentSubmission';
 
 // Quiz Management
 import { createQuizRouter } from './controller/quiz/createQuiz';
@@ -84,6 +85,9 @@ app.use('/createAssignment', createAssignmentRouter);
 app.use('/getAssignments', listAssignmentsRouter);
 app.use('/deleteAssignment', deleteAssignmentRouter);
 app.use('/updateAssignment', updateAssignmentRouter);
+
+// Student Assignment Submissions
+app.use('/uploadAssignment', submitAssignmentRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');
