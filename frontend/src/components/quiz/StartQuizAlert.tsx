@@ -1,16 +1,24 @@
 // Author: Raj Soni
 import React from 'react';
-import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button, ButtonGroup } from '@chakra-ui/react';
 
 interface StartQuizAlertProps {
     isOpen: boolean;
     onClose: () => void;
     onStartQuiz: () => void;
+    dueDate: string;
 }
 
-
-const StartQuizAlert: React.FC<StartQuizAlertProps> = ({ isOpen, onClose, onStartQuiz }) => {
+const StartQuizAlert: React.FC<StartQuizAlertProps> = ({ isOpen, onClose, onStartQuiz, dueDate }) => {
     const cancelRef = React.useRef<HTMLButtonElement | null>(null);
+
+    
+    const dueDateObject = new Date(dueDate);
+    const hasQuizStarted = () => {
+        const currentTime = new Date();
+        return currentTime >= dueDateObject;
+    };
+
     return (
         <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
             <AlertDialogOverlay />
@@ -18,14 +26,28 @@ const StartQuizAlert: React.FC<StartQuizAlertProps> = ({ isOpen, onClose, onStar
                 <AlertDialogHeader fontSize="lg" fontWeight="bold">
                     Start Quiz
                 </AlertDialogHeader>
-                <AlertDialogBody>Are you sure you want to start the quiz?</AlertDialogBody>
+                <AlertDialogBody>
+                    {hasQuizStarted()
+                        ? "The quiz has already started or the due date has passed. You can no longer start the quiz."
+                        : "Are you sure you want to start the quiz?"}
+                </AlertDialogBody>
                 <AlertDialogFooter>
-                    <Button colorScheme="teal" onClick={onStartQuiz} m={3}>
-                        Start
-                    </Button>
-                    <Button ref={() => null} onClick={onClose}>
-                        Cancel
-                    </Button>
+                    {hasQuizStarted() ?
+                        (<Button ref={cancelRef} onClick={onClose}>
+                            Ok
+                        </Button>)
+                        :
+                        (<ButtonGroup>
+                            <Button
+                                colorScheme="teal"
+                                onClick={onStartQuiz}
+                            >
+                                Start
+                            </Button>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Cancel
+                            </Button>
+                        </ButtonGroup>)}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

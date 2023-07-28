@@ -1,6 +1,9 @@
 // Author: Raj Soni
-import React, { useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Quiz } from '../model/quiz.model';
+import envVariables from '../../importenv';
+import Loader from '../../loading';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Heading,
@@ -19,60 +22,111 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useDisclosure,
+  Spacer,
+  useToast,
 } from '@chakra-ui/react';
-
-interface Question {
-  id: number;
-  text: string;
-  options: string[];
-}
+import { getLoggedInUserEmail } from '../../service/LoginState';
 
 const QuizPage: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedOptions, setSelectedOptions] = useState<{ [key: number]: number }>({});
-  const [submitted, setSubmitted] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [quiz, setQuiz] = useState<Quiz>();
   const cancelRef = useRef<HTMLButtonElement | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(quiz?.timeLimit ?? 0);
+  const timerRef = useRef<number | undefined>();
+  const [isLoading, setLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  const startTimer = () => {
+    if (quiz?.timeLimit) {
+      setTimeLeft(quiz.timeLimit * 60);
+      timerRef.current = window.setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime > 0) {
+            return prevTime - 1;
+          } else {
+            handleSubmitQuiz();
+            return 0;
+          }
+        });
+      }, 1000);
+    }
+  };
+
+  const clearTimer = () => {
+    if (timerRef.current !== undefined) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  useEffect(() => {
+    if (quizId) {
+      setLoading(true);
+      getQuiz(quizId)
+        .then((response) => {
+          const shuffledQuestions = maxQuestions(response.quiz.questions || []);
+          const randomQuestions = shuffledQuestions.slice(0, response.quiz.numOfQuestions);
+          setQuiz({ ...response.quiz, questions: randomQuestions });
+        }).catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [quizId]);
+
+  useEffect(() => {
+    if (quiz && quiz.timeLimit) {
+      startTimer();
+    }
+    return () => {
+      clearTimer();
+    };
+  }, [quiz]);
+
+  const minutesLeft = Math.floor(timeLeft / 60);
+  const secondsLeft = timeLeft % 60;
 
   const handleSubmitQuiz = () => {
     onOpen();
   };
 
   const confirmSubmit = () => {
-    console.log('Selected Options:', selectedOptions);
-    setSubmitted(true);
+    if (quizId) {
+      setLoading(true);
+      submitQuiz(selectedOptions, quizId)
+        .then((response) => {
+          if (response.message.hasOwnProperty('message')) {
+            clearTimer();
+            toast({
+              title: 'Quiz Submitted!',
+              status: 'success',
+              duration: 5000,
+              isClosable: true,
+            });
+            navigate('/quiz');
+          } else {
+            throw new Error('Error submitting quiz');
+          }
+        }).catch((error) => {
+          toast({
+            title: 'Error submitting quiz',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
     onClose();
   };
-
-  // Mock data for questions and options
-  const questions: Question[] = [
-    {
-      id: 1,
-      text: 'How are you?',
-      options: ['Good', 'Fine', 'Bad'],
-    },
-    {
-      id: 2,
-      text: 'Question 2',
-      options: ['Option A', 'Option B', 'Option C'],
-    },
-    {
-      id: 3,
-      text: 'Question 3',
-      options: ['Option A', 'Option B', 'Option C'],
-    },
-    {
-      id: 4,
-      text: 'Question 4',
-      options: ['Option A', 'Option B', 'Option C'],
-    },
-    {
-      id: 5,
-      text: 'Question 5',
-      options: ['Option A', 'Option B', 'Option C'],
-    },
-  ];
 
   const handleOptionSelect = (questionId: number, optionIndex: number) => {
     setSelectedOptions((prevSelectedOptions) => ({
@@ -93,16 +147,21 @@ const QuizPage: React.FC = () => {
     setCurrentQuestionIndex(questionIndex);
   };
 
-  if (submitted) {
-    return <div>Quiz Submitted! Thank you.</div>;
-  }
+  const maxQuestions = (array: any[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = quiz?.questions?.[currentQuestionIndex];
 
   return (
     <Box p={4} mx="auto">
+      {isLoading && <Loader />}
       <Heading as="h1" mb={4} textAlign="center">
-        Quiz {quizId}
+        {quiz?.title}
       </Heading>
       <Flex direction={{ base: 'column', md: 'row' }} gap={4}>
         <Box w={{ base: '100%', md: '250px' }} p={4} borderWidth="1px" borderRadius="md">
@@ -111,7 +170,7 @@ const QuizPage: React.FC = () => {
               Quiz Navigation
             </Text>
             <Grid templateColumns="repeat(3, 1fr)" gap={2}>
-              {questions.map((_, index) => (
+              {quiz?.questions?.map((_, index) => (
                 <Button
                   key={index}
                   variant={currentQuestionIndex === index ? 'solid' : 'outline'}
@@ -125,18 +184,24 @@ const QuizPage: React.FC = () => {
         </Box>
 
         <Box mt={{ base: 8, md: 0 }} flex="1">
-          <Heading as="h2" size="lg" mb={4}>
-            Question {currentQuestionIndex + 1}
-          </Heading>
-          <Text mb={8}>{currentQuestion.text}</Text>
+          <Flex alignItems="center">
+            <Heading as="h2" size="lg" mb={4}>
+              Question {currentQuestionIndex + 1}
+            </Heading>
+            <Spacer />
+            <Text ml={2} fontSize="md" color="gray.600">
+              <Text as='b'>Time Left:</Text> {minutesLeft}m {secondsLeft}s
+            </Text>
+          </Flex>
+          <Text mb={8}>{currentQuestion?.question}</Text>
           <Stack spacing={4}>
-            {currentQuestion.options.map((option, index) => (
+            {currentQuestion?.options.map((option, index) => (
               <FormControl key={index}>
                 <Radio
                   id={`${currentQuestion.id}-${index}`}
                   name={`${currentQuestion.id}`}
-                  isChecked={selectedOptions[currentQuestion.id] === index}
-                  onChange={() => handleOptionSelect(currentQuestion.id, index)}
+                  isChecked={selectedOptions[Number(currentQuestion.id)] === index}
+                  onChange={() => handleOptionSelect(Number(currentQuestion.id), index)}
                 >
                   {option}
                 </Radio>
@@ -146,16 +211,13 @@ const QuizPage: React.FC = () => {
         </Box>
       </Flex>
       <Stack direction="row" spacing={4} mt={8} justifyContent="flex-end">
-        <Button
-          onClick={handlePreviousQuestion}
-          isDisabled={currentQuestionIndex === 0}
-        >
-          Previous
-        </Button>
-        {currentQuestionIndex < questions.length - 1 && (
+        {currentQuestionIndex > 0 && (
+          <Button onClick={handlePreviousQuestion}>Previous</Button>
+        )}
+        {currentQuestionIndex < (quiz?.numOfQuestions ?? 0) - 1 && (
           <Button onClick={handleNextQuestion}>Next</Button>
         )}
-        {currentQuestionIndex === questions.length - 1 && (
+        {currentQuestionIndex === (quiz?.numOfQuestions ?? 0) - 1 && (
           <Button onClick={handleSubmitQuiz}>Submit</Button>
         )}
         <AlertDialog
@@ -187,3 +249,42 @@ const QuizPage: React.FC = () => {
 };
 
 export default QuizPage;
+
+function getQuiz(quiz_id: string): Promise<{ quiz: Quiz }> {
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/getStudentQuiz', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'id': quiz_id,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {};
+    });
+}
+
+function submitQuiz(selectedOptions: { [key: number]: number; }, quiz_id: string): Promise<{ message: JSON }> {
+  const stud_email = getLoggedInUserEmail();
+  const backendURL = envVariables.backendURL;
+  return fetch(backendURL + '/submitQuiz', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ selectedOptions: selectedOptions, quiz_id: quiz_id, stud_email: stud_email }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      return {};
+    });
+}

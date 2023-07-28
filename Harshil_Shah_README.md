@@ -70,7 +70,7 @@ Route to the page:
 
 #### Login as Admin
 * Email ID: admin@mail.com
-* Password: newpass123
+* Password: AdminPass
 
 #### Login as a professor
 
