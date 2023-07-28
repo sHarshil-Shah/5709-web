@@ -1,8 +1,9 @@
 // Author: Harshil Shah
 // Author: Viral Siddhapura
 // Author: Yatrik Pravinbhai Amrutiya
+// Author: Raj Soni
 import {Box, Button, Flex, Link as ChakraLink, Text} from "@chakra-ui/react";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {getLoggedInUserType} from "./service/LoginState";
 
@@ -21,6 +22,7 @@ const TitleBar = () => {
 
     const logout = () => {
         localStorage.removeItem("userData");
+        localStorage.removeItem("course_id");
         navigate("/");
     };
 

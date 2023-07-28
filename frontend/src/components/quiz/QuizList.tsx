@@ -16,6 +16,7 @@ const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
+  const [editQuizData, setEditQuizData] = useState<Quiz>();
 
   const navigate = useNavigate();
 
@@ -57,8 +58,10 @@ const QuizList: React.FC = () => {
     fetchQuizzes();
   }, []);
 
-  const handleEdit = (quizId: string) => {
-    console.log(`Edit quiz with ID: ${quizId}`);
+  const handleEdit = (quiz: Quiz | null) => {
+    if(quiz){
+      setEditQuizData(quiz);
+    }
     onCreateQuizOpen();
   };
 
@@ -85,6 +88,11 @@ const QuizList: React.FC = () => {
     onDeleteClose();
     fetchQuizzes();
   };
+
+  const onQuizModelClose = () => {
+    setEditQuizData(undefined);
+    onCreateQuizClose();
+  }
 
   return (
     <>
@@ -134,7 +142,7 @@ const QuizList: React.FC = () => {
           <Text>No quizzes found.</Text>
         )}
       </Box>
-      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onCreateQuizClose} />
+      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onQuizModelClose} editQuizData={editQuizData} fetchQuizzes={fetchQuizzes}/>
       <QuestionBankPage isQuestionBankModel={isQuestionBankOpen} onCloseQuestionBankModel={onQuestionBankClose} />
 
       <AlertDialog isOpen={isDeleteOpen} leastDestructiveRef={cancelRef} onClose={onDeleteClose}>
@@ -161,11 +169,11 @@ const QuizList: React.FC = () => {
 
 export default QuizList;
 
-function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
+async function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
   const localCourseId = localStorage.getItem('course_id');
   const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -182,11 +190,11 @@ function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
+async function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   const localCourseId = localStorage.getItem('course_id');
   const courseID: string = localCourseId ? localCourseId : '';
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -204,11 +212,9 @@ function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-
-function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
+async function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  console.log(quiz_id);
-  return fetch(backendURL + '/deleteQuiz', {
+  return await fetch(backendURL + '/deleteQuiz', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
