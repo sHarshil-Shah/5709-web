@@ -16,6 +16,7 @@ const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
+  const [editQuizData, setEditQuizData] = useState<Quiz>();
 
   const navigate = useNavigate();
 
@@ -57,8 +58,10 @@ const QuizList: React.FC = () => {
     fetchQuizzes();
   }, []);
 
-  const handleEdit = (quizId: string) => {
-    console.log(`Edit quiz with ID: ${quizId}`);
+  const handleEdit = (quiz: Quiz | null) => {
+    if(quiz){
+      setEditQuizData(quiz);
+    }
     onCreateQuizOpen();
   };
 
@@ -85,6 +88,11 @@ const QuizList: React.FC = () => {
     onDeleteClose();
     fetchQuizzes();
   };
+
+  const onQuizModelClose = () => {
+    setEditQuizData(undefined);
+    onCreateQuizClose();
+  }
 
   return (
     <>
@@ -134,7 +142,7 @@ const QuizList: React.FC = () => {
           <Text>No quizzes found.</Text>
         )}
       </Box>
-      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onCreateQuizClose} />
+      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onQuizModelClose} editQuizData={editQuizData} fetchQuizzes={fetchQuizzes}/>
       <QuestionBankPage isQuestionBankModel={isQuestionBankOpen} onCloseQuestionBankModel={onQuestionBankClose} />
 
       <AlertDialog isOpen={isDeleteOpen} leastDestructiveRef={cancelRef} onClose={onDeleteClose}>
@@ -207,7 +215,6 @@ function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
 
 function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  console.log(quiz_id);
   return fetch(backendURL + '/deleteQuiz', {
     method: 'DELETE',
     headers: {

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface QuizTableRowProps {
     quiz: Quiz;
-    onEditQuiz: (quizId: string) => void;
+    onEditQuiz: (quiz: Quiz) => void;
     onDeleteQuiz: (quizId: string) => void;
     isProfessor: boolean;
 }
@@ -35,8 +35,8 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
     const editQuiz = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
-            if (quiz._id) {
-                onEditQuiz(quiz._id);
+            if (quiz) {
+                onEditQuiz(quiz);
             }
         },
         [onEditQuiz, quiz._id]
