@@ -1,6 +1,6 @@
 // Author: Raj Soni
-import {Db, MongoClient, ObjectId} from "mongodb";
-import {Quiz, StudentQuiz} from "../model/quiz.model";
+import { Db, MongoClient, ObjectId } from "mongodb";
+import { Quiz, StudentQuiz } from "../model/quiz.model";
 import envVariables from '../importenv';
 
 const mongoURI = envVariables.mongoURI;
@@ -117,7 +117,13 @@ class QuizService {
                 "title": 1,
                 "description": 1,
             };
-            const returned_quizzes = await db.collection(quizCollectionName).find({ courseID: courseId }).project(projection).toArray();
+            const currentDate = new Date().toISOString().split('T')[0];
+            const query = {
+                courseID: courseId,
+                visibleDate: { $lte: currentDate }
+            }
+            console.log(query);
+            const returned_quizzes = await db.collection(quizCollectionName).find(query).project(projection).toArray();
             client.close();
 
             if (returned_quizzes) {
@@ -141,7 +147,7 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
 
-            const deleteResponse = await db.collection(quizCollectionName).deleteOne({_id: objectId});
+            const deleteResponse = await db.collection(quizCollectionName).deleteOne({ _id: objectId });
             client.close();
 
             console.log(deleteResponse);
@@ -161,8 +167,8 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
             const updateResponse = await db.collection(quizCollectionName).updateOne(
-                {_id: objectId},
-                {$set: updatedQuiz}
+                { _id: objectId },
+                { $set: updatedQuiz }
             );
             client.close();
 
