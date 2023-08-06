@@ -28,7 +28,7 @@ const StartQuizAlert: React.FC<StartQuizAlertProps> = ({ isOpen, onClose, onStar
                 </AlertDialogHeader>
                 <AlertDialogBody>
                     {hasQuizStarted()
-                        ? "The quiz has already started or the due date has passed. You can no longer start the quiz."
+                        ? "The quiz has already completed or the due date has passed. You can no longer start the quiz."
                         : "Are you sure you want to start the quiz?"}
                 </AlertDialogBody>
                 <AlertDialogFooter>

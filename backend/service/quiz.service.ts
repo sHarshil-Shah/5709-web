@@ -1,6 +1,6 @@
 // Author: Raj Soni
-import { Db, MongoClient, ObjectId } from "mongodb";
-import { Quiz, StudentQuiz } from "../model/quiz.model";
+import {Db, MongoClient, ObjectId} from "mongodb";
+import {Quiz, StudentQuiz} from "../model/quiz.model";
 import envVariables from '../importenv';
 
 const mongoURI = envVariables.mongoURI;
@@ -17,7 +17,7 @@ class QuizService {
                 socketTimeoutMS: 30000
             });
             const db: Db = client.db(dbName);
-            const returned_quiz = await db.collection(quizCollectionName).findOne({_id:objectId});
+            const returned_quiz = await db.collection(quizCollectionName).findOne({_id: objectId});
             client.close();
 
             if (returned_quiz) {
@@ -30,6 +30,7 @@ class QuizService {
             return null;
         }
     }
+
     async getOneStudentQuiz(quiz_id: string) {
         const objectId = new ObjectId(quiz_id);
         try {
@@ -49,7 +50,7 @@ class QuizService {
                 'questions.options': 1,
             };
 
-            const returned_quiz = await db.collection(quizCollectionName).find({_id:objectId}).project(projection).toArray();
+            const returned_quiz = await db.collection(quizCollectionName).find({_id: objectId}).project(projection).toArray();
             client.close();
 
             if (returned_quiz) {
@@ -141,7 +142,7 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
 
-            const deleteResponse = await db.collection(quizCollectionName).deleteOne({ _id: objectId });
+            const deleteResponse = await db.collection(quizCollectionName).deleteOne({_id: objectId});
             client.close();
 
             console.log(deleteResponse);
@@ -161,8 +162,8 @@ class QuizService {
             });
             const db: Db = client.db(dbName);
             const updateResponse = await db.collection(quizCollectionName).updateOne(
-                { _id: objectId },
-                { $set: updatedQuiz }
+                {_id: objectId},
+                {$set: updatedQuiz}
             );
             client.close();
 
@@ -176,7 +177,7 @@ class QuizService {
             return null;
         }
     }
-    
+
     async submitQuiz(studentQuiz: StudentQuiz) {
         try {
             const client = await MongoClient.connect(mongoURI, {
@@ -188,10 +189,33 @@ class QuizService {
             const response = await db.collection('studentQuiz').insertOne(studentQuiz);
             client.close();
 
-            if( response.acknowledged){
+            if (response.acknowledged) {
                 return {'message': 'Quiz submitted successfully'}
             } else {
-                return {'error': 'Error while submiting quiz'}
+                return {'error': 'Error while submitting quiz'}
+            }
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+
+    async getQuizByCourseID(courseIDs: string[]) {
+        try {
+            const client = await MongoClient.connect(mongoURI, {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+
+            const db: Db = client.db(dbName);
+            const response = db.collection(envVariables.studentQuizCollectionName).find({courseId: {$in: courseIDs}}).toArray();
+            await client.close();
+
+            if (response) {
+                return {'message': 'Quiz submitted successfully', response: response};
+            } else {
+                return {'error': 'Error while submitting quiz'}
             }
         } catch (error) {
             console.log(error);
