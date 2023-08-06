@@ -12,7 +12,9 @@ const deadlinesList = [
 ];
 
 const DeadlinesPage = () => {
-    // Sort deadlines by due date in ascending order
+
+
+
     const sortedDeadlines = deadlinesList.sort(
         (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
     );
