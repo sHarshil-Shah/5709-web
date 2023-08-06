@@ -27,12 +27,13 @@ import {updateAssignmentRouter} from './controller/profassignments/updateAssignm
 import {submitAssignmentRouter} from './controller/studassignments/assignmentSubmission';
 
 // Quiz Management
-import {createQuizRouter} from './controller/quiz/createQuiz';
-import {listQuizzesRouter} from './controller/quiz/listQuiz';
-import {updateQuizRouter} from './controller/quiz/updateQuiz';
-import {deleteQuizRouter} from './controller/quiz/deleteQuiz';
-import {getStudentQuizRouter} from './controller/quiz/getStudentQuiz';
-import {submitQuizRouter} from './controller/quiz/submitQuiz';
+import { createQuizRouter } from './controller/quiz/createQuiz';
+import { listQuizzesRouter } from './controller/quiz/listQuiz';
+import { updateQuizRouter } from './controller/quiz/updateQuiz';
+import { deleteQuizRouter } from './controller/quiz/deleteQuiz';
+import { getStudentQuizRouter } from './controller/quiz/getStudentQuiz';
+import { submitQuizRouter } from './controller/quiz/submitQuiz';
+import { getQuizStatusRouter } from './controller/quiz/getQuizStatus';
 import {calenderRouter} from "./controller/Calender/GetQuizDueDatesByUserID";
 
 // Create an Express app
@@ -80,6 +81,7 @@ app.use('/updateQuiz', updateQuizRouter);
 app.use('/deleteQuiz', deleteQuizRouter);
 app.use('/getStudentQuiz', getStudentQuizRouter);
 app.use('/submitQuiz', submitQuizRouter);
+app.use('/getQuizStatus', getQuizStatusRouter);
 
 // Assignment routers
 app.use('/createAssignment', createAssignmentRouter);

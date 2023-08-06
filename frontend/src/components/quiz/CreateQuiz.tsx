@@ -78,7 +78,6 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(editQuizData);
     if (editQuizData) {
       setFormData({
         title: editQuizData.title ?? '',
@@ -494,9 +493,9 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
 
 export default CreateQuiz;
 
-function createQuiz(quiz: Quiz): Promise<{ quiz: Quiz }> {
+async function createQuiz(quiz: Quiz): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/createQuiz', {
+  return await fetch(backendURL + '/createQuiz', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -513,10 +512,10 @@ function createQuiz(quiz: Quiz): Promise<{ quiz: Quiz }> {
     });
 }
 
-function editQuiz(quiz: Quiz, quiz_id: string): Promise<void> {
+async function editQuiz(quiz: Quiz, quiz_id: string): Promise<void> {
   const backendURL = envVariables.backendURL;
   quiz._id = quiz_id;
-  return fetch(backendURL + '/updateQuiz', {
+  return await fetch(backendURL + '/updateQuiz', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

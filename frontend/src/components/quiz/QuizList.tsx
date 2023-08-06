@@ -169,11 +169,11 @@ const QuizList: React.FC = () => {
 
 export default QuizList;
 
-function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
+async function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
   const localCourseId = localStorage.getItem('course_id');
   const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -190,11 +190,11 @@ function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
+async function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
   const localCourseId = localStorage.getItem('course_id');
   const courseID: string = localCourseId ? localCourseId : '';
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -212,10 +212,9 @@ function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-
-function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
+async function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/deleteQuiz', {
+  return await fetch(backendURL + '/deleteQuiz', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

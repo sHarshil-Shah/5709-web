@@ -250,9 +250,9 @@ const QuizPage: React.FC = () => {
 
 export default QuizPage;
 
-function getQuiz(quiz_id: string): Promise<{ quiz: Quiz }> {
+async function getQuiz(quiz_id: string): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/getStudentQuiz', {
+  return await fetch(backendURL + '/getStudentQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -269,10 +269,10 @@ function getQuiz(quiz_id: string): Promise<{ quiz: Quiz }> {
     });
 }
 
-function submitQuiz(selectedOptions: { [key: number]: number; }, quiz_id: string): Promise<{ message: JSON }> {
+async function submitQuiz(selectedOptions: { [key: number]: number; }, quiz_id: string): Promise<{ message: JSON }> {
   const stud_email = getLoggedInUserEmail();
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/submitQuiz', {
+  return await fetch(backendURL + '/submitQuiz', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -77,7 +77,7 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
                 )}
             </Tr>
             {isStartQuizAlertOpen && (
-                <StartQuizAlert isOpen={isStartQuizAlertOpen} onClose={() => setIsStartQuizAlertOpen(false)} onStartQuiz={handleStartQuiz} dueDate={quiz.dueDate ? quiz.dueDate : ''} />
+                <StartQuizAlert isOpen={isStartQuizAlertOpen} onClose={() => setIsStartQuizAlertOpen(false)} onStartQuiz={handleStartQuiz} dueDate={quiz.dueDate ? quiz.dueDate : ''} quiz_id={quiz._id ? quiz._id : ''} />
             )}
 
             {isQuizDetailsModalOpen && (
