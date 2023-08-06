@@ -1,16 +1,14 @@
 import {Db, MongoClient, ObjectId} from "mongodb";
-import assignment from "../model/profAssignment.model";
+import assignmentStudents from "../model/studAssignment.model";
 import envVariables from '../importenv';
-const multer = require('multer');
-const path = require('path');
 
 const mongoURI = envVariables.mongoURI;
 const submissionCollection = envVariables.studentSubmissionsCollectionName;
 const dbName = envVariables.dbName;
 
-class StudentSubmission {
+class StudentSubmissionService {
 
-    async uploadSubmissons(assignment: assignment) {
+    async uploadSubmissons(assignment: assignmentStudents) {
         try {
             // Connect to MongoDB
             const client = await MongoClient.connect(mongoURI, {
@@ -34,4 +32,4 @@ class StudentSubmission {
     } 
 }
 
-export default StudentSubmission;
+export default StudentSubmissionService;

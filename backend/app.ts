@@ -24,12 +24,15 @@ import { createAssignmentRouter } from './controller/profassignments/createAssig
 import { listAssignmentsRouter } from './controller/profassignments/listAssignments';
 import { deleteAssignmentRouter } from './controller/profassignments/deleteAssignment';
 import { updateAssignmentRouter } from './controller/profassignments/updateAssignment';
+import { submitAssignmentRouter } from './controller/studassignments/assignmentSubmission';
 
 // Quiz Management
 import { createQuizRouter } from './controller/quiz/createQuiz';
 import { listQuizzesRouter } from './controller/quiz/listQuiz';
 import { updateQuizRouter } from './controller/quiz/updateQuiz';
 import { deleteQuizRouter } from './controller/quiz/deleteQuiz';
+import { getStudentQuizRouter } from './controller/quiz/getStudentQuiz';
+import { submitQuizRouter } from './controller/quiz/submitQuiz';
 
 // Create an Express app
 const app = express();
@@ -74,12 +77,17 @@ app.use('/createQuiz', createQuizRouter);
 app.use('/listQuiz', listQuizzesRouter);
 app.use('/updateQuiz', updateQuizRouter);
 app.use('/deleteQuiz', deleteQuizRouter);
+app.use('/getStudentQuiz', getStudentQuizRouter);
+app.use('/submitQuiz', submitQuizRouter);
 
 // Assignment routers
 app.use('/createAssignment', createAssignmentRouter);
 app.use('/getAssignments', listAssignmentsRouter);
 app.use('/deleteAssignment', deleteAssignmentRouter);
 app.use('/updateAssignment', updateAssignmentRouter);
+
+// Student Assignment Submissions
+app.use('/uploadAssignment', submitAssignmentRouter);
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

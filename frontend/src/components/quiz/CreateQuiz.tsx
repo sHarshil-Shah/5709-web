@@ -1,5 +1,5 @@
 // Author: Raj Soni
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   FormControl,
@@ -25,13 +25,14 @@ import envVariables from '../../importenv';
 import { Quiz, QuizQuestion } from '../model/quiz.model';
 import Loader from '../../loading';
 
-
 interface CreateQuizProps {
   isOpenQuizModel: boolean;
   onCloseQuizModel: () => void;
+  editQuizData?: Quiz | undefined;
+  fetchQuizzes: () => void;
 }
 
-const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizModel }) => {
+const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizModel, editQuizData, fetchQuizzes }) => {
   const initialFormData = {
     title: '',
     description: '',
@@ -75,6 +76,25 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
   });
 
   const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    console.log(editQuizData);
+    if (editQuizData) {
+      setFormData({
+        title: editQuizData.title ?? '',
+        description: editQuizData.description ?? '',
+        startDate: editQuizData.startDate ?? '',
+        dueDate: editQuizData.dueDate ?? '',
+        visibleDate: editQuizData.visibleDate ?? '',
+        timeLimit: editQuizData.timeLimit ?? 0,
+        numOfQuestions: editQuizData.numOfQuestions ?? 0,
+        randomQuestions: editQuizData.randomQuestions ?? false,
+        questions: editQuizData.questions ?? [] as QuizQuestion[],
+        totalMarks: editQuizData.totalMarks ?? 0,
+        courseID: editQuizData.courseID ?? '',
+      });
+    }
+  }, [editQuizData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -160,27 +180,55 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
       return;
     }
 
-    setLoading(true);
-    const courseId = localStorage.getItem('courseID');
+    const courseId = localStorage.getItem('course_id');
     formData.courseID = courseId ? courseId : '';
-    createQuiz(formData)
-      .then((response) => {
-        setFormData(initialFormData);
-        console.log(response);
-        toast({
-          title: 'Quiz Created!',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-        onCloseQuizModel();
-      }
-      );
+    setFormData((prevData) => ({
+      ...prevData,
+      questions: [...prevData.questions, filledQuestions],
+    }));
+    if (editQuizData?._id) {
+      setLoading(true);
+      editQuiz(formData, editQuizData?._id)
+        .then((response) => {
+          setFormData(initialFormData);
+          toast({
+            title: 'Quiz Edited!',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        }).finally(() => {
+          setLoading(false);
+          onCloseQuizModel();
+          fetchQuizzes();
+        }
+        );
+    } else {
+      setLoading(true);
+      createQuiz(formData)
+        .then((response) => {
+          setFormData(initialFormData);
+          toast({
+            title: 'Quiz Created!',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        }).finally(() => {
+          setLoading(false);
+          onCloseQuizModel();
+          fetchQuizzes();
+        }
+        );
+    }
+
+
   };
 
   const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -192,7 +240,10 @@ const CreateQuiz: React.FC<CreateQuizProps> = ({ isOpenQuizModel, onCloseQuizMod
       {isLoading && <Loader />}
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create Quiz</ModalHeader>
+        {editQuizData?._id ? (
+          <ModalHeader>Edit Quiz</ModalHeader>
+        ) : (
+          <ModalHeader>Create Quiz</ModalHeader>)}
         <ModalCloseButton />
         <ModalBody>
           <Box p={4}>
@@ -459,5 +510,26 @@ function createQuiz(quiz: Quiz): Promise<{ quiz: Quiz }> {
     .catch((error) => {
       console.error(error);
       return {};
+    });
+}
+
+function editQuiz(quiz: Quiz, quiz_id: string): Promise<void> {
+  const backendURL = envVariables.backendURL;
+  quiz._id = quiz_id;
+  return fetch(backendURL + '/updateQuiz', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(quiz),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to edit the quiz.');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
     });
 }

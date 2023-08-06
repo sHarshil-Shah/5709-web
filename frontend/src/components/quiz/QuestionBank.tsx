@@ -262,11 +262,14 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
 export default QuestionBankPage;
 
 function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const localCourseId = localStorage.getItem('course_id');
+  const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())

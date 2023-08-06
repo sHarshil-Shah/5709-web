@@ -1,5 +1,5 @@
 // Author: Raj Soni
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Flex, Heading, Button, Text, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Table, Tbody } from '@chakra-ui/react';
 import { Quiz } from '../model/quiz.model';
 import envVariables from '../../importenv';
@@ -16,10 +16,11 @@ const QuizList: React.FC = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>();
   const [isLoading, setLoading] = useState(false);
   const [isProfessor, setIsProfessor] = useState<boolean>(false);
+  const [editQuizData, setEditQuizData] = useState<Quiz>();
 
   const navigate = useNavigate();
 
-  const fetchQuizzes = useCallback(() => {
+  const fetchQuizzes = () => {
     const user_type = getLoggedInUserType();
     if (user_type) {
       setLoading(true);
@@ -51,14 +52,16 @@ const QuizList: React.FC = () => {
     } else {
       navigate('/error');
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchQuizzes();
   }, []);
 
-  const handleEdit = (quizId: string) => {
-    console.log(`Edit quiz with ID: ${quizId}`);
+  const handleEdit = (quiz: Quiz | null) => {
+    if(quiz){
+      setEditQuizData(quiz);
+    }
     onCreateQuizOpen();
   };
 
@@ -86,13 +89,18 @@ const QuizList: React.FC = () => {
     fetchQuizzes();
   };
 
+  const onQuizModelClose = () => {
+    setEditQuizData(undefined);
+    onCreateQuizClose();
+  }
+
   return (
     <>
       {isLoading && <Loader />}
-      <Box bg="teal" p={4} color="white">
+      <Box p={4}>
         <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" align="center">
-          <Heading as="h1" size="lg" textAlign="center" mb={2}>
-            CSCI5709 - Advanced Web Services
+          <Heading as="h1" size="lg" textAlign="center" mb={2} ml={5}>
+            Quiz List
           </Heading>
           {isProfessor && (
             <Flex>
@@ -134,7 +142,7 @@ const QuizList: React.FC = () => {
           <Text>No quizzes found.</Text>
         )}
       </Box>
-      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onCreateQuizClose} />
+      <CreateQuiz isOpenQuizModel={isCreateQuizOpen} onCloseQuizModel={onQuizModelClose} editQuizData={editQuizData} fetchQuizzes={fetchQuizzes}/>
       <QuestionBankPage isQuestionBankModel={isQuestionBankOpen} onCloseQuestionBankModel={onQuestionBankClose} />
 
       <AlertDialog isOpen={isDeleteOpen} leastDestructiveRef={cancelRef} onClose={onDeleteClose}>
@@ -162,11 +170,14 @@ const QuizList: React.FC = () => {
 export default QuizList;
 
 function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const localCourseId = localStorage.getItem('course_id');
+  const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
@@ -181,11 +192,14 @@ function getAllQuizzes(): Promise<{ quizzes: Quiz[] }> {
 
 function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
   const backendURL = envVariables.backendURL;
+  const localCourseId = localStorage.getItem('course_id');
+  const courseID: string = localCourseId ? localCourseId : '';
   return fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'user-type': 'stud',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
@@ -194,14 +208,13 @@ function getAllQuizzesForStudent(): Promise<{ quizzes: Quiz[] }> {
     })
     .catch((error) => {
       console.error(error);
-      return { users: [] };
+      return { quizzes: [] };
     });
 }
 
 
 function deleteQuiz(quiz_id: string | null): Promise<{ quiz: Quiz }> {
   const backendURL = envVariables.backendURL;
-  console.log(quiz_id);
   return fetch(backendURL + '/deleteQuiz', {
     method: 'DELETE',
     headers: {
