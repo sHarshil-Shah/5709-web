@@ -1,38 +1,39 @@
-import express, { Request, Response } from 'express';
-import { loginRouter } from './controller/users/login';
-import { registerRouter } from './controller/users/register';
+import express, {Request, Response} from 'express';
+import {loginRouter} from './controller/users/login';
+import {registerRouter} from './controller/users/register';
 import cors from 'cors';
-import { listUsersRouter } from './controller/users/listUsers';
-import { deleteUserRouter } from './controller/users/deleteUser';
-import { getUserByIdRouter } from "./controller/users/getUserByEmail";
-import { forgetPasswordRouter } from "./controller/users/forgetPassword";
-import { getAnnouncementsRouter } from './controller/announcement/getAnnouncements';
-import { createAnnouncementRouter } from './controller/announcement/createAnnouncements';
-import { createContentRouter } from './controller/content/createContent';
-import { updateContentRouter } from './controller/content/updateContent';
-import { readContentRouter } from './controller/content/getContent';
-import { deleteContentRouter } from './controller/content/deleteContent';
+import {listUsersRouter} from './controller/users/listUsers';
+import {deleteUserRouter} from './controller/users/deleteUser';
+import {getUserByIdRouter} from "./controller/users/getUserByEmail";
+import {forgetPasswordRouter} from "./controller/users/forgetPassword";
+import {getAnnouncementsRouter} from './controller/announcement/getAnnouncements';
+import {createAnnouncementRouter} from './controller/announcement/createAnnouncements';
+import {createContentRouter} from './controller/content/createContent';
+import {updateContentRouter} from './controller/content/updateContent';
+import {readContentRouter} from './controller/content/getContent';
+import {deleteContentRouter} from './controller/content/deleteContent';
 import EmailRouter from './controller/users/forgetPasswordEmail';
-import { readCoursesRouter } from './controller/courses/getCourseList';
-import { updateUserRouter } from "./controller/users/updateUser";
-import { createCourseRouter } from './controller/courses/addCourse';
-import { deleteCourseRouter } from './controller/courses/deleteCourse';
-import { updateCourseRouter } from './controller/courses/updateCourse';
+import {readCoursesRouter} from './controller/courses/getCourseList';
+import {updateUserRouter} from "./controller/users/updateUser";
+import {createCourseRouter} from './controller/courses/addCourse';
+import {deleteCourseRouter} from './controller/courses/deleteCourse';
+import {updateCourseRouter} from './controller/courses/updateCourse';
 
 // Assignment Management
-import { createAssignmentRouter } from './controller/profassignments/createAssignment';
-import { listAssignmentsRouter } from './controller/profassignments/listAssignments';
-import { deleteAssignmentRouter } from './controller/profassignments/deleteAssignment';
-import { updateAssignmentRouter } from './controller/profassignments/updateAssignment';
-import { submitAssignmentRouter } from './controller/studassignments/assignmentSubmission';
+import {createAssignmentRouter} from './controller/profassignments/createAssignment';
+import {listAssignmentsRouter} from './controller/profassignments/listAssignments';
+import {deleteAssignmentRouter} from './controller/profassignments/deleteAssignment';
+import {updateAssignmentRouter} from './controller/profassignments/updateAssignment';
+import {submitAssignmentRouter} from './controller/studassignments/assignmentSubmission';
 
 // Quiz Management
-import { createQuizRouter } from './controller/quiz/createQuiz';
-import { listQuizzesRouter } from './controller/quiz/listQuiz';
-import { updateQuizRouter } from './controller/quiz/updateQuiz';
-import { deleteQuizRouter } from './controller/quiz/deleteQuiz';
-import { getStudentQuizRouter } from './controller/quiz/getStudentQuiz';
-import { submitQuizRouter } from './controller/quiz/submitQuiz';
+import {createQuizRouter} from './controller/quiz/createQuiz';
+import {listQuizzesRouter} from './controller/quiz/listQuiz';
+import {updateQuizRouter} from './controller/quiz/updateQuiz';
+import {deleteQuizRouter} from './controller/quiz/deleteQuiz';
+import {getStudentQuizRouter} from './controller/quiz/getStudentQuiz';
+import {submitQuizRouter} from './controller/quiz/submitQuiz';
+import {calenderRouter} from "./controller/Calender/GetQuizDueDatesByUserID";
 
 // Create an Express app
 const app = express();
@@ -88,6 +89,8 @@ app.use('/updateAssignment', updateAssignmentRouter);
 
 // Student Assignment Submissions
 app.use('/uploadAssignment', submitAssignmentRouter);
+app.use('/calender', calenderRouter);
+
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

@@ -16,7 +16,7 @@ getStudentQuizRouter.get('/', async (req: Request, res: Response) => {
         if (quiz) {
             res.json({ message: 'Quizzes fetched successful', quiz: quiz });
         } else {
-            res.status(401).json({ message: 'Error occured' });
+            res.status(401).json({ message: 'Error occurred' });
         }
     } catch (error) {
         console.log(error);

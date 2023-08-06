@@ -1,7 +1,7 @@
 // Author: Yatrik Pravinbhai Amrutiya
-import express, { Request, Response } from 'express';
-import CourseService from '../../service/course.service'; // Import the CourseService
-import course from '../../model/course.model'; // Assuming you have a model for the course
+import express, {Request, Response} from 'express';
+import CourseService from '../../service/course.service';
+import course from '../../model/course.model';
 
 export const readCoursesRouter = express.Router();
 
@@ -13,15 +13,13 @@ readCoursesRouter.get('/', async (req: Request, res: Response) => {
         const courseList: course[] = await courseService.getCourses();
 
         if (courseList && courseList.length > 0) {
-            // Courses found, return success response
-            res.json({ message: 'Courses fetched successfully', courseList: courseList });
+            res.json({message: 'Courses fetched successfully', courseList: courseList});
         } else {
-            // Courses not found, return empty array response
-            res.json({ message: 'No courses found', courseList: [] });
+            res.json({message: 'No courses found', courseList: []});
         }
     } catch (error) {
         console.log(error);
         // Error occurred during MongoDB operation, return error response
-        res.status(500).json({ message: 'An error occurred while fetching the courses' });
+        res.status(500).json({message: 'An error occurred while fetching the courses'});
     }
 });
