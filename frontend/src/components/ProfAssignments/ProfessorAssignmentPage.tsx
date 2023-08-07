@@ -4,7 +4,7 @@ import { ChakraProvider} from '@chakra-ui/react';
 import AssignmentBase from './AssignmentBase';
 import AssignmentList from './AssignmentList';
 
-const FinalAssignmentPage: React.FC = () => {
+const ProfessorAssignmentPage: React.FC = () => {
     return (
       <ChakraProvider>
         
@@ -17,4 +17,4 @@ const FinalAssignmentPage: React.FC = () => {
     );
   };
   
-  export default FinalAssignmentPage;
+  export default ProfessorAssignmentPage;

@@ -25,19 +25,10 @@ class ProfAssignmentService {
             console.log(assignment_id);
             console.log(objectId);
 
-        
-
             const updateAssignment = await db.collection(profAssignmentsCollectionName).updateOne({_id:objectId}, 
             {
                 $set: 
                     assignment
-                //   assignmentTitle: assignment.assignmentTitle,
-                //   visibleDate: assignment.visibleDate,
-                //   submissionDate: assignment.submissionDate,
-                //   description: assignment.description,
-                //   grade: assignment.grade,
-                  // Add other fields that you want to update here
-                
               })
 
             console.log(updateAssignment);
@@ -95,9 +86,6 @@ class ProfAssignmentService {
     }
 
     async createAssignment(assignment: assignment) {
-        // if (await this.getUser({"user_email": user.user_email}) != null) {
-        //     return;
-        // }
         try {
             // Connect to MongoDB
             const client = await MongoClient.connect(mongoURI, {

@@ -22,6 +22,7 @@ import {
 import { Quiz, QuizQuestion } from '../model/quiz.model';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
+import { getLoggedInUserType } from '../../service/LoginState';
 
 interface QuestionBankProps {
   isQuestionBankModel: boolean;
@@ -45,16 +46,16 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
   const toast = useToast();
 
   useEffect(() => {
-    setLoading(true);
-    fetchQuizzes()
-      .then((response) => {
-        setQuizzes(response.quizzes);
-      })
-      .catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
+    const user_type = getLoggedInUserType();
+    if (user_type && user_type === 'prof') {
+      fetchQuizzes()
+        .then((response) => {
+          setQuizzes(response.quizzes);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
   }, []);
 
   const handleAddQuestion = () => {
@@ -260,12 +261,15 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
 
 export default QuestionBankPage;
 
-function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+async function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const localCourseId = localStorage.getItem('course_id');
+  const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
@@ -278,9 +282,9 @@ function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-function saveQuestions(quizData: Quiz): Promise<void> {
+async function saveQuestions(quizData: Quiz): Promise<void> {
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/updateQuiz', {
+  return await fetch(backendURL + '/updateQuiz', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

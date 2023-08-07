@@ -1,13 +1,26 @@
 // Author: Harshil Shah
-export const isLoggedIn = (): boolean => {
+export const getLoggedInUserType = (): string => {
     const userDataString = localStorage.getItem("userData");
     if (userDataString) {
         try {
             const userData = JSON.parse(userDataString);
-            return !!userData.user_type;
+            return userData.user_type;
         } catch (error) {
             console.error("Error parsing user data:", error);
         }
     }
-    return false;
+    return '';
+};
+
+export const getLoggedInUserEmail = (): string => {
+    const userDataString = localStorage.getItem("userData");
+    if (userDataString) {
+        try {
+            const userData = JSON.parse(userDataString);
+            return userData.user_mail;
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+        }
+    }
+    return '';
 };

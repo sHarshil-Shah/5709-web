@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Modal,
@@ -19,7 +19,11 @@ import {
 import envVariables from '../../importenv';
 import {Assignment} from '../model/profassignment.model';
 
-const CreateAssignmentModal: React.FC = () => {
+interface CreateAssignmentModalProps {
+  handleAssignmentCreated: (newAssignment: Assignment) => void;
+}
+
+const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({ handleAssignmentCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [assignmentTitle, setAssignmentTitle] = useState('');
   const [visibleDate, setVisibleDate] = useState('');
@@ -58,7 +62,7 @@ const CreateAssignmentModal: React.FC = () => {
 
   const handleSave = () => {
     
-  const allowedFileTypes = ['.doc', '.pdf'];
+  const allowedFileTypes = ['.png', '.img', '.jpeg'];
 
     // Perform validations
     if (assignmentTitle.length < 6) {
@@ -105,7 +109,7 @@ const CreateAssignmentModal: React.FC = () => {
 
       toast({
         title: 'Error',
-        description: 'Please select a valid file to upload - either .pdf or .doc file.',
+        description: 'Please select a valid image as of now.',
         status: 'error',
         duration: 2000,
         isClosable: true,
@@ -137,6 +141,10 @@ const CreateAssignmentModal: React.FC = () => {
             duration: 2000,
             isClosable: true,
           });
+
+          console.log(data);
+          // Pass the assignment data back to the parent component (AssignmentList) using the callback prop
+          handleAssignmentCreated(assignmentData);
 
           resetState();
           setIsOpen(false);
@@ -198,7 +206,7 @@ const CreateAssignmentModal: React.FC = () => {
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel>Upload File (.doc or .pdf)</FormLabel>
+              <FormLabel>Upload File (Any image type)</FormLabel>
               <Input type="file" accept=".doc,.pdf" onChange={(e) => setFile(e.target.files && e.target.files[0])} />
             </FormControl>
           </ModalBody>
@@ -210,7 +218,7 @@ const CreateAssignmentModal: React.FC = () => {
               </Button>
             </Box>
             <Button colorScheme="teal" onClick={handleSave}>
-              Save
+                Save
             </Button>
           </ModalFooter>
         </ModalContent>

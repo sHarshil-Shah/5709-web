@@ -1,8 +1,10 @@
 // Author: Aanandi Pankhania
 // Author: Yatrik Pravinbhai Amrutiya
+// Author: Harshil Shah
+
 import {Db, MongoClient} from "mongodb";
 import envVariables from '../importenv';
-import course from "../model/course.model"; // Assuming you have a model for the course
+import course from "../model/course.model";
 
 const mongoURI = envVariables.mongoURI;
 const coursesCollectionName = "courses"; // Collection name for courses (you can change this if needed)
@@ -91,6 +93,28 @@ class CourseService {
         } catch (error) {
             console.log(error);
             return false;
+        }
+    }
+
+    async getCoursesByProfID(prof_email: string): Promise<string[]> {
+        try {
+            // Connect to MongoDB
+            const client = await MongoClient.connect(mongoURI, {
+                connectTimeoutMS: 5000,
+                socketTimeoutMS: 30000
+            });
+            const db: Db = client.db(dbName);
+
+            const courses = await db.collection<course>(coursesCollectionName).find({instructorID: prof_email}).project({_id: 1}).toArray();
+            const courseNames: string[] = courses.map((course) => course._id);
+
+            await client.close();
+
+            console.log(courses);
+            return courseNames;
+        } catch (error) {
+            console.log(error);
+            return [];
         }
     }
 }
