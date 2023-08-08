@@ -4,10 +4,11 @@ import { Tr, Td, Button, Flex, ButtonGroup } from '@chakra-ui/react';
 import { Quiz } from '../model/quiz.model';
 import StartQuizAlert from './StartQuizAlert';
 import QuizDetailsModal from './QuizDetailsModal';
+import { useNavigate } from 'react-router-dom';
 
 interface QuizTableRowProps {
     quiz: Quiz;
-    onEditQuiz: (quizId: string) => void;
+    onEditQuiz: (quiz: Quiz) => void;
     onDeleteQuiz: (quizId: string) => void;
     isProfessor: boolean;
 }
@@ -16,10 +17,12 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
     const [isStartQuizAlertOpen, setIsStartQuizAlertOpen] = useState(false);
     const [isQuizDetailsModalOpen, setIsQuizDetailsModalOpen] = useState(false);
 
-    const handleStartQuiz = useCallback(() => {
+    const navigate = useNavigate();
+
+    const handleStartQuiz = () => {
         setIsStartQuizAlertOpen(false);
-        // Logic to handle quiz start here...
-    }, []);
+        navigate('/quiz/' + quiz._id);
+    };
 
     const handleQuizDetails = useCallback(() => {
         if (isProfessor) {
@@ -32,8 +35,8 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
     const editQuiz = useCallback(
         (e: React.MouseEvent) => {
             e.stopPropagation();
-            if (quiz._id) {
-                onEditQuiz(quiz._id);
+            if (quiz) {
+                onEditQuiz(quiz);
             }
         },
         [onEditQuiz, quiz._id]
@@ -74,7 +77,7 @@ const QuizTableRow: React.FC<QuizTableRowProps> = ({ quiz, onEditQuiz, onDeleteQ
                 )}
             </Tr>
             {isStartQuizAlertOpen && (
-                <StartQuizAlert isOpen={isStartQuizAlertOpen} onClose={() => setIsStartQuizAlertOpen(false)} onStartQuiz={handleStartQuiz} dueDate={quiz.dueDate ? quiz.dueDate : ''} />
+                <StartQuizAlert isOpen={isStartQuizAlertOpen} onClose={() => setIsStartQuizAlertOpen(false)} onStartQuiz={handleStartQuiz} dueDate={quiz.dueDate ? quiz.dueDate : ''} quiz_id={quiz._id ? quiz._id : ''} />
             )}
 
             {isQuizDetailsModalOpen && (

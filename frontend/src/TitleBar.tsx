@@ -1,8 +1,9 @@
 // Author: Harshil Shah
 // Author: Viral Siddhapura
 // Author: Yatrik Pravinbhai Amrutiya
+// Author: Raj Soni
 import {Box, Button, Flex, Link as ChakraLink, Text} from "@chakra-ui/react";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {getLoggedInUserType} from "./service/LoginState";
 
@@ -21,6 +22,7 @@ const TitleBar = () => {
 
     const logout = () => {
         localStorage.removeItem("userData");
+        localStorage.removeItem("course_id");
         navigate("/");
     };
 
@@ -32,8 +34,6 @@ const TitleBar = () => {
     useEffect(() => {
         const loggedInUserType = getLoggedInUserType();
 
-        // Perform any logic to update menu options based on the current state
-        // Example: Update menu options based on the user's role or authentication status
         console.log(location);
         if (location.pathname === "/") {
             setMenuOptions(
@@ -45,7 +45,8 @@ const TitleBar = () => {
             location.pathname === "/assignments" ||
             location.pathname === "/announcement" ||
             location.pathname === "/content" ||
-            location.pathname === "/prof"
+            location.pathname === "/prof" ||
+            location.pathname === '/calender'
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
@@ -53,6 +54,7 @@ const TitleBar = () => {
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
+                {title: 'Calender', route: "/calender"}
             ]);
         } else if (location.pathname === "/stud") {
             setMenuOptions([
@@ -61,6 +63,7 @@ const TitleBar = () => {
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
+                {title: 'Calender', route: "/calender"}
             ]);
         } else if (location.pathname === "/course" ||
             location.pathname === "/quiz" ||
@@ -71,6 +74,7 @@ const TitleBar = () => {
                 {title: "Dashboard", route: "/dashboard"},
                 {title: "Quiz", route: "/quiz"},
                 {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
+                {title: 'Calender', route: "/calender"}
             ])
         } else {
             setMenuOptions([]);

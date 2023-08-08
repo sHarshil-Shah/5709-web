@@ -20,3 +20,10 @@ export interface Quiz {
   totalMarks?: number;
   courseID?: string;
 }
+
+export interface StudentQuiz {
+  stud_email?: string;
+  quiz_id?: string;
+  status?: string;
+  marks?: number;
+}

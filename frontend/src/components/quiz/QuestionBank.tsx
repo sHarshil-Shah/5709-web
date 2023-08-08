@@ -261,12 +261,15 @@ const QuestionBankPage: React.FC<QuestionBankProps> = ({ isQuestionBankModel, on
 
 export default QuestionBankPage;
 
-function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+async function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
+  const localCourseId = localStorage.getItem('course_id');
+  const courseID: string = localCourseId ? localCourseId : '';
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/listQuiz', {
+  return await fetch(backendURL + '/listQuiz', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'course_id': courseID,
     },
   })
     .then((response) => response.json())
@@ -279,9 +282,9 @@ function fetchQuizzes(): Promise<{ quizzes: Quiz[] }> {
     });
 }
 
-function saveQuestions(quizData: Quiz): Promise<void> {
+async function saveQuestions(quizData: Quiz): Promise<void> {
   const backendURL = envVariables.backendURL;
-  return fetch(backendURL + '/updateQuiz', {
+  return await fetch(backendURL + '/updateQuiz', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
