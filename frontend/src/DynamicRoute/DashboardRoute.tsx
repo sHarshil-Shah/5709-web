@@ -2,8 +2,8 @@
 // Author: Viral Siddhapura
 import React from 'react';
 import AdminDashboard from "../components/Admin/adminDashboard";
-import StudentDashboard from "../components/studentdashboard";
 import ProfessorDashboard from "../components/ProfessorDashboard/ProfessorDashboard";
+import StudentDashboard from '../components/StudentDashboard/ProfessorDashboard';
 
 const DashboardRoute = () => {
     const userDataString = localStorage.getItem('userData');

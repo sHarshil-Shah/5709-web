@@ -47,7 +47,9 @@ const TitleBar = () => {
             location.pathname === "/announcement" ||
             location.pathname === "/content" ||
             location.pathname === "/prof" ||
-            location.pathname === '/calender'
+            location.pathname === '/calender' ||
+            location.pathname === '/discussions'
+            
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
@@ -56,7 +58,9 @@ const TitleBar = () => {
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
-                {title: 'Calender', route: "/calender"}
+                {title: 'Calender', route: "/calender"},
+                {title: 'Discussion', route: "/discussions"}
+
             ]);
         } else if (location.pathname === "/stud") {
             setMenuOptions([
@@ -66,7 +70,8 @@ const TitleBar = () => {
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
-                {title: 'Calender', route: "/calender"}
+                {title: 'Calender', route: "/calender"},
+                {title: 'discussions',route: "/discussions"}
             ]);
         } else if (location.pathname === "/course" ||
         location.pathname === "/news" ||
