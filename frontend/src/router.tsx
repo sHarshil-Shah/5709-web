@@ -1,7 +1,12 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import React, {Suspense} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
+import DiscussionList from './components/discussion/Index';
+// import { news } from '../src/components/model/news.model';
+// import AdminNews from './components/News/admin/Index';
+// import News from './components/News/News';
+// import DiscussionList from './components/Discussions/DiscussionList';
 
 const CourseDashboard = React.lazy(() => import( "./components/Course/CourseDashboard"));
 
@@ -27,12 +32,20 @@ const Stud = React.lazy(() => import('./components/otherpages/stud'));
 const QuizList = React.lazy(() => import('./components/quiz/QuizList'));
 const QuizPage = React.lazy(() => import('./components/quiz/QuizPage'));
 
+//news
+const AdminNews = React.lazy(() => import('./components/News/admin/Index'));
+const UsersNews = React.lazy(() => import('./components/News/users/Index'));
+
 const AlreadyLoggedInPage = React.lazy(() => import('./components/UserManagement/alreadyLoggedIn'));
 
 const DashBoardRoute = React.lazy(() => import('./DynamicRoute/DashboardRoute'));
 const ForgetPassword = React.lazy(() => import('./components/UserManagement/forgetPassword'));
 
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
+
+//news
+const News = React.lazy(() => import('./components/News/News'));
+
 const Content = React.lazy(() => import('./components/Content/Content'));
 const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
 const Calender = React.lazy(() => import('./components/Calender/calender'));
@@ -42,6 +55,16 @@ const StudentAssignmentPage = React.lazy(() => import('./components/studentAssig
 const StudentHistoryPage = React.lazy(() => import('./components/studentAssignments/StudentHistoryPage'))
 
 const App = () => {
+const [userType, setUserType] = useState('');
+
+  useEffect(() => {
+    // Fetch the user_type from localStorage
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      const parsedUserData = JSON.parse(userData);
+      setUserType(parsedUserData.user_type);
+    }
+  }, []);
     return (<>
             <Router>
                 <TitleBar/>
@@ -74,6 +97,20 @@ const App = () => {
                         <Route path="/profAssignment" element={<ProfessorAssignmentPage/>}/>
                         <Route path="/studAssignment" element={<StudentAssignmentPage/>}/>
                         <Route path="/historyAssignments" element={<StudentHistoryPage/>}/>
+                        <Route path="/discussions" element={<DiscussionList/>}/>
+
+                        {userType === 'stud' && (
+                        <Route path="/news" element={<UsersNews />} />
+                        )}
+                        {userType === 'prof' && (
+                        <Route path="/news" element={<UsersNews />} />
+                        )}
+                        {userType === 'admin' && (
+                        <Route path="/admin/news" element={<AdminNews />} />
+                        )}
+                        
+
+                    
                     </Routes>
                 </Suspense>
             </Router>

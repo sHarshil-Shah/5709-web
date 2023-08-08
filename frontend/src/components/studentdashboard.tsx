@@ -1,4 +1,5 @@
 import Analytics from './ProfessorDashboard/Analytics';
+import CourseList from './ProfessorDashboard/CourseList';
 
 function StudentDashboard() {
 

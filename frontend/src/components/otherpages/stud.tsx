@@ -1,4 +1,4 @@
-import StudentDashboard from "../studentdashboard";
+import StudentDashboard from "../StudentDashboard/ProfessorDashboard";
 
 // Author: Harshil Shah
 const Stud = () => {

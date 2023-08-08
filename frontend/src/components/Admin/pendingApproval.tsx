@@ -129,9 +129,6 @@ const PendingApproval = () => {
         <AdminNavBar />
       </Box>
       <Box p={8}>
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Welcome to Pending Approval!
-        </Text>
 
         <div
           style={{ marginLeft: "8%", marginBottom: "3%", marginRight: "8%" }}
@@ -143,11 +140,7 @@ const PendingApproval = () => {
 
                 <Accordion.Body>
                   <div className="d-flex flex-column align-items-start">
-                    <img
-                      src="https://picsum.photos/400"
-                      alt="Profile"
-                      style={{ width: "100px", height: "100px" }}
-                    />
+                   
                     <h4>{user.first_name + " " + user.last_name}</h4>
                     <p>{user.user_email}</p>
                   </div>

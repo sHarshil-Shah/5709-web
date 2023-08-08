@@ -42,36 +42,46 @@ const TitleBar = () => {
             );
         } else if (
             location.pathname === "/dashboard" ||
+            location.pathname === "/news" ||
             location.pathname === "/assignments" ||
             location.pathname === "/announcement" ||
             location.pathname === "/content" ||
             location.pathname === "/prof" ||
-            location.pathname === '/calender'
+            location.pathname === '/calender' ||
+            location.pathname === '/discussions'
+            
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
+                {title: "News", route: "/news"},
                 {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
-                {title: 'Calender', route: "/calender"}
+                {title: 'Calender', route: "/calender"},
+                {title: 'Discussion', route: "/discussions"}
+
             ]);
         } else if (location.pathname === "/stud") {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
+                {title: "News", route: "/news"},
                 {title: "Assignment", route: "/studAssignment"},
                 {title: "Quiz", route: "/quiz"},
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
-                {title: 'Calender', route: "/calender"}
+                {title: 'Calender', route: "/calender"},
+                {title: 'discussions',route: "/discussions"}
             ]);
         } else if (location.pathname === "/course" ||
+        location.pathname === "/news" ||
             location.pathname === "/quiz" ||
             location.pathname === "/profAssignment" ||
             location.pathname === "/studAssignment"
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
+                {title: "News", route: "/news"},
                 {title: "Quiz", route: "/quiz"},
                 {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
                 {title: 'Calender', route: "/calender"}
