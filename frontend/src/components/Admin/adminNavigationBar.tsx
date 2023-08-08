@@ -16,6 +16,11 @@ const AdminNavBar = () => {
             Course Management
           </Text>
         </Link>
+        <Link as={RouterLink} to="/admin/news" textDecoration="none" ml={4}>
+          <Text fontSize="2xl" fontWeight="bold">
+            News
+          </Text>
+        </Link>
         <Link as={RouterLink} to="/admin/pending-requests" textDecoration="none" ml={4}>
           <Text fontSize="2xl" fontWeight="bold">
             Pending Requests
