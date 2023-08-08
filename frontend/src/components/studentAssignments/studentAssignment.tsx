@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useToast, Box, Table, Thead, Tbody, Tr, Th, Td, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Input } from '@chakra-ui/react';
+import { useToast, Box, Table, Thead, Tbody, Tr, Th, Td, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Textarea, Input, Center } from '@chakra-ui/react';
 import envVariables from '../../importenv';
 import Loader from '../../loading';
 import { initializeApp } from "firebase/app";
@@ -38,6 +38,9 @@ const StudentAssignmentList = () => {
   const [isLoading, setLoading] = useState(false);
 
   const toast = useToast();
+
+  const userData = JSON.parse(localStorage.getItem('userData') || "");
+  console.log("userData ===>",userData['user_mail']);
 
   useEffect(() => {
     fetchAssignmentList()
@@ -142,18 +145,6 @@ const StudentAssignmentList = () => {
           console.log(response);
 
           if (response.ok) {
-            // Update assignment status and comments locally
-            // const updatedAssignments = assignments.map((assignment) =>
-            //   assignment._id === selectedAssignment._id
-            //     ? {
-            //         ...assignment,
-            //         comments,
-            //         status: 'Completed',
-            //       }
-            //     : assignment
-            // );
-
-            // setAssignments(updatedAssignments);
             toast({
               title: 'Assignment data saved successfully',
               status: 'success',
@@ -199,7 +190,7 @@ const StudentAssignmentList = () => {
               <Tr>
                 <Th fontWeight="bold" color="black">Assignment Title</Th>
                 <Th fontWeight="bold" color="black">Submission Deadline</Th>
-                <Th fontWeight="bold" color="black">Total Marks</Th>
+                <Th fontWeight="bold" color="black">Assignment Marks</Th>
                 <Th fontWeight="bold" color="black">Action</Th>
               </Tr>
             </Thead>
@@ -207,8 +198,8 @@ const StudentAssignmentList = () => {
               {assignments.map((assignment) => (
                 <Tr key={assignment._id} cursor="pointer">
                   <Td fontWeight="bold" color="black">{assignment.assignmentTitle}</Td>
-                  <Td>{assignment.submissionDate}</Td>
-                  <Td>{assignment.grade}</Td>
+                  <Td >{assignment.submissionDate}</Td>
+                  <Td >{assignment.grade}</Td>
                   <Td>
                     <Button colorScheme="blue" onClick={() => handleUploadButtonClick(assignment)}>
                       Upload Assignment
