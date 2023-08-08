@@ -80,6 +80,7 @@ function ProfAnnouncement() {
   };
 
   return (
+    
     <div style={{ marginLeft: "10%", marginRight: "10%" }}>
       <div className="Headers">Announcements</div>
       {/* Show the form when the button is clicked */}

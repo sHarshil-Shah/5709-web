@@ -277,9 +277,7 @@ const CourseManagement = () => {
         <AdminNavBar />
       </Box>
       <Box p={8}>
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Welcome to Course Management!
-        </Text>
+        
         <VStack spacing={4} align="start">
           <Box>
             <Button
