@@ -152,77 +152,56 @@ const ProfessorMapping = () => {
         <AdminNavBar />
       </Box>
       <Box p={8}>
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Welcome to Professor Mapping Section!
-        </Text>
-
-        <div
-          className="d-flex flex-column align-items-start"
-          style={{
-            marginLeft: "8%",
-            marginRight: "8%",
-            marginTop: "3%",
-            marginBottom: "8%",
-          }}
-        >
-          <div style={{ fontSize: "32px", fontWeight: 700 }}>Mapping</div>
-          <div
-            className="d-flex flex-wrap justify-content-between"
-            style={{ width: "100%" }}
-          >
-            {courses &&
-              courses.map((course: course, index: number) => (
-                <div className="mt-5" key={course._id}>
-                  <div>
-                    <Card style={{ width: "18rem" }}>
-                      <Card.Body>
-                        <Card.Title>{course.title}</Card.Title>
-                      </Card.Body>
-                      <ListGroup className="list-group-flush">
-                        <ListGroup.Item>Id: {course._id}</ListGroup.Item>
-                        <ListGroup.Item>
-                          Course Name: {course.title}
-                        </ListGroup.Item>
-                      </ListGroup>
-                      <Card.Body>
-                        <DropdownButton
-                          variant="primary"
-                          title={
-                            selectedProfessors[index]
-                              ? `${selectedProfessors[index]?.first_name} ${selectedProfessors[index]?.last_name}`
-                              : "Select an Instructor"
-                          }
-                        >
-                          {professors.map((professor: User) => (
-                            <Dropdown.Item
-                              key={professor._id}
-                              onClick={() =>
-                                handleOptionSelect(index, professor)
-                              }
-                            >
-                              {professor
-                                ? `${professor.first_name} ${professor.user_email}`
-                                : "Select"}
-                            </Dropdown.Item>
-                          ))}
-                        </DropdownButton>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            setSelectedCourse(course);
-                            handleShow();
-                          }}
-                          style={{ marginTop: "10px" }}
-                        >
-                          Allocate
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
+        <ul className="list-group">
+          {courses &&
+            courses.map((course: course, index: number) => (
+              <li className="list-group-item" key={course._id}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title style={{ color: "Blue" }}>{course.title}</Card.Title>
+                  </Card.Body>
+                  <ListGroup className="list-group-flush">
+                    <ListGroup.Item>Id: {course._id}</ListGroup.Item>
+                    <ListGroup.Item>Course Name: {course.title}</ListGroup.Item>
+                  </ListGroup>
+                  <Card.Body style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ flex: 1 }}>
+                      <DropdownButton
+                        variant="primary"
+                        title={
+                          selectedProfessors[index]
+                            ? `${selectedProfessors[index]?.first_name} ${selectedProfessors[index]?.last_name}`
+                            : "Select an Instructor"
+                        }
+                      >
+                        {professors.map((professor: User) => (
+                          <Dropdown.Item
+                            key={professor._id}
+                            onClick={() => handleOptionSelect(index, professor)}
+                          >
+                            {professor
+                              ? `${professor.first_name} ${professor.user_email}`
+                              : "Select"}
+                          </Dropdown.Item>
+                        ))}
+                      </DropdownButton>
+                    </div>
+                    <div style={{ marginLeft: "10px" }}>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          setSelectedCourse(course);
+                          handleShow();
+                        }}
+                      >
+                        Allocate
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </li>
+            ))}
+        </ul>
 
         <Modal isOpen={show} onClose={handleClose}>
           <ModalOverlay />
