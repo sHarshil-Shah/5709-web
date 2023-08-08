@@ -35,7 +35,12 @@ import { getStudentQuizRouter } from './controller/quiz/getStudentQuiz';
 import { submitQuizRouter } from './controller/quiz/submitQuiz';
 import { getQuizStatusRouter } from './controller/quiz/getQuizStatus';
 import {calenderRouter} from "./controller/Calender/GetQuizDueDatesByUserID";
+import { createDiscussionRouter } from './controller/discussions/addDiscussion';
+import { getDiscussionRouter } from './controller/discussions/getDiscussion';
+import { updateDiscussionRouter } from './controller/discussions/updateDiscussion';
+import { deleteDiscussionRouter } from './controller/discussions/deleteDiscussion';
 
+//discussions
 // Create an Express app
 const app = express();
 
@@ -94,6 +99,11 @@ app.use('/uploadAssignment', submitAssignmentRouter);
 app.use('/calender', calenderRouter);
 
 
+//discussions routers
+app.use('/create-discussion',createDiscussionRouter)
+app.use('/discussion',getDiscussionRouter)
+app.use('/update-discussion',updateDiscussionRouter)
+app.use('/delete-discussion',deleteDiscussionRouter)
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });
