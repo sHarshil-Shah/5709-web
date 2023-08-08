@@ -180,8 +180,14 @@ function StudContent() {
   const handleCourseSelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setSelectedCourseID(event.target.value);
+    const selectedValue = event.target.value;
+    if (selectedValue === "default") {
+      setSelectedCourseID(undefined); // Clear selected course ID to display all content
+    } else {
+      setSelectedCourseID(selectedValue);
+    }
   };
+
   const [courses, setCourses] = useState<course[]>([]);
 
   const fetchCourses = async () => {
@@ -213,7 +219,8 @@ function StudContent() {
         onChange={handleCourseSelectionChange}
         className="mt-4"
       >
-        <option value="">Select a Course ID</option> {/* Placeholder option */}
+        <option value="default">Select a Course ID</option>{" "}
+        {/* Placeholder option */}
         {uniqueCourseIDs.map((courseID) => (
           <option key={courseID} value={courseID}>
             {courseID}
@@ -342,7 +349,6 @@ function StudContent() {
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* delete confirmation modal */}
       <Modal
         show={showDeleteConfirmation}
         onHide={() => setShowDeleteConfirmation(false)}
@@ -366,19 +372,19 @@ function StudContent() {
       <Accordion className="mt-5">
         {contentList.length > 0 ? (
           contentList
-            .filter((content) => content.courseID === selectedCourseID) // Filter contents by selectedCourseID
+            .filter((content) =>
+              selectedCourseID ? content.courseID === selectedCourseID : true
+            )
             .map((content, index) => (
               <Accordion.Item eventKey={index.toString()} key={index}>
                 <Accordion.Header>
                   <div>
                     <div>{content.title}</div>
                   </div>
-                
                 </Accordion.Header>
                 <Accordion.Body className="d-flex flex-column align-items-start">
                   <h3>{content.title}</h3>
                   <p>{content.description}</p>
-                  {/* ... (rest of the content rendering) */}
                 </Accordion.Body>
               </Accordion.Item>
             ))

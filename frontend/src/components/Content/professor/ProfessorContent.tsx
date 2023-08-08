@@ -42,9 +42,9 @@ function ProfContent() {
   const [selectedCourseID, setSelectedCourseID] = useState<string | undefined>(
     undefined
   ); // State to store selected courseID
-  const [createSelectedCourseId, setCreatedSelectedCourseID] = useState<string | undefined>(
-    undefined
-  ); // State to store selected courseID
+  const [createSelectedCourseId, setCreatedSelectedCourseID] = useState<
+    string | undefined
+  >(undefined); // State to store selected courseID
 
   const mongoURI = envVariables.mongoURI;
   const backendURL = envVariables.backendURL;
@@ -90,8 +90,12 @@ function ProfContent() {
   const handleCourseSelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setSelectedCourseID(event.target.value);
+    const selectedValue = event.target.value;
+    setSelectedCourseID(
+      selectedValue === "default" ? undefined : selectedValue
+    );
   };
+
   const createHandleCourseSelectionChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -99,7 +103,7 @@ function ProfContent() {
     setNewContent({
       ...newContent,
       courseID: event.target.value,
-    })
+    });
   };
 
   // Extract unique courseIDs from the courses fetched from the backend
@@ -367,7 +371,9 @@ function ProfContent() {
       <Accordion className="mt-5">
         {contentList.length > 0 ? (
           contentList
-            .filter((content) => content.courseID === selectedCourseID) // Filter contents by selectedCourseID
+            .filter((content) =>
+              selectedCourseID ? content.courseID === selectedCourseID : true
+            )
             .map((content, index) => (
               <Accordion.Item eventKey={index.toString()} key={index}>
                 <Accordion.Header>
@@ -396,7 +402,6 @@ function ProfContent() {
                 <Accordion.Body className="d-flex flex-column align-items-start">
                   <h3>{content.title}</h3>
                   <p>{content.description}</p>
-                  {/* ... (rest of the content rendering) */}
                 </Accordion.Body>
               </Accordion.Item>
             ))

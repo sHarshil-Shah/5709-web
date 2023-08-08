@@ -2,7 +2,22 @@ import React, { useEffect, useState } from "react";
 import DiscussionComponent from "./DiscussionComponent";
 import envVariables from "../../importenv";
 import { Discussion } from "../model/discussions.model";
-import { Modal, Button, Form } from "react-bootstrap"; // Assuming you're using Bootstrap components
+import {
+  Box,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Textarea,
+  Stack,
+  Select,
+  FormControl,
+  FormLabel,
+  Container,
+} from "@chakra-ui/react";
 
 function DiscussionList() {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
@@ -169,66 +184,75 @@ function DiscussionList() {
   };
 
   return (
-    <div style={{ marginLeft: "10%", marginRight: "10%" }}>
-      <button onClick={handleOpenModal}>Add Discussion</button>
-
-      <div className="Headers">Discussions</div>
-      <label htmlFor="courseSelect">Sort by Course ID:</label>
-      <select
-        id="courseSelect"
-        value={selectedCourseID}
-        onChange={(event) => setSelectedCourseID(event.target.value)}
-      >
-        <option value="">All Courses</option>
-        {availableCourseIDs.map((courseID) => (
-          <option key={courseID} value={courseID}>
-            {courseID}
-          </option>
-        ))}
-      </select>
-      <div>
+    <Container mt={4}>
+      <Box textAlign="center" fontSize="xl" fontWeight="bold">
+        Discussions
+      </Box>
+      <Stack direction="row" spacing={4} mt={4} mb={2}>
+        <Button onClick={handleOpenModal} colorScheme="blue" size="sm">
+          Add Discussion
+        </Button>
+        <FormControl>
+          <FormLabel>Sort by Course ID:</FormLabel>
+          <Select
+            value={selectedCourseID}
+            onChange={(event) => setSelectedCourseID(event.target.value)}
+          >
+            <option value="">All Courses</option>
+            {availableCourseIDs.map((courseID) => (
+              <option key={courseID} value={courseID}>
+                {courseID}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
+      <Stack spacing={4}>
         {sortedDiscussions.map((discussion, index) => (
           <DiscussionComponent
             key={index}
             discussion={discussion}
-            onEdit={handleEditDiscussionInList} // Use the modified function
+            onEdit={handleEditDiscussionInList}
             onDelete={() => handleDeleteDiscussion(discussion)}
           />
         ))}
-      </div>
-      <Modal show={isModalOpen} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create New Discussion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group controlId="newDiscussionCourseID">
-            <Form.Label>Course ID:</Form.Label>
-            <Form.Control
-              type="text"
-              value={newDiscussionCourseID}
-              onChange={(event) => setNewDiscussionCourseID(event.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="newDiscussionContent">
-            <Form.Label>Content:</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={4}
-              value={newDiscussionContent}
-              onChange={(event) => setNewDiscussionContent(event.target.value)}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleCreateDiscussion}>
-            Create
-          </Button>
-        </Modal.Footer>
+      </Stack>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create New Discussion</ModalHeader>
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Course ID:</FormLabel>
+              <Textarea
+                value={newDiscussionCourseID}
+                onChange={(event) =>
+                  setNewDiscussionCourseID(event.target.value)
+                }
+              />
+            </FormControl>
+            <FormControl mt={2}>
+              <FormLabel>Content:</FormLabel>
+              <Textarea
+                rows={4}
+                value={newDiscussionContent}
+                onChange={(event) =>
+                  setNewDiscussionContent(event.target.value)
+                }
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" onClick={handleCloseModal}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue" onClick={handleCreateDiscussion}>
+              Create
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
-    </div>
+    </Container>
   );
 }
 
