@@ -26,9 +26,9 @@ function CourseCard({course}: CourseCardProps) {
                     </Card.Subtitle>
                     <Card.Text>{course.description}</Card.Text>
                     <Card.Link href="/content" style={{color: "blue"}}>Content page</Card.Link> &nbsp;&nbsp;
-                    <Link to={`/course`}>
+                    {/* <Link to={`/course`}>
                         <button onClick={() => handleViewDetails(course._id)}>Course Dashboard</button>
-                    </Link>
+                    </Link> */}
                 </Card.Body>
             </Card>
         </div>

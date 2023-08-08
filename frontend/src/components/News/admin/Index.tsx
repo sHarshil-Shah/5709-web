@@ -28,6 +28,7 @@ function AdminNews() {
   const mongoURI = envVariables.mongoURI;
 
   useEffect(() => {
+    console.log("I was called")
     fetchNews();
   }, []);
 
