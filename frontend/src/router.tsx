@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import React, {Suspense, useEffect, useState} from 'react';
 import Loader from './loading';
 import TitleBar from './TitleBar';
+import DiscussionList from './components/discussion/Index';
 // import { news } from '../src/components/model/news.model';
 // import AdminNews from './components/News/admin/Index';
 // import News from './components/News/News';
@@ -96,6 +97,8 @@ const [userType, setUserType] = useState('');
                         <Route path="/profAssignment" element={<ProfessorAssignmentPage/>}/>
                         <Route path="/studAssignment" element={<StudentAssignmentPage/>}/>
                         <Route path="/historyAssignments" element={<StudentHistoryPage/>}/>
+                        <Route path="/discussions" element={<DiscussionList/>}/>
+
                         {userType === 'stud' && (
                         <Route path="/news" element={<UsersNews />} />
                         )}

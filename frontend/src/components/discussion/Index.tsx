@@ -185,74 +185,82 @@ function DiscussionList() {
 
   return (
     <Container mt={4}>
-      <Box textAlign="center" fontSize="xl" fontWeight="bold">
-        Discussions
-      </Box>
-      <Stack direction="row" spacing={4} mt={4} mb={2}>
-        <Button onClick={handleOpenModal} colorScheme="blue" size="sm">
-          Add Discussion
-        </Button>
-        <FormControl>
-          <FormLabel>Sort by Course ID:</FormLabel>
-          <Select
-            value={selectedCourseID}
-            onChange={(event) => setSelectedCourseID(event.target.value)}
-          >
-            <option value="">All Courses</option>
-            {availableCourseIDs.map((courseID) => (
-              <option key={courseID} value={courseID}>
-                {courseID}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
-      <Stack spacing={4}>
-        {sortedDiscussions.map((discussion, index) => (
-          <DiscussionComponent
-            key={index}
-            discussion={discussion}
-            onEdit={handleEditDiscussionInList}
-            onDelete={() => handleDeleteDiscussion(discussion)}
-          />
-        ))}
-      </Stack>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create New Discussion</ModalHeader>
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Course ID:</FormLabel>
-              <Textarea
-                value={newDiscussionCourseID}
-                onChange={(event) =>
-                  setNewDiscussionCourseID(event.target.value)
-                }
-              />
-            </FormControl>
-            <FormControl mt={2}>
-              <FormLabel>Content:</FormLabel>
-              <Textarea
-                rows={4}
-                value={newDiscussionContent}
-                onChange={(event) =>
-                  setNewDiscussionContent(event.target.value)
-                }
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" onClick={handleCloseModal}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" onClick={handleCreateDiscussion}>
-              Create
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Container>
+    <Box textAlign="center" fontSize="xl" fontWeight="bold">
+      Discussions
+    </Box>
+    <Stack direction="row" spacing={4} mt={4} mb={2} className="d-flex">
+      <Button onClick={handleOpenModal} colorScheme="blue" mr={2}>
+        Add Discussion
+      </Button>
+      <FormControl>
+        <FormLabel>Sort by Course ID:</FormLabel>
+        <Select
+          value={selectedCourseID}
+          onChange={(event) => setSelectedCourseID(event.target.value)}
+        >
+          <option value="">All Courses</option>
+          {availableCourseIDs.map((courseID) => (
+            <option key={courseID} value={courseID}>
+              {courseID}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    </Stack>
+    <Stack spacing={4}>
+      {sortedDiscussions.map((discussion, index) => (
+        <DiscussionComponent
+          key={index}
+          discussion={discussion}
+          onEdit={handleEditDiscussionInList}
+          onDelete={() => handleDeleteDiscussion(discussion)}
+        />
+      ))}
+    </Stack>
+    <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Create New Discussion</ModalHeader>
+        <ModalBody>
+          <FormControl>
+            <FormLabel>Course ID:</FormLabel>
+            {/* Change the following Textarea to Select */}
+            <Select
+              value={newDiscussionCourseID}
+              onChange={(event) =>
+                setNewDiscussionCourseID(event.target.value)
+              }
+            >
+              <option value="">Select Course ID</option>
+              {availableCourseIDs.map((courseID) => (
+                <option key={courseID} value={courseID}>
+                  {courseID}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl mt={2}>
+            <FormLabel>Content:</FormLabel>
+            <Textarea
+              rows={4}
+              value={newDiscussionContent}
+              onChange={(event) =>
+                setNewDiscussionContent(event.target.value)
+              }
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="ghost" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button colorScheme="blue" onClick={handleCreateDiscussion}>
+            Create
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  </Container>
   );
 }
 
