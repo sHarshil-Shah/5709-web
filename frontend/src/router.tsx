@@ -43,9 +43,6 @@ const ForgetPassword = React.lazy(() => import('./components/UserManagement/forg
 
 const Announcement = React.lazy(() => import('./components/Announcement/Announcement'));
 
-//news
-const News = React.lazy(() => import('./components/News/News'));
-
 const Content = React.lazy(() => import('./components/Content/Content'));
 const ProfSignUp = React.lazy(() => import('./components/UserManagement/SignUp'));
 const Calender = React.lazy(() => import('./components/Calender/calender'));
@@ -55,16 +52,16 @@ const StudentAssignmentPage = React.lazy(() => import('./components/studentAssig
 const StudentHistoryPage = React.lazy(() => import('./components/studentAssignments/StudentHistoryPage'))
 
 const App = () => {
-const [userType, setUserType] = useState('');
+    const [userType, setUserType] = useState('');
 
-  useEffect(() => {
-    // Fetch the user_type from localStorage
-    const userData = localStorage.getItem('userData');
-    if (userData) {
-      const parsedUserData = JSON.parse(userData);
-      setUserType(parsedUserData.user_type);
-    }
-  }, []);
+    useEffect(() => {
+        // Fetch the user_type from localStorage
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+            const parsedUserData = JSON.parse(userData);
+            setUserType(parsedUserData.user_type);
+        }
+    }, []);
     return (<>
             <Router>
                 <TitleBar/>
@@ -100,17 +97,16 @@ const [userType, setUserType] = useState('');
                         <Route path="/discussions" element={<DiscussionList/>}/>
 
                         {userType === 'stud' && (
-                        <Route path="/news" element={<UsersNews />} />
+                            <Route path="/news" element={<UsersNews/>}/>
                         )}
                         {userType === 'prof' && (
-                        <Route path="/news" element={<UsersNews />} />
+                            <Route path="/news" element={<UsersNews/>}/>
                         )}
                         {userType === 'admin' && (
-                        <Route path="/admin/news" element={<AdminNews />} />
+                            <Route path="/admin/news" element={<AdminNews/>}/>
                         )}
-                        
 
-                    
+
                     </Routes>
                 </Suspense>
             </Router>

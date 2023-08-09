@@ -4,28 +4,30 @@ import CourseList from './CourseList'
 import Analytics from './Analytics'
 import {course} from '../model/course.model';
 import envVariables from '../../importenv';
+import Loader from "../../loading";
 
 function StudentDashboard() {
 
-    const [courses, setCourses] = useState<course[]>([]);
-    const [show, setShow] = useState(false);
-    const [newCourse, setNewCourse] = useState<course>({
-        title: "",
-        courseID: "",
-        description: "",
-    });
+    const [isLoading, setLoading] = useState(false);
 
-    const mongoURI = envVariables.mongoURI;
+    const [courses, setCourses] = useState<course[]>([]);
+
 
     useEffect(() => {
         fetchCourses();
     }, []);
 
     const fetchCourses = () => {
+        setLoading(true);
+
         fetchCoursesFromBackend().then((courses) => {
             setCourses(courses);
+            setLoading(false);
+        }).finally(() => {
+            // setLoading(false);
         });
     };
+
 
     function fetchCoursesFromBackend(): Promise<course[]> {
         const backendURL = envVariables.backendURL;
@@ -46,11 +48,14 @@ function StudentDashboard() {
     }
 
     return (
-        <div className="d-flex mt-5 landing-container">
-            <CourseList courses={courses}/>
-            <Analytics/>
-        </div>
-    )
+        <>
+            {isLoading && <Loader/>}
+            <div className="d-flex mt-5 landing-container">
+                <CourseList courses={courses}/>
+                <Analytics/>
+            </div>
+        </>
+    );
 }
 
-export default StudentDashboard
+export default StudentDashboard;
