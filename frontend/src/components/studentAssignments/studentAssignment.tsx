@@ -5,6 +5,7 @@ import Loader from '../../loading';
 import { initializeApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref, uploadBytes  } from "firebase/storage";
 import { submissionModal } from '../model/submission.model';
+import { format } from 'date-fns';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBmT0WKHDhcDGupjI0d1WNB0NS6t8H_lnk",
@@ -24,7 +25,7 @@ interface Assignment {
   visibleDate: string;
   submissionDate: string;
   description: string;
-  file: any;
+  fileUrl: any;
   grade: string;
   courseId: string;
 }
@@ -39,8 +40,7 @@ const StudentAssignmentList = () => {
 
   const toast = useToast();
 
-  const userData = JSON.parse(localStorage.getItem('userData') || "");
-  console.log("userData ===>",userData['user_mail']);
+  const userEmailId = JSON.parse(localStorage.getItem('userData') || "")['user_mail'];
 
   useEffect(() => {
     fetchAssignmentList()
@@ -123,16 +123,21 @@ const StudentAssignmentList = () => {
         console.log('Uploaded a blob or file!');
         console.log('Download URL:', fileURL);
 
-        const backendURL = 'http://localhost:3000'
-
         try {
+
+          const currentDate = format(new Date(), 'yyyy-MM-dd');
 
           const studentAssignmentSubmission : submissionModal = {
             comments,
             fileURL,
+            userEmailId,
+            submissionDate: currentDate,
           };
 
-          console.log(studentAssignmentSubmission);
+          console.log("studentAssignmentSubmission===>",studentAssignmentSubmission);
+
+          const backendURL = envVariables.backendURL;
+          console.log("backendURL===>",backendURL);
 
           const response = await fetch(backendURL + '/uploadAssignment', {
             method: 'POST',

@@ -19,7 +19,7 @@ class StudentSubmissionService {
             const db: Db = client.db(dbName);
 
             // Check user credentials in the MongoDB collection
-            console.log(assignment);
+            console.log("ASSIGNMENT DATA===>",assignment);
 
             const new_assignment = await db.collection(submissionCollection).insertOne(assignment);
 
