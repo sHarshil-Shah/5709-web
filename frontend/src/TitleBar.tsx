@@ -36,20 +36,21 @@ const TitleBar = () => {
 
         console.log(location);
         if (location.pathname === "/") {
-            setMenuOptions(
-                loggedInUserType !== '' ? [{title: "Dashboard", route: "/dashboard"}] :
-                    [{title: "Register as a professor", route: "/Signup"}]
+            setMenuOptions([
+                    {title: "Contact", route: "/contact"},
+                    {title: "FAQ", route: "/faq"},
+                    loggedInUserType !== '' ? {title: "Dashboard", route: "/dashboard"} : {
+                        title: "Register as a professor",
+                        route: "/Signup"
+                    },
+                ]
             );
         } else if (
-            location.pathname === "/dashboard" ||
-            location.pathname === "/news" ||
             location.pathname === "/assignments" ||
-            location.pathname === "/announcement" ||
-            location.pathname === "/content" ||
             location.pathname === "/prof" ||
             location.pathname === '/calender' ||
             location.pathname === '/discussions'
-            
+
         ) {
             setMenuOptions([
                 {title: "Dashboard", route: "/dashboard"},
@@ -71,10 +72,9 @@ const TitleBar = () => {
                 {title: "Announcement", route: "/announcement"},
                 {title: "Content", route: "/content"},
                 {title: 'Calender', route: "/calender"},
-                {title: 'discussions',route: "/discussions"}
+                {title: 'discussions', route: "/discussions"}
             ]);
         } else if (location.pathname === "/course" ||
-        location.pathname === "/news" ||
             location.pathname === "/quiz" ||
             location.pathname === "/profAssignment" ||
             location.pathname === "/studAssignment"
@@ -86,14 +86,27 @@ const TitleBar = () => {
                 {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
                 {title: 'Calender', route: "/calender"}
             ])
+        } else if (location.pathname === "/dashboard" ||
+            location.pathname === "/news" ||
+            location.pathname === "/announcement"
+        ) {
+            setMenuOptions([
+                {title: "Dashboard", route: "/dashboard"},
+                {title: "News", route: "/news"},
+                {title: "Announcement", route: "/announcement"},
+                {title: "Content", route: "/content"},
+                {title: 'Calender', route: "/calender"},
+                {title: 'Discussion', route: "/discussions"}
+            ]);
+        } else if (location.pathname === "/content") {
+            setMenuOptions([
+                {title: "Quiz", route: "/quiz"},
+                {title: "Assignment", route: getLoggedInUserType() === "prof" ? "/profAssignment" : "/studAssignment"},
+            ]);
         } else {
             setMenuOptions([]);
         }
     }, [location]);
-
-    const isAdminDashboard = location.pathname.startsWith('/admin'); // Check if the current path is '/admin'
-    const contactLink = isAdminDashboard ? '/admin/contact' : '/contact';
-    const faqLink = isAdminDashboard ? '/admin/faq' : '/faq';
 
     return (
         <div>
