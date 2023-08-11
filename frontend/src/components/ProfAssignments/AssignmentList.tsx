@@ -91,7 +91,7 @@ const AssignmentList: React.FC = () => {
             }).finally(() => {
             setLoading(false);
         });
-    }, []);
+    }, [assignments]);
 
       const handleAssignmentUpdated = (updatedAssignment: Assignment) => {
         setLoading(true);
@@ -124,12 +124,12 @@ const AssignmentList: React.FC = () => {
             {assignments.length > 0 ? (
                 <Table variant="simple">
                     <Thead>
-                    <Tr>
-                        <Th>Assignment Title</Th>
-                        <Th>Visible Date</Th>
-                        <Th>Submission Date</Th>
-                        <Th>Action</Th>
-                    </Tr>
+                        <Tr>
+                            <Th>Assignment Title</Th>
+                            <Th>Visible Date</Th>
+                            <Th>Submission Date</Th>
+                            <Th>Action</Th>
+                        </Tr>
                     </Thead>
                     <Tbody>
                     {assignments?.map((assignment) => (
