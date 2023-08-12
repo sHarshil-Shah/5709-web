@@ -73,13 +73,15 @@ const SignUp = () => {
                     setLoading(false);
                 }
             );
+        } else {
+            setLoading(false);
         }
-
     };
 
     const [formData, setFormData] = useState(fields);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setErrorMessage("");
         const {name, value, type} = e.target;
         console.log(name, type);
 
@@ -88,9 +90,9 @@ const SignUp = () => {
 
     };
 
-
     const validateForm = () => {
         let error = "";
+        const alphabetPattern = /^[A-Za-z]+$/;
 
         // Validate email
         if (!formData.user_email) {
@@ -105,8 +107,12 @@ const SignUp = () => {
             error = 'Confirm Password should be same as Password!';
         } else if (!formData.first_name) {
             error = 'First Name is Required';
+        } else if (!alphabetPattern.test(formData.first_name)) {
+            error = 'First Name should contain only alphabetic characters';
         } else if (!formData.last_name) {
             error = 'Last Name is required';
+        } else if (!alphabetPattern.test(formData.last_name)) {
+            error = 'Last Name should contain only alphabetic characters';
         }
 
         setErrorMessage(error);

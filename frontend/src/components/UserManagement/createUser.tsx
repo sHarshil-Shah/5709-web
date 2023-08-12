@@ -87,13 +87,13 @@ const SignUp: React.FC = () => {
     const [formData, setFormData] = useState(fields);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setErrorMessage("");
         const { name, value, type } = e.target;
         console.log(name, type);
         if (type === 'radio') {
             // Update the value for radio button
             console.log("here");
             setValue(value);
-
         } else {
             // Update the form data for other input fields
             setFormData({ ...formData, [name]: value });
