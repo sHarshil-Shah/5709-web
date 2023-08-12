@@ -8,18 +8,22 @@ const studentSubmissionService = new StudentSubmissionService();
 
 submitAssignmentRouter.post('/', async (req: Request, res: Response) => {
     
-    console.log(req.body);
+    console.log("req.body===>",req.body);
+    
     const current_submission: assignmentStudents = req.body;
 
     const comments = current_submission.comments;
     const fileURL = current_submission.fileURL;
+    const userEmailId = current_submission.userEmailId;
     
     console.log("Comments are : ", comments);
     console.log("fileURL is : ", fileURL);
+    console.log("userEmailId is : ", userEmailId);
 
     const assignmentData: assignmentStudents = {
         comments,
         fileURL,
+        userEmailId,
       };
 
     try{
@@ -28,7 +32,7 @@ submitAssignmentRouter.post('/', async (req: Request, res: Response) => {
       if (uploadedAssignment)
           res.json({ message: 'Assignment Upload successfully', assignment: uploadedAssignment });
       else
-          res.json({ message: 'Something went wrong!!' });
+          res.json({ message: 'Something went wrong!!'});
     }catch (error){
       console.error(error);
       res.status(500).json({ message: 'Error while uploading assignment data' });
