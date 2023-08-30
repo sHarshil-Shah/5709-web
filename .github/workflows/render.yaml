@@ -14,5 +14,5 @@ jobs:
 
     steps:
       - name: HTTP Request
-        run: curl -X GET https://api.render.com/deploy/srv-circdkdiuie930maojog?key=DQItLtZKvFQ
+        run: curl -X GET ${{ secrets.RENDER_DEPLYOMENT_URL }}
         # Replace the URL with the desired URL you want to hit
